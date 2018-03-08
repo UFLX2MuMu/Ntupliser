@@ -1,0 +1,5 @@
+#/bin/bash
+
+rm crab_auto_submit*.py*
+rm dimu_*for_crab.py*
+

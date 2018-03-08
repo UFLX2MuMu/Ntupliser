@@ -1,0 +1,6 @@
+
+Trigger efficiencies and scale factors generated 2016.12.14, up-to-date as of 2017.03.12
+
+Cover Period 3 (run F, from run 278167) and Period 4 (run GH)
+
+https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults?rev=22#Results_on_the_full_2016_data

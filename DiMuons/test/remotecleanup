@@ -1,0 +1,6 @@
+#/bin/bash
+
+while read NAME
+do
+    lcg-del -l -D srmv2 srm://srm.ihepa.ufl.edu:8443/srm/v2/server?SFN="$NAME"
+done < remote.files2
