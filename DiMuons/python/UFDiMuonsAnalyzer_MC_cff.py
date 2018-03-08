@@ -9,7 +9,8 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
-                         skim_nMuons = cms.int32(2),
+                         ## No Skimming for MC
+                         skim_nMuons = cms.int32(0),
                          skim_trig   = cms.bool(False),
                          
                          ## HLT trigger info
@@ -17,9 +18,8 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## processName  = cms.string("HLT2"),  ## For reHLT MC samples?
                          ## Unprescaled triggers at the end of 2016
                          ## https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
-                         trigNames = cms.vstring("HLT_IsoMu22_eta2p1", "HLT_IsoTkMu22_eta2p1", 
-                                                 "HLT_IsoMu24", "HLT_IsoTkMu24", 
-                                                 "HLT_Mu50", "HLT_TkMu50"),
+                         trigNames = cms.vstring("HLT_IsoMu*", "HLT_IsoTkMu*", 
+                                                 "HLT_Mu*", "HLT_TkMu*"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
                          ## trigResults = cms.InputTag("TriggerResults","","HLT2"),  ## For reHLT MC samples
