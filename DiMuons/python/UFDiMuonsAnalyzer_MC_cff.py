@@ -15,14 +15,10 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          ## HLT trigger info
                          processName  = cms.string("HLT"),
-                         ## processName  = cms.string("HLT2"),  ## For reHLT MC samples?
-                         ## Unprescaled triggers at the end of 2016
-                         ## https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
                          trigNames = cms.vstring("HLT_IsoMu*", "HLT_IsoTkMu*", 
                                                  "HLT_Mu*", "HLT_TkMu*"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
-                         ## trigResults = cms.InputTag("TriggerResults","","HLT2"),  ## For reHLT MC samples
                          trigObjs    = cms.InputTag("selectedPatTrigger"),
 
                          ## Event flags
@@ -81,8 +77,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
-                         Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
+                         Trig_eff_3_file  = cms.string("Run2017_BCDEF_SF_TRIG.root"),
                          MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
                          MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
                          MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
