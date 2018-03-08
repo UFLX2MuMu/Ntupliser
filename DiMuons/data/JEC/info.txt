@@ -1,0 +1,8 @@
+
+## Jet Energy Correction files
+## From: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC#Jet_Energy_Corrections_in_Run2
+## Applied following: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JecSqliteFile
+
+wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Spring16_23Sep2016V2_MC.db -O data/JEC/Spring16_23Sep2016V2_MC.db
+wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Spring16_23Sep2016AllV2_DATA.db -O data/JEC/Spring16_23Sep2016AllV2_DATA.db
+

@@ -1,0 +1,66 @@
+<lcgdict>
+  <!-- <selection> -->
+    
+  <class name="EleInfo"/>
+  <class name="EleInfos"/>
+  <class name="edm::Wrapper<EleInfos>"/>
+  
+  <class name="GenJetInfo"/> 
+  <class name="GenJetInfos"/> 
+  <class name="edm::Wrapper<GenJetInfos>"/>
+  
+  <class name="GenMuonInfo"/>
+  <class name="GenMuonInfos"/>
+  <class name="edm::Wrapper<GenMuonInfos>"/>
+  
+  <class name="GenMuPairInfo"/>
+  <class name="GenMuPairInfos"/>
+  <class name="edm::Wrapper<GenMuPairInfos>"/>
+  
+  <class name="GenParentInfo"/> 
+  <class name="GenParentInfos"/> 
+  <class name="edm::Wrapper<GenParentInfos>"/>
+  
+  <class name="JetInfo"/> 
+  <class name="JetInfos"/> 
+  <class name="edm::Wrapper<JetInfos>"/>
+  
+  <class name="SlimJetInfo"/> 
+  <class name="SlimJetInfos"/> 
+  <class name="edm::Wrapper<SlimJetInfos>"/>
+  
+  <class name="JetPairInfo"/> 
+  <class name="JetPairInfos"/> 
+  <class name="edm::Wrapper<JetPairInfos>"/>
+  
+  <class name="MuonInfo"/> 
+  <class name="MuonInfos"/> 
+  <class name="edm::Wrapper<MuonInfos>"/>
+  
+  <class name="MuPairInfo"/> 
+  <class name="MuPairInfos"/> 
+  <class name="edm::Wrapper<MuPairInfos>"/>
+  
+  <class name="TauInfo"/> 
+  <class name="TauInfos"/>
+  <class name="edm::Wrapper<TauInfos>"/>
+  
+  <class name="EventInfo"/> 
+  <class name="edm::Wrapper<EventInfo>"/>
+  
+  <class name="GenPartInfo"/> 
+  <class name="GenPartInfos"/> 
+  <class name="edm::Wrapper<GenPartInfos>"/>
+  
+  <class name="MetInfo"/> 
+  <class name="edm::Wrapper<MetInfo>"/>
+  
+  <class name="MhtInfo"/> 
+  <class name="edm::Wrapper<MhtInfo>"/>
+  
+  <class name="VertexInfo"/> 
+  <class name="VertexInfos"/> 
+  <class name="edm::Wrapper<VertexInfos>"/>
+  
+    <!-- </selection> -->
+</lcgdict>
