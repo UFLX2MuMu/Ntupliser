@@ -299,6 +299,13 @@ ZJets_AMC = sample( name = 'ZJets_AMC',
                     nEvt = -1
                   )
 
+#DYJets MLM
+ZJets_MG = sample( name = 'ZJets_MG',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                    nEvt = -1
+                  )
+
+
 # DYJets HT bins Fall17
 #
 #/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
@@ -335,7 +342,7 @@ ZJets_AMC = sample( name = 'ZJets_AMC',
 #/ZToMuMu_NNPDF31_13TeV-powheg_M_800_1400/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
 
 
-#Background.append(ZJets_MG)
+Background.append(ZJets_MG)
 #Background.append(ZJets_MG_HER)
 Background.append(ZJets_AMC)
 #Background.append(ZJets_hiM)
