@@ -46,7 +46,9 @@ process.load("Configuration.Geometry.GeometryIdeal_cff")
 
 #from python.Samples import Zd150 as samp
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
-from python.Samples import ZJets_AMC as samp
+#from python.Samples import ZJets_AMC as samp
+from python.Samples import H2Mu_gg as samp
+
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -101,7 +103,7 @@ readFiles = cms.untracked.vstring();
 #readFiles.extend(samp.files);
 
 #readFiles.extend(['file:dy_jetsToLL_summer17.root']);
-readFiles.extend(['/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/005DC030-D3F4-E711-889A-02163E01A62D.root']);
+#readFiles.extend(['/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/005DC030-D3F4-E711-889A-02163E01A62D.root']);
 #readFiles.extend(['file:Zd2Mu_M20_test.root']);
 #readFiles.extend(['/store/user/avartak/DarkPhoton/ZdToMuMu-M150-eps0p02_MINIAOD/171125_153031/0000/miniaod_1.root']);
 
@@ -140,9 +142,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")
@@ -150,7 +152,7 @@ process.dimuons.isVerbose  = cms.untracked.bool(True)
 process.dimuons.doSys      = cms.bool(True)
 process.dimuons.doSys_KaMu = cms.bool(False)
 process.dimuons.doSys_Roch = cms.bool(True)
-process.dimuons.slimOut    = cms.bool(True)
+process.dimuons.slimOut    = cms.bool(False)
 
 # # /////////////////////////////////////////////////////////////
 # # Bad event flags
