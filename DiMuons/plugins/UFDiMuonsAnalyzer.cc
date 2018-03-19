@@ -118,13 +118,9 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   }
 
   edm::FileInPath path_IsoMu_eff_3("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_3_file"));
-  edm::FileInPath path_IsoMu_eff_4("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_4_file"));
   _IsoMu_eff_3_file = new TFile(path_IsoMu_eff_3.fullPath().c_str());
-  _IsoMu_eff_4_file = new TFile(path_IsoMu_eff_4.fullPath().c_str());
-  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
-  _IsoMu_eff_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
-  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
-  _IsoMu_SF_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
+  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu27_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
+  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu27_PtEtaBins/abseta_pt_ratio");
 
   edm::FileInPath path_MuID_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
   edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
@@ -161,7 +157,7 @@ UFDiMuonsAnalyzer::~UFDiMuonsAnalyzer() {
     _PU_wgt_file->Close();
 
   _IsoMu_eff_3_file->Close();
-  _IsoMu_eff_4_file->Close();
+//  _IsoMu_eff_4_file->Close();
 
 }
 
@@ -316,8 +312,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
 	       _IsoMu_eff_3_hist, _muonInfos, false );
-  CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
-	       _IsoMu_eff_4_hist, _muonInfos, false );
+  // CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
+	 //       _IsoMu_eff_4_hist, _muonInfos, false );
   CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
 	       _IsoMu_eff_3_hist, _muonInfos, true );
 
@@ -335,8 +331,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if (_isMonteCarlo) {
     CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, false );
-    CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
-		 _IsoMu_SF_4_hist, _muonInfos, false );
+   //  CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
+		 // _IsoMu_SF_4_hist, _muonInfos, false );
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
 
@@ -756,9 +752,6 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("IsoMu_eff_3",        &_IsoMu_eff_3,        "IsoMu_eff_3/F"        );
   _outTree->Branch("IsoMu_eff_3_up",     &_IsoMu_eff_3_up,     "IsoMu_eff_3_up/F"     );
   _outTree->Branch("IsoMu_eff_3_down",   &_IsoMu_eff_3_down,   "IsoMu_eff_3_down/F"   );
-  _outTree->Branch("IsoMu_eff_4",        &_IsoMu_eff_4,        "IsoMu_eff_4/F"        );
-  _outTree->Branch("IsoMu_eff_4_up",     &_IsoMu_eff_4_up,     "IsoMu_eff_4_up/F"     );
-  _outTree->Branch("IsoMu_eff_4_down",   &_IsoMu_eff_4_down,   "IsoMu_eff_4_down/F"   );
   _outTree->Branch("IsoMu_eff_bug",      &_IsoMu_eff_bug,      "IsoMu_eff_bug/F"      );
   _outTree->Branch("IsoMu_eff_bug_up",   &_IsoMu_eff_bug_up,   "IsoMu_eff_bug_up/F"   );
   _outTree->Branch("IsoMu_eff_bug_down", &_IsoMu_eff_bug_down, "IsoMu_eff_bug_down/F" );
@@ -781,9 +774,6 @@ void UFDiMuonsAnalyzer::beginJob() {
       _outTree->Branch("IsoMu_SF_3",        &_IsoMu_SF_3,        "IsoMu_SF_3/F"        );
     _outTree->Branch("IsoMu_SF_3_up",     &_IsoMu_SF_3_up,     "IsoMu_SF_3_up/F"     );
     _outTree->Branch("IsoMu_SF_3_down",   &_IsoMu_SF_3_down,   "IsoMu_SF_3_down/F"   );
-    _outTree->Branch("IsoMu_SF_4",        &_IsoMu_SF_4,        "IsoMu_SF_4/F"        );
-    _outTree->Branch("IsoMu_SF_4_up",     &_IsoMu_SF_4_up,     "IsoMu_SF_4_up/F"     );
-    _outTree->Branch("IsoMu_SF_4_down",   &_IsoMu_SF_4_down,   "IsoMu_SF_4_down/F"   );
     _outTree->Branch("IsoMu_SF_bug",      &_IsoMu_SF_bug,      "IsoMu_SF_bug/F"      );
     _outTree->Branch("IsoMu_SF_bug_up",   &_IsoMu_SF_bug_up,   "IsoMu_SF_bug_up/F"   );
     _outTree->Branch("IsoMu_SF_bug_down", &_IsoMu_SF_bug_down, "IsoMu_SF_bug_down/F" );
