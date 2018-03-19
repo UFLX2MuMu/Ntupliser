@@ -21,7 +21,7 @@ class sample:
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/
 JSON_2017 = ['data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt']  ## 41.37 /fb
 
-PB_wdir = '/afs/cern.ch/work/b/bortigno/hmm_940p1_ufl/src/Ntupliser/DiMuons/'
+PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 
 #####################################
 ###  Global tag and dataset info  ###
