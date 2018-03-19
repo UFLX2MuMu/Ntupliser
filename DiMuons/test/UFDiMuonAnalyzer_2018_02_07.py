@@ -98,9 +98,11 @@ process.GlobalTag.globaltag = samp.GT
 # /////////////////////////////////////////////////////////////
 # ------------ PoolSource -------------
 # /////////////////////////////////////////////////////////////
-readFiles = cms.untracked.vstring();
+#readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
 #readFiles.extend(samp.files);
+
+#readFiles.extend(['/store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'])
 
 #readFiles.extend(['file:dy_jetsToLL_summer17.root']);
 #readFiles.extend(['/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/005DC030-D3F4-E711-889A-02163E01A62D.root']);
@@ -114,9 +116,12 @@ readFiles = cms.untracked.vstring();
 #readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISummer17MiniAOD/DYToLL_M_1_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/00000/02FF7F25-D5B9-E711-98E5-003048FFD72C.root'])
 #readFiles.extend(['/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-1to10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/0C47901E-B8AC-E711-B06F-0025905A48BC.root'])
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
-process.source = cms.Source("PoolSource",fileNames = readFiles)
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+
+#process.source = cms.Source("PoolSource",fileNames = readFiles)
+process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
+
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
 
@@ -133,8 +138,8 @@ if samp.isData:
 
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
-process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
 # process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_Roch_test.root") )
 # process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_MG_HT_2500_inf_test_100.root") )
 # /////////////////////////////////////////////////////////////
