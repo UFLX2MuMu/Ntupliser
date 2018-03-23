@@ -584,6 +584,9 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
     }
     _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
     _Iso_eff = json.get<float>(path(_value_string.c_str(),'/'));
+    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
+    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
+    std::cout << "Iso_eff = " << _Iso_eff << std::endl;
     _err_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
     _Iso_eff_up = _Iso_eff + json.get<float>(path(_err_string.c_str(),'/'));
     _Iso_eff_down = _Iso_eff - json.get<float>(path(_err_string.c_str(),'/'));
