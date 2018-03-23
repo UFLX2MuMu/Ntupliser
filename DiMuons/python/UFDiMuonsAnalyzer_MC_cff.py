@@ -80,8 +80,8 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          Trig_eff_3_file  = cms.string("Run2017_BCDEF_SF_TRIG.root"),
                          MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
                          MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
-                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
-                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
+                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         #MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

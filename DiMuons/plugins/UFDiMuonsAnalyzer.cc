@@ -136,17 +136,17 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _MuID_SF_4_vtx   = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
 
   edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
-  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
+//  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
   _MuIso_eff_3_file = new TFile(path_MuIso_eff_3.fullPath().c_str());
-  _MuIso_eff_4_file = new TFile(path_MuIso_eff_4.fullPath().c_str());
+  //_MuIso_eff_4_file = new TFile(path_MuIso_eff_4.fullPath().c_str());
   _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuIso_eff_4_hist = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  //_MuIso_eff_4_hist = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
   _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  _MuIso_SF_4_hist  = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
+  //_MuIso_SF_4_hist  = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
   _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  //_MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
   _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
-  _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+  //_MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
 
 } // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
 
@@ -322,11 +322,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		  _MuID_eff_3_hist, _MuIso_eff_3_hist,
 		  _MuID_eff_3_vtx, _MuIso_eff_3_vtx,
 		  _muonInfos, _nVertices);
-  CalcMuIDIsoEff( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
-		  _MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
-		  _MuID_eff_4_hist, _MuIso_eff_4_hist,
-		  _MuID_eff_4_vtx, _MuIso_eff_4_vtx,
-		  _muonInfos, _nVertices);
+  //CalcMuIDIsoEff( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
+		  // _MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
+		  // _MuID_eff_4_hist, _MuIso_eff_4_hist,
+		  // _MuID_eff_4_vtx, _MuIso_eff_4_vtx,
+		  // _muonInfos, _nVertices);
 
   if (_isMonteCarlo) {
     CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
@@ -341,11 +341,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		    _MuID_SF_3_hist, _MuIso_SF_3_hist,
 		    _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
 		    _muonInfos, _nVertices);
-    CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
-		    _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
-		    _MuID_SF_4_hist, _MuIso_SF_4_hist,
-		    _MuID_SF_4_vtx, _MuIso_SF_4_vtx,
-		    _muonInfos, _nVertices);
+    // CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
+		  //   _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
+		  //   _MuID_SF_4_hist, _MuIso_SF_4_hist,
+		  //   _MuID_SF_4_vtx, _MuIso_SF_4_vtx,
+		  //   _muonInfos, _nVertices);
   }
 
 
@@ -766,9 +766,9 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("MuIso_eff_3",        &_MuIso_eff_3,        "MuIso_eff_3/F"        );
   _outTree->Branch("MuIso_eff_3_up",     &_MuIso_eff_3_up,     "MuIso_eff_3_up/F"     );
   _outTree->Branch("MuIso_eff_3_down",   &_MuIso_eff_3_down,   "MuIso_eff_3_down/F"   );
-  _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
-  _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
-  _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
+  // _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
+  // _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
+  // _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
 
   if (_isMonteCarlo) {
       _outTree->Branch("IsoMu_SF_3",        &_IsoMu_SF_3,        "IsoMu_SF_3/F"        );
@@ -788,9 +788,9 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("MuIso_SF_3",        &_MuIso_SF_3,        "MuIso_SF_3/F"        );
     _outTree->Branch("MuIso_SF_3_up",     &_MuIso_SF_3_up,     "MuIso_SF_3_up/F"     );
     _outTree->Branch("MuIso_SF_3_down",   &_MuIso_SF_3_down,   "MuIso_SF_3_down/F"   );
-    _outTree->Branch("MuIso_SF_4",        &_MuIso_SF_4,        "MuIso_SF_4/F"        );
-    _outTree->Branch("MuIso_SF_4_up",     &_MuIso_SF_4_up,     "MuIso_SF_4_up/F"     );
-    _outTree->Branch("MuIso_SF_4_down",   &_MuIso_SF_4_down,   "MuIso_SF_4_down/F"   );
+  //   _outTree->Branch("MuIso_SF_4",        &_MuIso_SF_4,        "MuIso_SF_4/F"        );
+  //   _outTree->Branch("MuIso_SF_4_up",     &_MuIso_SF_4_up,     "MuIso_SF_4_up/F"     );
+  //   _outTree->Branch("MuIso_SF_4_down",   &_MuIso_SF_4_down,   "MuIso_SF_4_down/F"   );
   }
 
   // MC information
