@@ -542,23 +542,28 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
   //pt bins for SF
   std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
 
+  _ID_eff       = 1.;
+  _ID_eff_up    = 1.;
+  _ID_eff_down  = 1.;
+  _Iso_eff      = 1.;
+  _Iso_eff_up   = 1.;
+  _Iso_eff_down = 1.;
+
   //getting a specific value 
   // float scale_factor = 0.;
   // scale_factor = json.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
   // std::cout << scale_factor << std::endl;
 
-  std::string _value_string; 
+  std::string _value_string, _err_string; 
   std::ostringstream _min_eta, _max_eta, _min_pt, _max_pt;
 
   int nMu = int(_muonInfos.size());
   // Compute muon ID efficiency or scale factor
   for (int iMu = 0; iMu < nMu; iMu++){
     for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
-      std::cout << "absteta = " << _abseta << "size" << int(absetabins.size()) << std::endl;
       if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(absetabins.size()-1) ){ std::cout << "WARNING: muon out of eta range"; _Iso_eff = 1.0; continue; } 
       if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(_abseta) && abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta+1) ) {
         for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
-          std::cout << "ptidx = " << _pt << "size" << int(ptbins.size()) << std::endl;
           if ( abs(_muonInfos.at(iMu).pt) > ptbins.at(_pt) && abs(_muonInfos.at(iMu).pt) < ptbins.at(_pt+1) ) {
             _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
             _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
@@ -566,6 +571,9 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
             _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
             _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
             _Iso_eff = json.get<float>(path(_value_string.c_str(),'/'));
+            _err_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+            _Iso_eff_up = _Iso_eff + json.get<float>(path(_err_string.c_str(),'/'));
+            _Iso_eff_down = _Iso_eff - json.get<float>(path(_err_string.c_str(),'/'));
             //cleaning the strings
             _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
           } // if pt is in pt bin
