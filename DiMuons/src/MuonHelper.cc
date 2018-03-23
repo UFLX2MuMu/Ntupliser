@@ -532,6 +532,57 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 }
 
 
+void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
+         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, const boost::property_tree::ptree json, const MuonInfos _muonInfos){
+
+  // needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
+  typedef boost::property_tree::ptree::path_type path;
+  //eta bins for SF
+  std::vector<float> absetabins{0.00, 0.90, 1.20, 2.10, 2.40};
+  //pt bins for SF
+  std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
+
+  //getting a specific value 
+  // float scale_factor = 0.;
+  // scale_factor = json.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
+  // std::cout << scale_factor << std::endl;
+
+  std::string _value_string; 
+  std::ostringstream _min_eta, _max_eta, _min_pt, _max_pt;
+
+  int nMu = int(_muonInfos.size());
+  // Compute muon ID efficiency or scale factor
+  for (int iMu = 0; iMu < nMu; iMu++){
+    for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
+      std::cout << "absteta = " << _abseta << "size" << int(absetabins.size()) << std::endl;
+      if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(absetabins.size()-1) ){ std::cout << "WARNING: muon out of eta range"; _Iso_eff = 1.0; continue; } 
+      if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(_abseta) && abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta+1) ) {
+        for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
+          std::cout << "ptidx = " << _pt << "size" << int(ptbins.size()) << std::endl;
+          if ( abs(_muonInfos.at(iMu).pt) > ptbins.at(_pt) && abs(_muonInfos.at(iMu).pt) < ptbins.at(_pt+1) ) {
+            _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
+            _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
+            _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
+            _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
+            _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+            _Iso_eff = json.get<float>(path(_value_string.c_str(),'/'));
+            //cleaning the strings
+            _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
+          } // if pt is in pt bin
+        } // loop pt bin 
+      } // if eta in eta bin 
+    } // loop eta bins
+  } // loop muons
+
+  // for (auto& array_element : json) {
+  //   std::cout << array_element.first << std::endl;
+  //   for (auto& property : array_element.second) {
+  //       std::cout << property.first << " = " << property.second.get_value<std::string>() << std::endl;
+  //   }
+  // }
+return;
+}
+
 void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
 		     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, 
 		     const TH2F* _ID_hist, const TH2F* _Iso_hist, 

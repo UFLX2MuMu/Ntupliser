@@ -6,6 +6,11 @@
 #include "Ntupliser/DiMuons/interface/MuonInfo.h"
 #include "Ntupliser/DiMuons/interface/PtCorrKalman.h"
 #include "Ntupliser/DiMuons/interface/PtCorrRoch.h"
+// Classes or json handling
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/json_parser.hpp"
+#include <iomanip> // setprecision
+
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
@@ -44,6 +49,10 @@ void CalcTrigEff( float& _muon_eff, float& _muon_eff_up, float& _muon_eff_down,
 float CalcL1TPhi( const float mu_pt, const float mu_eta, float mu_phi, const int mu_charge );
 bool SameSector( float phi1, float phi2 );
 float CalcDPhi( const float phi1, const float phi2 );
+
+void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
+                     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
+                     const boost::property_tree::ptree, const MuonInfos _muonInfos );
 
 void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
                      float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,

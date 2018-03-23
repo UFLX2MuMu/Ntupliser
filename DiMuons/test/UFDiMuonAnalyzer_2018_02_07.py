@@ -116,8 +116,8 @@ process.GlobalTag.globaltag = samp.GT
 #readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISummer17MiniAOD/DYToLL_M_1_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/00000/02FF7F25-D5B9-E711-98E5-003048FFD72C.root'])
 #readFiles.extend(['/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-1to10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/0C47901E-B8AC-E711-B06F-0025905A48BC.root'])
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 #process.source = cms.Source("PoolSource",fileNames = readFiles)
 process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')

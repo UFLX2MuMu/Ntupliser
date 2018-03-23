@@ -137,16 +137,20 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
 //  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
-  _MuIso_eff_3_file = new TFile(path_MuIso_eff_3.fullPath().c_str());
-  //_MuIso_eff_4_file = new TFile(path_MuIso_eff_4.fullPath().c_str());
-  _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  //_MuIso_eff_4_hist = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  //_MuIso_SF_4_hist  = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  //_MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
-  //_MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+
+
+  std::ifstream _MuIso_eff_3_json_file(path_MuIso_eff_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuIso_eff_3_json_file){
+    std::cerr << "Error opening file " << path_MuIso_eff_3.fullPath().c_str() << std::endl;
+    return;
+  }
+  boost::property_tree::json_parser::read_json(_MuIso_eff_3_json_file, _MuIso_eff_3_json);
+
+  // _MuIso_eff_3_file = new TFile();//path_MuIso_eff_3.fullPath().c_str());  
+  // _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  // _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
+  // _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  // _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
 
 } // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
 
@@ -317,11 +321,15 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
 	       _IsoMu_eff_3_hist, _muonInfos, true );
 
-  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
-		  _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
-		  _MuID_eff_3_hist, _MuIso_eff_3_hist,
-		  _MuID_eff_3_vtx, _MuIso_eff_3_vtx,
-		  _muonInfos, _nVertices);
+  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, 
+    _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, 
+    _MuIso_eff_3_json, _muonInfos );
+
+  // CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
+		//   _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
+		//   _MuID_eff_3_hist, _MuIso_eff_3_hist,
+		//   _MuID_eff_3_vtx, _MuIso_eff_3_vtx,
+		//   _muonInfos, _nVertices);
   //CalcMuIDIsoEff( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
 		  // _MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
 		  // _MuID_eff_4_hist, _MuIso_eff_4_hist,
@@ -336,11 +344,15 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
 
-    CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
-		    _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
-		    _MuID_SF_3_hist, _MuIso_SF_3_hist,
-		    _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
-		    _muonInfos, _nVertices);
+    CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, 
+      _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, 
+      _MuIso_eff_3_json, _muonInfos );
+
+    // CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
+		  //   _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
+		  //   _MuID_SF_3_hist, _MuIso_SF_3_hist,
+		  //   _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
+		  //   _muonInfos, _nVertices);
     // CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
 		  //   _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
 		  //   _MuID_SF_4_hist, _MuIso_SF_4_hist,

@@ -23,6 +23,10 @@
 #include "KaMuCa/Calibration/interface/KalmanMuonCalibrator.h"
 #include "Ntupliser/RochCor/interface/RoccoR.h"
 
+// Classes or json handling
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/json_parser.hpp"
+
 ///////////////////////////////////////////////////////////
 // Class Definition ======================================
 //////////////////////////////////////////////////////////
@@ -267,6 +271,9 @@ public:
   float  _MuIso_SF_4;
   float  _MuIso_SF_4_up;
   float  _MuIso_SF_4_down;
+
+  //json
+  boost::property_tree::ptree _MuIso_eff_3_json;
 
   ///////////////////////////////////////////////////////////
   // Trees  ================================================
