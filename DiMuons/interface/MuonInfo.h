@@ -72,7 +72,7 @@ struct MuonInfo {
   Float_t sumPhotonEtR04         ;
   Float_t sumPUPtR04             ;
 
-  const static Int_t nTrig = 6;
+  const static Int_t nTrig = 8; // this number has to match the number of requested triggers in python/UFDiMuonsAnalyzer_*cff.py
   Bool_t  isHltMatched[nTrig];
   Float_t hltEff      [nTrig];
   Float_t hltPt       [nTrig];
