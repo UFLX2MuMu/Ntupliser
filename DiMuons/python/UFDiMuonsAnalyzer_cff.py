@@ -14,17 +14,21 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          ## HLT trigger info
                          processName  = cms.string("HLT"),
-                         ## Unprescaled triggers at the end of 2016
-                         ## https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
-                         trigNames = cms.vstring("HLT_IsoMu*", "HLT_IsoTkMu*",  
-                                                 "HLT_Mu*", "HLT_TkMu*"),
+                         ## Unprescaled triggers at the end of 2017
+                         ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         trigNames = cms.vstring("HLT_IsoMu24", "HLT_IsoTkMu24", 
+                                                 "HLT_IsoMu27", "HLT_IsoTkMu27",
+                                                 "HLT_IsoMu30",
+                                                 "HLT_Mu50",
+                                                 "HLT_Mu55",
+                                                 "HLT_TkMu100"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
                          #trigObjs    = cms.InputTag("selectedPatTrigger"),
-                         trigObjs    = cms.InputTag("slimmedPatTrigger","","PAT"),
+                         trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","PAT"),
+                         evtFlags = cms.InputTag("TriggerResults","","RECO"),
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -83,8 +87,8 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
                          MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
                          MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
-                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
-                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
+                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         #MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

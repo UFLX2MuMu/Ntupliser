@@ -28,11 +28,11 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _trigNames    = iConfig.getParameter<std::vector<std::string>>("trigNames");
 
   _trigResultsToken = consumes<edm::TriggerResults>                    (iConfig.getParameter<edm::InputTag>("trigResults"));
-  //_trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getParameter<edm::InputTag>("trigObjs"));
-  _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (edm::InputTag("slimmedPatTrigger","","PAT"));
+  _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getParameter<edm::InputTag>("trigObjs"));
+  // _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (edm::InputTag("slimmedPatTrigger","","PAT"));
 
   // Event flags
-  _evtFlagsToken = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","PAT") );
+  _evtFlagsToken = consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>("evtFlags") );
 
   // Underlying event
   _beamSpotToken      = consumes<reco::BeamSpot>        (iConfig.getParameter<edm::InputTag>("beamSpotTag"));
@@ -892,7 +892,7 @@ bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSe
     for(std::vector<std::string>::const_iterator desiredTrigName=desiredTrigNames.begin();
             desiredTrigName!=desiredTrigNames.end();desiredTrigName++)
     {
-      if (*desiredTrigName == trigNameStripped && trigResultsHandle->accept(iTrig))
+     if (*desiredTrigName == trigNameStripped && trigResultsHandle->accept(iTrig))
       {
         stringstream debugString;
         debugString << "isHltPassed:" <<endl;
