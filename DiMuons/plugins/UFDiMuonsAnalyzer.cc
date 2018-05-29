@@ -119,8 +119,8 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   edm::FileInPath path_IsoMu_eff_3("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_3_file"));
   _IsoMu_eff_3_file = new TFile(path_IsoMu_eff_3.fullPath().c_str());
-  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu27_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
-  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu27_PtEtaBins/abseta_pt_ratio");
+  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
+  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
 
   edm::FileInPath path_MuID_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
   edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
