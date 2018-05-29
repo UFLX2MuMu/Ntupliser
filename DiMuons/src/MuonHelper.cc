@@ -567,9 +567,10 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
       if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(_abseta+1) ) continue;
       _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
       _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
-    }
-    if(_min_eta.str() == _max_eta.str()){
+   }
+   if(_min_eta.str().compare(_max_eta.str()) == 0) { // if compare is ==0 the two strings are equal
       std::cout << "WARNING: Something fishy in the SF assignment. Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
     for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
@@ -578,8 +579,9 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
       _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
-    if(_min_pt.str() == _max_pt.str()){
-      std::cout << "WARNING: Something fishy in the SF assignment. Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+   if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
+      std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
     _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
