@@ -10,7 +10,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event selection cuts
                          ## No Skimming for MC
-                         skim_nMuons = cms.int32(0),
+                         skim_nMuons = cms.int32(2),
                          skim_trig   = cms.bool(False),
                          
                          ## HLT trigger info
