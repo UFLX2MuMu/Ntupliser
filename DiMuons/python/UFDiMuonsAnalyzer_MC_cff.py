@@ -42,10 +42,10 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
+                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
+                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
+                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
+                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
 
                          ## Jets
                          jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
@@ -74,7 +74,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_dR    = cms.double( 0.4),
                          muon_iso_max   = cms.double(0.25),
 
-                         ele_ID      = cms.string("loose"),
+                         ele_ID      = cms.string("medium"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 

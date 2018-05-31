@@ -1,7 +1,7 @@
 
 class sample:
     def __init__(self, name='', DAS='', inputDBS='global', nEvt=0, files=[], GT='94X_mc2017_realistic_v12', 
-                 JEC='Fall17_17Nov2017_V4_MC', runs=[], JSON=[], isData=False):
+                 JEC='94X_mc2017_realistic_v13', runs=[], JSON=[], isData=False):
         self.name   = name   ## User-assigned dataset name
         self.DAS    = DAS    ## DAS directory
         self.inputDBS = inputDBS  # to be used in crab in case of private production. config.Data.inputDBS = 'global' or 'phys03'
@@ -19,7 +19,7 @@ class sample:
 
 # The JSON file details the valid lumi sections
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/
-JSON_2017 = ['data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt']  ## 41.37 /fb
+JSON_2017 = ['data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt']  ## 41.37 /fb
 
 PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 
@@ -31,6 +31,9 @@ PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 # More info at https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis
 # Suggested GT (see frontier conditions twiki for more info)
 # 94X_dataRun2_ReReco_EOY17_v2
+
+# GT for data from the twiki of HtoMuMu2017: 94X_dataRun2_v6
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToMuMu_at_13_TeV_2017
 
 #SingleMuon dataset list
 #/SingleMuon/Run2017A-PromptReco-v2/MINIAOD
@@ -62,14 +65,14 @@ PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 
 SingleMu_2017B = sample ( name   = 'SingleMu_2017B',
                           DAS    = '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_ReReco_EOY17_v2',
+                          GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
 
 SingleMu_2017C = sample ( name   = 'SingleMu_2017C',
                           DAS    = '/SingleMuon/Run2017C-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_ReReco_EOY17_v2',
+                          GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
@@ -77,7 +80,7 @@ SingleMu_2017C = sample ( name   = 'SingleMu_2017C',
 
 SingleMu_2017D = sample ( name   = 'SingleMu_2017D',
                           DAS    = '/SingleMuon/Run2017D-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_ReReco_EOY17_v2',
+                          GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
@@ -85,7 +88,7 @@ SingleMu_2017D = sample ( name   = 'SingleMu_2017D',
 
 SingleMu_2017E = sample ( name   = 'SingleMu_2017E',
                           DAS    = '/SingleMuon/Run2017E-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_ReReco_EOY17_v2',
+                          GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
@@ -93,7 +96,7 @@ SingleMu_2017E = sample ( name   = 'SingleMu_2017E',
 
 SingleMu_2017F = sample ( name   = 'SingleMu_2017F',
                           DAS    = '/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_ReReco_EOY17_v2',
+                          GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
@@ -116,6 +119,10 @@ SingleMu.append(SingleMu_2017F)
 # =======================================================================================================
 # ------------------------------- SIGNAL ----------------------------------------------------------------
 # =======================================================================================================
+
+## GT suggested by JETMET POG for MC for new JEC
+## 94X_mc2017_realistic_v13
+
 
 ## DAS location: dataset=/*HToMuMu_M*_13TeV*/*Fall17*/MINIAODSIM
 DAS_era_sig = 'RunIIFall17DRPremix-94X_mc2017_realistic*/MINIAODSIM'

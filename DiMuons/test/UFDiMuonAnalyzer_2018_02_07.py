@@ -28,6 +28,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 ## Correct geometry to use?  What about GeometryExtended2016_cff or GeometryExtended2016Reco_cff? - AWB 16.01.17
 ## https://github.com/cms-sw/cmssw/tree/CMSSW_8_0_X/Configuration/Geometry/python
 process.load("Configuration.Geometry.GeometryIdeal_cff")  
+process.load("Configuration.StandardSequences.MagneticField_cff")
 
 # ## Geometry according to Tim Cox, used by Jia Fu Low
 # ##   https://indico.cern.ch/event/588469/contributions/2372672/subcontributions/211968/attachments/1371248/2079893/
@@ -67,6 +68,9 @@ process.GlobalTag.globaltag = samp.GT
 # # Additional jet energy corrections
 # # /////////////////////////////////
 
+# ## The recommended way of accessing JEC is via a global tag.
+# ## However, in case the JEC are available as a sqlite file and not in the global tag yet we can use this section.
+# ## More info in:
 # ## See https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
 # ## and https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
 
@@ -108,17 +112,10 @@ readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov
 
 #readFiles.extend(['/store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'])
 
-#readFiles.extend(['file:dy_jetsToLL_summer17.root']);
 #readFiles.extend(['/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/005DC030-D3F4-E711-889A-02163E01A62D.root']);
-#readFiles.extend(['file:Zd2Mu_M20_test.root']);
 #readFiles.extend(['/store/user/avartak/DarkPhoton/ZdToMuMu-M150-eps0p02_MINIAOD/171125_153031/0000/miniaod_1.root']);
 
 # readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
-
-# ## From /GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM
-#readFiles.extend(['/store/user/abrinke1/HiggsToMuMu/samples/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/12B931FE-CD3A-E611-9844-0025905C3D98.root'])
-#readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISummer17MiniAOD/DYToLL_M_1_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/00000/02FF7F25-D5B9-E711-98E5-003048FFD72C.root'])
-#readFiles.extend(['/store/mc/RunIISummer17MiniAOD/DYJetsToLL_M-1to10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/150000/0C47901E-B8AC-E711-B06F-0025905A48BC.root'])
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1
@@ -141,7 +138,6 @@ if samp.isData:
 # /////////////////////////////////////////////////////////////
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
-
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
@@ -158,13 +154,15 @@ else:
   process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 
+# Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")
-process.dimuons.isVerbose  = cms.untracked.bool(True)
-process.dimuons.doSys      = cms.bool(True)
+process.dimuons.isVerbose  = cms.untracked.bool(False)
+process.dimuons.doSys      = cms.bool(False)
 process.dimuons.doSys_KaMu = cms.bool(False)
-process.dimuons.doSys_Roch = cms.bool(True)
-process.dimuons.slimOut    = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(False)
+process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+process.dimuons.skim_nMuons = cms.int32(2)
 
 # # /////////////////////////////////////////////////////////////
 # # Bad event flags
@@ -186,9 +184,9 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
 
-## First need to run: git cms-merge-topic ikrav:egm_id_80X_v1
-## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_for_8_0
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff']
+## First need to run: git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
+## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff']
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
@@ -197,7 +195,7 @@ for idmod in my_id_modules:
 # /////////////////////////////////////////////////////////////
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
-##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+##   - Last check that procedure was up-to-date: March 10, 2017 (AWB). Revised 31.05.2018 (PB)
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 print 'samp.isData = %d' % samp.isData
@@ -222,9 +220,10 @@ process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process
 # /////////////////////////////////////////////////////////////
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription - AWB 01.03.17
-##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+##   - Last check that procedure was up-to-date: March 10, 2017 (AWB). Reviewd 31.05.2018 (PB)
 
-## First need to run: git cms-merge-topic cms-met:METRecipe_8020 -u
+## Only if you want to recluster MET or JET: first need to run: git cms-merge-topic cms-met:METRecipe_94X -u
+## Temporary fix for 2017 data and 17Nov2017 re-reco. Excluding low pt jets in |eta|=[2.650-3.139] region from the calculation of Type1 MET correction. Will be integrated in 10_1_X cycle git cms-merge-topic cms-met:METRecipe94xEEnoisePatch -u (PB)
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
 ## If you only want to re-correct and get the proper uncertainties
