@@ -49,7 +49,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## Jets
                          jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
                          jetType  = cms.string("AK4PFchs"),
-                         btagName = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"), #need to update it to deepCSV
+                         btagName = cms.string("pfDeepCSVJetTags"), #need to update it to deepCSV
                          rhoTag   = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
 
                          ## MET

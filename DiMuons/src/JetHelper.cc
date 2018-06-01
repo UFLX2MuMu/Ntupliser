@@ -110,12 +110,12 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     if ( fabs( jet.eta() ) < 2.4 ) nJetsCent += 1;
     else                           _nJetsFwd += 1;
     // https://twiki.cern.ch/twiki/bin/view/CMS/BtagPOG
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.06.01 (PB)
     // https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
     if ( fabs( jet.eta() ) < 2.4 ) {
-      if ( _jetInfo.CSV > 0.5426 )   _nBLoose  += 1;
-      if ( _jetInfo.CSV > 0.8484 )   _nBMed    += 1;
-      if ( _jetInfo.CSV > 0.9535 )   _nBTight  += 1;
+      if ( _jetInfo.CSV > 0.1522 )   _nBLoose  += 1;
+      if ( _jetInfo.CSV > 0.4941 )   _nBMed    += 1;
+      if ( _jetInfo.CSV > 0.8001 )   _nBTight  += 1;
     }
     _jetInfos.push_back( _jetInfo );
 
