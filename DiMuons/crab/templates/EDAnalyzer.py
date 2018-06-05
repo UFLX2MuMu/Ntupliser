@@ -116,9 +116,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
