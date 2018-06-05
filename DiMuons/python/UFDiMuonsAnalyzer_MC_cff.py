@@ -67,7 +67,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          vertex_z_max    = cms.double(24.0),
 
                          muon_ID        = cms.string("medium"),
-                         muon_pT_min    = cms.double(10.0),
+                         muon_pT_min    = cms.double(20.0),
                          muon_eta_max   = cms.double( 2.4),
                          muon_trig_dR   = cms.double( 0.1),
                          muon_use_pfIso = cms.bool(True),
@@ -79,7 +79,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ele_eta_max = cms.double(2.5),
 
                          jet_ID      = cms.string("loose"),
-                         jet_pT_min  = cms.double(30.0),
+                         jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(4.7),
 
                          ## Event weights and efficiencies
