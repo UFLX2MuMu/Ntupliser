@@ -25,6 +25,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 ## Correct geometry to use?  What about GeometryExtended2016_cff or GeometryExtended2016Reco_cff? - AWB 16.01.17
 ## https://github.com/cms-sw/cmssw/tree/CMSSW_8_0_X/Configuration/Geometry/python
 process.load("Configuration.Geometry.GeometryIdeal_cff")  
+process.load("Configuration.StandardSequences.MagneticField_cff")
+
 
 # ## Geometry according to Tim Cox, used by Jia Fu Low
 # ##   https://indico.cern.ch/event/588469/contributions/2372672/subcontributions/211968/attachments/1371248/2079893/
@@ -119,6 +121,14 @@ else:
   process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
+# Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
+process.dimuons = process.DiMuons.clone()
+process.dimuons.isVerbose  = cms.untracked.bool(False)
+process.dimuons.doSys      = cms.bool(False)
+process.dimuons.doSys_KaMu = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(False)
+process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+process.dimuons.skim_nMuons = cms.int32(2)
 
 
 # /////////////////////////////////////////////////////////////
@@ -132,7 +142,7 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 
 ## First need to run: git cms-merge-topic ikrav:egm_id_80X_v1
 ## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_for_8_0
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff']
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff']
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
