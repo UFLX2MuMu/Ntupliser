@@ -52,7 +52,8 @@ float CalcDPhi( const float phi1, const float phi2 );
 
 void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
                      float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
-                     const boost::property_tree::ptree, const MuonInfos _muonInfos );
+                     const boost::property_tree::ptree _iso_json, const boost::property_tree::ptree _id_json, 
+                     const MuonInfos _muonInfos );
 
 void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
                      float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,

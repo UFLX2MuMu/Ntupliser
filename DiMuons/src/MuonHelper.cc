@@ -534,7 +534,8 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 
 void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
          float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
-         const boost::property_tree::ptree json, const MuonInfos _muonInfos) {
+         const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
+         const MuonInfos _muonInfos) {
 
   // needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
   typedef boost::property_tree::ptree::path_type path;
@@ -552,7 +553,7 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
 
   //getting a specific value 
   // float scale_factor = 0.;
-  // scale_factor = json.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
+  // scale_factor = json_iso.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
   // std::cout << scale_factor << std::endl;
 
   std::string _value_string, _err_string; 
@@ -584,19 +585,26 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
+    // ID
+    _value_string = "NUM_SoftID_DEN_genTracks/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+    _ID_eff = json_id.get<float>(path(_value_string.c_str(),'/'));
+    _err_string = "NUM_SoftID_DEN_genTracks/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+    _ID_eff_up = _ID_eff + json_id.get<float>(path(_err_string.c_str(),'/'));
+    _ID_eff_down = _ID_eff - json_id.get<float>(path(_err_string.c_str(),'/'));
+    // Iso
     _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
-    _Iso_eff = json.get<float>(path(_value_string.c_str(),'/'));
-    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
-    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
-    std::cout << "Iso_eff = " << _Iso_eff << std::endl;
+    _Iso_eff = json_iso.get<float>(path(_value_string.c_str(),'/'));
+//    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
+//    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
+//    std::cout << "Iso_eff = " << _Iso_eff << std::endl;
     _err_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
-    _Iso_eff_up = _Iso_eff + json.get<float>(path(_err_string.c_str(),'/'));
-    _Iso_eff_down = _Iso_eff - json.get<float>(path(_err_string.c_str(),'/'));
+    _Iso_eff_up = _Iso_eff + json_iso.get<float>(path(_err_string.c_str(),'/'));
+    _Iso_eff_down = _Iso_eff - json_iso.get<float>(path(_err_string.c_str(),'/'));
     //cleaning the strings
     _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
   } // loop muons
 
-  // for (auto& array_element : json) {
+  // for (auto& array_element : json_iso) {
   //   std::cout << array_element.first << std::endl;
   //   for (auto& property : array_element.second) {
   //       std::cout << property.first << " = " << property.second.get_value<std::string>() << std::endl;
