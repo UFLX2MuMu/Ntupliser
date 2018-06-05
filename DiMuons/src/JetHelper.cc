@@ -70,8 +70,10 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     _jetInfo.jecUnc    = -1.0;
     _jetInfo.jecFactor = jet.jecFactor("Uncorrected");
-    
-    _jetInfo.CSV  = jet.bDiscriminator(_btagName);
+   
+    //with deepCSV need to sum two disriminators: probb and probbb
+    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X 
+    _jetInfo.CSV  = jet.bDiscriminator(_btagName+":probb") + jet.bDiscriminator(_btagName+":probbb");
     if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
     if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
     _jetInfo.puID = jet.userFloat("pileupJetId:fullDiscriminant");
