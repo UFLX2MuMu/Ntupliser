@@ -73,7 +73,7 @@ struct JetInfo {
   Float_t genInvF;  // Invisible Fraction
   Float_t genAuxF;  // Auxiliary Fraction (Undecayed Sigmas, etc.)
 
-  Float_t CSV ;  // Btag CSV_v2
+  Float_t CSV ;  // Btag deepCSV
   Float_t puID;  // PUID
 
   void init();
