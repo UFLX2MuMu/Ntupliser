@@ -230,7 +230,18 @@ H2Mu_ttH = sample( name = 'H2Mu_ttH',
 #                      DAS  = '/DarkPhoton/avartak-ZdToMuMu-M150-eps0p02_MINIAOD-230b6435bde4f6030b269a9cb8e2b63c/USER',
 #                      nEvt = 249748 ) ## 250 k
 
+Zd2Mu_125 = sample ( name = 'Zd2Mu_125',
+                     DAS  = '/ZD_UpTo2j_MZD125_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
 
+
+Zd2Mu_150 = sample ( name = 'Zd2Mu_150',
+                     DAS  = '/ZD_UpTo2j_MZD150_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
 
 
 Signal = []  ## All H2Mu signal samples
