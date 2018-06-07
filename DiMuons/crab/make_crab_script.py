@@ -8,12 +8,35 @@ from python.Samples import *
 
 import time  ## For timestamp on crab jobs
 import os  ## For executable permissions on scripts
+import subprocess 
+
+
+## Read the code tag for the production.
+def get_prod_version():
+  try: ## try with an annotated tag
+    print('Getting annotated tag...')
+    return subprocess.check_output(["git","describe"]).strip()
+  except: 
+    print('No annotated tag. Trying with lightweighted tag.')
+    pass 
+  try: ## otherwise try with a lightweighted tag
+    print('Getting lightweighted tag...')
+    return subprocess.check_output(["git","describe","--tag"]).strip()
+  except:  
+    print('No lightweighted tag. Using latest committ.')
+    pass  
+  ## otherwise pick the latest commit
+  return subprocess.check_output(["git","rev-parse","--short"]).strip()
+
+prod_version = get_prod_version()
+print("Production using code version {0} starting" .format(prod_version))
 
 samps = []
 
 ## Get the samples you want to make a crab config file for 
 test_run = False
-test_str = '_prod2017_v1'
+test_str = '_prod2017_{0}'.format(prod_version)
+ 
 # samps.extend(SingleMu)
 # samps.extend(Signal)
 # samps.extend(Background)
@@ -24,9 +47,13 @@ test_str = '_prod2017_v1'
 # samps.append(SingleMu_2016C)
 # samps.append(H2Mu_gg)
 # samps.append(ZJets_MG_HT_2500_inf)
+
 samps.append(SingleMu_2017B)
 
-crab_prod_dir = 'crab_prod_v-%s'%(time.strftime('%Y_%m_%d_%H_%M'))
+#samps.append(Zd2Mu_125)
+#samps.append(Zd2Mu_150)
+
+crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
 crab_analyzers_dir = crab_prod_dir+'/analyzers'
 crab_configs_dir = crab_prod_dir+'/configs'
 print('crab production directory = ' + crab_prod_dir)
@@ -68,7 +95,7 @@ for samp in samps:
     # crab submission file that uses the above CMSSW analyzer
     for line in in_file:
         if 'requestName' in line:
-            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), test_str) ) 
+            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), test_str.replace(".","p")) ) 
 
         if 'psetName' in line: 
             line = line.replace("= 'STR'", "= '%s/%s.py'" % (crab_analyzers_dir, samp.name) )
@@ -90,7 +117,7 @@ for samp in samps:
             if test_run:
                 line = line.replace('= NUM', '= 1')
             elif samp.isData:
-                line = line.replace('= NUM', '= 500')  ## 100
+                line = line.replace('= NUM', '= 250')  ## 100
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
