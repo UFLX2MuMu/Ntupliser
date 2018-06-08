@@ -29,7 +29,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","PAT"),
+                         evtFlags = cms.InputTag("TriggerResults","","RECO"),
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
