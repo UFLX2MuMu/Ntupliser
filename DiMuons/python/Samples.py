@@ -67,6 +67,7 @@ SingleMu_2017B = sample ( name   = 'SingleMu_2017B',
                           DAS    = '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD',
                           GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
+                          files  = 'file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root',
                           JSON   = JSON_2017[0],
                           isData = True )
 
@@ -232,6 +233,7 @@ H2Mu_ttH = sample( name = 'H2Mu_ttH',
 
 Zd2Mu_125 = sample ( name = 'Zd2Mu_125',
                      DAS  = '/ZD_UpTo2j_MZD125_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
+                     files = 'file:///eos/cms//store/user/bortigno/mc_genproduction/darkphoton/LHE-MINIAODSIM/ZD_UpTo2j_MZD125_Eps2e-2_v0/ZD_UpTo2j_MZD125_Eps2e-2/RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM/180525_114650/0000/darkphoton_miniaodsim_299.root', 
                      inputDBS = 'phys03',
                      nEvt = -1
                     )
