@@ -49,7 +49,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
 #from python.Samples import H2Mu_gg as samp
-from python.Samples import SingleMu_2017B as samp
+#from python.Samples import SingleMu_2017B as samp
+from python.Samples import Zd2Mu_125 as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -104,10 +105,10 @@ process.GlobalTag.globaltag = samp.GT
 # /////////////////////////////////////////////////////////////
 readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
-#readFiles.extend(samp.files);
+readFiles.extend([samp.files]);
 
 
-readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
+#readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
 #readFiles.extend(['file:///eos/cms/store/mc/RunIIFall17MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/00000/369C3391-F858-E811-9895-FA163EA77A9B.root'])
 
 #readFiles.extend(['/store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'])
@@ -120,7 +121,7 @@ readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
-process.source = cms.Source("PoolSource",fileNames = readFiles)
+process.source = cms.Source("PoolSource",fileNames = readFiles, duplicateCheckMode = cms.untracked.string("noDuplicateCheck") ) # no duplicate check switched on to run on private production
 #process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
@@ -137,7 +138,8 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu125_output_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
@@ -161,8 +163,7 @@ process.dimuons.isVerbose  = cms.untracked.bool(False)
 process.dimuons.doSys      = cms.bool(False)
 process.dimuons.doSys_KaMu = cms.bool(False)
 process.dimuons.doSys_Roch = cms.bool(False)
-process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
-process.dimuons.skim_nMuons = cms.int32(2)
+#process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
 
 # # /////////////////////////////////////////////////////////////
 # # Bad event flags

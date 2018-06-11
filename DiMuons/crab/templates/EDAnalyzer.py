@@ -95,7 +95,7 @@ readFiles.extend(samp.files);
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
-process.source = cms.Source("PoolSource", fileNames = readFiles)
+process.source = cms.Source("PoolSource", fileNames = readFiles, duplicateCheckMode = cms.untracked.string("noDuplicateCheck") ) # no duplicate check switched on to run on private production
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
 
