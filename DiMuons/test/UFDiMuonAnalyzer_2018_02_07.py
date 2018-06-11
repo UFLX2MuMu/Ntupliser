@@ -105,7 +105,7 @@ process.GlobalTag.globaltag = samp.GT
 # /////////////////////////////////////////////////////////////
 readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
-readFiles.extend([samp.files]);
+readFiles.extend(samp.files);
 
 
 #readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
