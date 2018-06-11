@@ -104,10 +104,10 @@ process.GlobalTag.globaltag = samp.GT
 # /////////////////////////////////////////////////////////////
 readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
-#readFiles.extend(samp.files);
+readFiles.extend(samp.files);
 
 
-readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
+#readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
 #readFiles.extend(['file:///eos/cms/store/mc/RunIIFall17MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/00000/369C3391-F858-E811-9895-FA163EA77A9B.root'])
 
 #readFiles.extend(['/store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'])
