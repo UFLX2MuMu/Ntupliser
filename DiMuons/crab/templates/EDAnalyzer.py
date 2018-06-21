@@ -153,6 +153,7 @@ for idmod in my_id_modules:
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
 ##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+##   - checked again 21.06.2018 (PB)
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 if samp.isData:
