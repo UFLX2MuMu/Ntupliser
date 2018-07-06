@@ -98,15 +98,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/Feb06/config.txt");
+  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017v0.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
-  std::string file_RochCor = "/config.txt";
+  std::string file_RochCor = "/RoccoR2017v0.txt";
   std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
   if (find_RochCor != std::string::npos)
     path_RochCor.erase(find_RochCor, file_RochCor.length());
 
   std::cout << "Rochester correction files located in " << path_RochCor << std::endl;
-  _Roch_calib.init(path_RochCor);
+  _Roch_calib.init(path_RochCor+file_RochCor);
   _doSys_Roch = iConfig.getParameter<bool>("doSys_Roch");
 
   if (_isMonteCarlo) {
