@@ -141,6 +141,7 @@ DAS_era_sig = 'RunIIFall17DRPremix-94X_mc2017_realistic*/MINIAODSIM'
 H2Mu_gg = sample( name  = 'H2Mu_gg',
                   DAS   = '/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
                   inputDBS = 'phys03',
+                  files  = ['file:///eos/cms//store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'],
                   nEvt  = -1
                 )
 
