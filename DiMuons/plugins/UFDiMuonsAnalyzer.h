@@ -408,6 +408,11 @@ private:
   double _muon_iso_dR;
   double _muon_iso_max;
 
+  std::string _muon_id_wp_num;// = "MediumID";
+  std::string _muon_id_wp_den;// = "genTracks";
+  std::string _muon_iso_wp_num;// = "LooseRelIso";
+  std::string _muon_iso_wp_den;// = "MediumID";
+
   std::string _ele_ID;
   double _ele_pT_min;
   double _ele_eta_max;

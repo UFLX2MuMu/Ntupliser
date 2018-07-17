@@ -73,6 +73,11 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_dR    = cms.double( 0.4),
                          muon_iso_max   = cms.double(0.25),
 
+                         muon_id_sf_wp_num = cms.string("MediumID"),
+                         muon_id_sf_wp_den = cms.string("genTracks"),
+                         muon_iso_sf_wp_num = cms.string("LooseRelIso"),
+                         muon_iso_sf_wp_den = cms.string("MediumID"),
+
                          ele_ID      = cms.string("medium"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
