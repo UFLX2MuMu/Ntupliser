@@ -532,8 +532,8 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 }
 
 
-void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
-         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
+void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
+         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
          const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
          const MuonInfos _muonInfos) {
 
@@ -559,12 +559,6 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
   std::string _value_string, _err_string; 
   std::ostringstream _min_eta, _max_eta, _min_pt, _max_pt;
   _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
-  std::string _id_wp_num, _id_wp_den, _iso_wp_num, _iso_wp_den; // SoftID, genTrack, LooseRelIso, MediumID
-  _id_wp_num = "SoftID";
-  _id_wp_den = "genTracks";
-  _iso_wp_num = "LooseRelIso";
-  _iso_wp_den = "MediumID";
-
 
   int nMu = int(_muonInfos.size());
   // Compute muon ID efficiency or scale factor

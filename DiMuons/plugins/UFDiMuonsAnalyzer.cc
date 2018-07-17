@@ -81,6 +81,11 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muon_use_pfIso = iConfig.getParameter<bool>        ("muon_use_pfIso");
   _muon_iso_dR    = iConfig.getParameter<double>      ("muon_iso_dR");
   _muon_iso_max   = iConfig.getParameter<double>      ("muon_iso_max");
+  // Muon scale factors working points 
+  _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
+  _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
+  _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
+  _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
 
   _ele_ID      = iConfig.getParameter<std::string> ("ele_ID");
   _ele_pT_min  = iConfig.getParameter<double>      ("ele_pT_min");
@@ -145,7 +150,6 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
 //  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
-
 
   std::ifstream _MuIso_eff_3_json_file(path_MuIso_eff_3.fullPath().c_str(), std::ifstream::binary);
   if (!_MuIso_eff_3_json_file){
@@ -329,8 +333,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
 	       _IsoMu_eff_3_hist, _muonInfos, true );
 
-  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, 
-    _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, 
+  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+    _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
     _MuIso_eff_3_json, _MuID_eff_3_json, _muonInfos );
 
   // CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
@@ -352,8 +356,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
 
-    CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, 
-      _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, 
+    CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+      _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
       _MuIso_eff_3_json, _MuID_eff_3_json, _muonInfos );
 
     // CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
