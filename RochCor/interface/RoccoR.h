@@ -2,6 +2,7 @@
 #define ElectroWeakAnalysis_RoccoR_H
 
 #include <boost/math/special_functions/erf.hpp>
+#include "TMath.h"
 #include "iostream"
 
 struct CrystalBall{
@@ -81,7 +82,9 @@ struct CrystalBall{
     double invcdf(double u) const{
 	if(u<cdfMa) return m + G*(F - pow(NC/u, k));
 	if(u>cdfPa) return m - G*(F - pow(C-u/NC, -k) );
-	return m - sqrt2 * s * boost::math::erf_inv((D - u/Ns )/sqrtPiOver2);
+// 	return m - sqrt2 * s * boost::math::erf_inv((D - u/Ns )/sqrtPiOver2);
+// 	Using TMath instead of the boost function avoid the crash when n>NMIN and the function argument would be outside the [-1,1] boundary. The boost function would crash, while the TMath function would just return 0. RoccCor v1 has a protection against it.
+	return m - sqrt2 * s * TMath::ErfInverse((D - u/Ns )/sqrtPiOver2);
     }
 };
 
