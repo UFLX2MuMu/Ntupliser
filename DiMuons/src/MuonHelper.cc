@@ -565,7 +565,7 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std:
   for (int iMu = 0; iMu < nMu; iMu++){
     for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
       if ( abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta)) continue; 
-      if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(_abseta+1) ) continue;
+      if ( abs(_muonInfos.at(iMu).eta) >= absetabins.at(_abseta+1) ) continue;
       _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
       _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
    }
@@ -576,7 +576,7 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std:
     }
     for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
       if ( _muonInfos.at(iMu).pt < ptbins.at(_pt) ) continue; 
-      if ( _muonInfos.at(iMu).pt > ptbins.at(_pt+1) ) continue; 
+      if ( _muonInfos.at(iMu).pt >= ptbins.at(_pt+1) ) continue; 
       _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
