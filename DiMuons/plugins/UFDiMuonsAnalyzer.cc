@@ -382,7 +382,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   // Throw away events with only low-mass pairs
   if ( _skim_nMuons == 2 && _nMuPairs == 1 )
-    if ( _muPairInfos.at(0).mass < 12 )
+    if ( _muPairInfos.at(0).mass < 10 )
       return;
 
   // Throw away events without a high-mass pair
