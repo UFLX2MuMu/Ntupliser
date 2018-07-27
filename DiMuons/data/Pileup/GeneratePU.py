@@ -11,9 +11,9 @@ import sys
 
 def main():
 
-    eras  = ['2016']  ## Data acquisision eras
-    profs = ['Spring16', 'Summer16','Winter17']  ## MC piluep profiles
-    vers  = ['v0']  ## User versions
+    eras  = ['2017']  ## Data acquisision eras
+    profs = ['Winter17']  ## MC piluep profiles
+    vers  = ['v1']  ## User versions
 
     for era in eras:
         for prof in profs:
@@ -39,6 +39,7 @@ def CalcWeights(era, prof, ver, prob_MC, sys, out_file):
 
     ## Resize X-axis to number of bins in MC distribution
     if h_data.GetNbinsX() != len(prob_MC):
+
         h_tmp = TH1D('tmp', 'tmp', len(prob_MC), 0, len(prob_MC))
         h_tmp.Sumw2()
         for i in range(len(prob_MC)):

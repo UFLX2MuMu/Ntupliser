@@ -74,16 +74,21 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_dR    = cms.double( 0.4),
                          muon_iso_max   = cms.double(0.25),
 
+                         muon_id_sf_wp_num = cms.string("MediumID"),
+                         muon_id_sf_wp_den = cms.string("genTracks"),
+                         muon_iso_sf_wp_num = cms.string("LooseRelIso"),
+                         muon_iso_sf_wp_den = cms.string("MediumID"),
+
                          ele_ID      = cms.string("medium"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 
-                         jet_ID      = cms.string("loose"),
+                         jet_ID      = cms.string("tight"),
                          jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(4.7),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
                          Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
                          MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),

@@ -61,7 +61,7 @@ void FillJetPairInfos( JetPairInfos& _pairInfos, const JetInfos _jetInfos ) {
     _pairInfos.push_back( _pairInfo );
   } // End loop: for (int i = 0; i < pairs_by_mass.size(); i++)
   
-  if ( int(_pairInfos.size()) != nPairs )
+  if ( int(_pairInfos.size()) != nPairs && nPairs < 15 )
     std::cout << "Bizzare error: jet _pairInfos.size() = " << _pairInfos.size()
 	      << ", nPairs = " << nPairs << std::endl;
   

@@ -124,10 +124,10 @@ process.dimuons = process.DiMuons.clone()
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
 process.dimuons = process.DiMuons.clone()
 process.dimuons.isVerbose  = cms.untracked.bool(False)
-process.dimuons.doSys      = cms.bool(False)
+process.dimuons.doSys      = cms.bool(True)
 process.dimuons.doSys_KaMu = cms.bool(False)
-process.dimuons.doSys_Roch = cms.bool(False)
-process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+process.dimuons.doSys_Roch = cms.bool(True)
+process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
 process.dimuons.skim_nMuons = cms.int32(2)
 
 
@@ -153,6 +153,7 @@ for idmod in my_id_modules:
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
 ##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+##   - checked again 21.06.2018 (PB)
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 if samp.isData:

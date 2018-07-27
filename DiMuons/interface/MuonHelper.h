@@ -50,8 +50,8 @@ float CalcL1TPhi( const float mu_pt, const float mu_eta, float mu_phi, const int
 bool SameSector( float phi1, float phi2 );
 float CalcDPhi( const float phi1, const float phi2 );
 
-void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
-                     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
+void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
+                     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
                      const boost::property_tree::ptree _iso_json, const boost::property_tree::ptree _id_json, 
                      const MuonInfos _muonInfos );
 

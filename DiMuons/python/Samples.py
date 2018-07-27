@@ -141,6 +141,7 @@ DAS_era_sig = 'RunIIFall17DRPremix-94X_mc2017_realistic*/MINIAODSIM'
 H2Mu_gg = sample( name  = 'H2Mu_gg',
                   DAS   = '/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
                   inputDBS = 'phys03',
+                  files  = ['file:///eos/cms//store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'],
                   nEvt  = -1
                 )
 
@@ -227,15 +228,13 @@ H2Mu_ttH = sample( name = 'H2Mu_ttH',
 #                                      files = [ PB_wdir + 'Zd2Mu_M20_test.root',
 #                                      '/store/user/avartak/DarkPhoton/ZdToMuMu-M20-eps0p02-etal2p6_SCOUT/170901_214525/0000/genscout_1.root' ])
 #
-#Zd150 = sample( name = 'Zd150',
-#                      DAS  = '/DarkPhoton/avartak-ZdToMuMu-M150-eps0p02_MINIAOD-230b6435bde4f6030b269a9cb8e2b63c/USER',
-#                      nEvt = 249748 ) ## 250 k
+Zd150 = sample( name = 'Zd150',
+                      DAS  = '/DarkPhoton/avartak-ZdToMuMu-M150-eps0p02_MINIAOD-230b6435bde4f6030b269a9cb8e2b63c/USER',
+                      nEvt = 249748 ) ## 250 k
 
 Zd2Mu_125 = sample ( name = 'Zd2Mu_125',
                      DAS  = '/ZD_UpTo2j_MZD125_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
-                     files = ['file:///eos/cms//store/user/bortigno/mc_genproduction/darkphoton/LHE-MINIAODSIM/ZD_UpTo2j_MZD125_Eps2e-2_v0/ZD_UpTo2j_MZD125_Eps2e-2/RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM/180525_114650/0000/darkphoton_miniaodsim_299.root'], 
-
-
+                     files = ['file:///eos/cms//store/user/bortigno/mc_genproduction/darkphoton/LHE-MINIAODSIM/ZD_UpTo2j_MZD125_Eps2e-2_v0/ZD_UpTo2j_MZD125_Eps2e-2/RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM/180525_114650/0000/darkphoton_miniaodsim_299.root'],
                      inputDBS = 'phys03',
                      nEvt = -1
                     )
@@ -248,13 +247,36 @@ Zd2Mu_150 = sample ( name = 'Zd2Mu_150',
                     )
 
 
+Zd2Mu_55 = sample ( name = 'Zd2Mu_55',
+                     DAS  = '/ZD_UpTo2j_MZD55_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
+
+Zd2Mu_180 = sample ( name = 'Zd2Mu_180',
+                     DAS  = '/ZD_UpTo2j_MZD180_Eps2e-2/bortigno-RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM-c82c6dcbbf915ff64b63e52c6a75be85/USER',
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
+
+
+
+
 Signal = []  ## All H2Mu signal samples
 Signal.append(H2Mu_gg)
 Signal.append(H2Mu_VBF)
 Signal.append(H2Mu_WH_pos)
 Signal.append(H2Mu_WH_neg)
 Signal.append(H2Mu_ZH)
-# Signal.append(H2Mu_ttH)
+Signal.append(H2Mu_ttH)
+
+# Darkphoton samples
+Signal.append(Zd2Mu_55)
+Signal.append(Zd2Mu_125)
+Signal.append(Zd2Mu_150)
+Signal.append(Zd2Mu_180)
+Signal.append(Zd150)
+
 
 #Signal.append(H2Mu_gg_120)
 #Signal.append(H2Mu_VBF_120)
@@ -399,6 +421,7 @@ Background.append(ZJets_AMC)
 
 tt = sample( name = 'tt',
              DAS  = '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+             files = ['/store/mc/RunIIFall17MiniAOD/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0021B93F-59F3-E711-9B8D-14DDA924324B.root'],
              nEvt = -1
            )
 

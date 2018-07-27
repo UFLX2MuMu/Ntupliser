@@ -532,8 +532,8 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 }
 
 
-void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
-         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
+void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
+         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
          const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
          const MuonInfos _muonInfos) {
 
@@ -565,7 +565,7 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
   for (int iMu = 0; iMu < nMu; iMu++){
     for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
       if ( abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta)) continue; 
-      if ( abs(_muonInfos.at(iMu).eta) > absetabins.at(_abseta+1) ) continue;
+      if ( abs(_muonInfos.at(iMu).eta) >= absetabins.at(_abseta+1) ) continue;
       _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
       _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
    }
@@ -576,7 +576,7 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
     }
     for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
       if ( _muonInfos.at(iMu).pt < ptbins.at(_pt) ) continue; 
-      if ( _muonInfos.at(iMu).pt > ptbins.at(_pt+1) ) continue; 
+      if ( _muonInfos.at(iMu).pt >= ptbins.at(_pt+1) ) continue; 
       _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
@@ -586,18 +586,18 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
       continue;
     }
     // ID
-    _value_string = "NUM_SoftID_DEN_genTracks/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+    _value_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
     _ID_eff = json_id.get<float>(path(_value_string.c_str(),'/'));
-    _err_string = "NUM_SoftID_DEN_genTracks/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+    _err_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
     _ID_eff_up = _ID_eff + json_id.get<float>(path(_err_string.c_str(),'/'));
     _ID_eff_down = _ID_eff - json_id.get<float>(path(_err_string.c_str(),'/'));
     // Iso
-    _value_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+    _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
     _Iso_eff = json_iso.get<float>(path(_value_string.c_str(),'/'));
 //    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
 //    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
 //    std::cout << "Iso_eff = " << _Iso_eff << std::endl;
-    _err_string = "NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+    _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
     _Iso_eff_up = _Iso_eff + json_iso.get<float>(path(_err_string.c_str(),'/'));
     _Iso_eff_down = _Iso_eff - json_iso.get<float>(path(_err_string.c_str(),'/'));
     //cleaning the strings
