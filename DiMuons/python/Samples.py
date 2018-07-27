@@ -271,11 +271,12 @@ Signal.append(H2Mu_ZH)
 Signal.append(H2Mu_ttH)
 
 # Darkphoton samples
-Signal.append(Zd2Mu_55)
-Signal.append(Zd2Mu_125)
-Signal.append(Zd2Mu_150)
-Signal.append(Zd2Mu_180)
-Signal.append(Zd150)
+Signal_ZD = []
+Signal_ZD.append(Zd2Mu_55)
+Signal_ZD.append(Zd2Mu_125)
+Signal_ZD.append(Zd2Mu_150)
+Signal_ZD.append(Zd2Mu_180)
+Signal_ZD.append(Zd150)
 
 
 #Signal.append(H2Mu_gg_120)
