@@ -532,8 +532,10 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 }
 
 
-void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
-         float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
+// Function toi calculate muon ID and Isolation scale factor from json file. - PB 30.07.2018
+// Could be used also to calculate the efficiency from json file but it would require some small adaptation. For the moment we need only SF.
+void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::string _id_wp_num, std::string _id_wp_den,
+         float& _Iso_sf, float& _Iso_sf_up, float& _Iso_sf_down, std::string _iso_wp_num, std::string _iso_wp_den,
          const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
          const MuonInfos _muonInfos) {
 
@@ -544,12 +546,12 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std:
   //pt bins for SF
   std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
 
-  _ID_eff       = 1.;
-  _ID_eff_up    = 1.;
-  _ID_eff_down  = 1.;
-  _Iso_eff      = 1.;
-  _Iso_eff_up   = 1.;
-  _Iso_eff_down = 1.;
+  _ID_sf       = 1.;
+  _ID_sf_up    = 1.;
+  _ID_sf_down  = 1.;
+  _Iso_sf      = 1.;
+  _Iso_sf_up   = 1.;
+  _Iso_sf_down = 1.;
 
   //getting a specific value 
   // float scale_factor = 0.;
@@ -587,19 +589,19 @@ void CalcMuIDIsoEff(float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std:
     }
     // ID
     _value_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
-    _ID_eff = json_id.get<float>(path(_value_string.c_str(),'/'));
+    _ID_sf = json_id.get<float>(path(_value_string.c_str(),'/'));
     _err_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
-    _ID_eff_up = _ID_eff + json_id.get<float>(path(_err_string.c_str(),'/'));
-    _ID_eff_down = _ID_eff - json_id.get<float>(path(_err_string.c_str(),'/'));
+    _ID_sf_up = _ID_sf + json_id.get<float>(path(_err_string.c_str(),'/'));
+    _ID_sf_down = _ID_sf - json_id.get<float>(path(_err_string.c_str(),'/'));
     // Iso
     _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
-    _Iso_eff = json_iso.get<float>(path(_value_string.c_str(),'/'));
+    _Iso_sf = json_iso.get<float>(path(_value_string.c_str(),'/'));
 //    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
 //    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
-//    std::cout << "Iso_eff = " << _Iso_eff << std::endl;
+//    std::cout << "Iso_eff = " << _Iso_sf << std::endl;
     _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
-    _Iso_eff_up = _Iso_eff + json_iso.get<float>(path(_err_string.c_str(),'/'));
-    _Iso_eff_down = _Iso_eff - json_iso.get<float>(path(_err_string.c_str(),'/'));
+    _Iso_sf_up = _Iso_sf + json_iso.get<float>(path(_err_string.c_str(),'/'));
+    _Iso_sf_down = _Iso_sf - json_iso.get<float>(path(_err_string.c_str(),'/'));
     //cleaning the strings
     _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
   } // loop muons
