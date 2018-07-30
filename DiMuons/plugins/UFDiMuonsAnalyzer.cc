@@ -127,15 +127,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
   _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
 
-  edm::FileInPath path_MuID_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
+  edm::FileInPath path_MuID_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
   //edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
 
-  std::ifstream _MuID_eff_3_json_file(path_MuID_eff_3.fullPath().c_str(), std::ifstream::binary);
-  if (!_MuID_eff_3_json_file){
-    std::cerr << "Error opening file " << path_MuID_eff_3.fullPath().c_str() << std::endl;
+  std::ifstream _MuID_SF_3_json_file(path_MuID_SF_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuID_SF_3_json_file){
+    std::cerr << "Error opening file " << path_MuID_SF_3.fullPath().c_str() << std::endl;
     return;
   }
-  boost::property_tree::json_parser::read_json(_MuID_eff_3_json_file, _MuID_eff_3_json);
+  boost::property_tree::json_parser::read_json(_MuID_SF_3_json_file, _MuID_SF_3_json);
 
   //_MuID_eff_3_file = new TFile(path_MuID_eff_3.fullPath().c_str());
   //_MuID_eff_4_file = new TFile(path_MuID_eff_4.fullPath().c_str());
@@ -148,15 +148,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   //_MuID_SF_3_vtx   = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
   //_MuID_SF_4_vtx   = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
 
-  edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
+  edm::FileInPath path_MuIso_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
 //  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
 
-  std::ifstream _MuIso_eff_3_json_file(path_MuIso_eff_3.fullPath().c_str(), std::ifstream::binary);
-  if (!_MuIso_eff_3_json_file){
-    std::cerr << "Error opening file " << path_MuIso_eff_3.fullPath().c_str() << std::endl;
+  std::ifstream _MuIso_SF_3_json_file(path_MuIso_SF_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuIso_SF_3_json_file){
+    std::cerr << "Error opening file " << path_MuIso_SF_3.fullPath().c_str() << std::endl;
     return;
   }
-  boost::property_tree::json_parser::read_json(_MuIso_eff_3_json_file, _MuIso_eff_3_json);
+  boost::property_tree::json_parser::read_json(_MuIso_SF_3_json_file, _MuIso_SF_3_json);
 
   // _MuIso_eff_3_file = new TFile();//path_MuIso_eff_3.fullPath().c_str());  
   // _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
@@ -333,9 +333,9 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
 	       _IsoMu_eff_3_hist, _muonInfos, true );
 
-  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, _muon_id_wp_num, _muon_id_wp_den, 
-    _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
-    _MuIso_eff_3_json, _MuID_eff_3_json, _muonInfos );
+  CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+    _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+    _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
 
   // CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
 		//   _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
@@ -356,9 +356,9 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
 
-    CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down, _muon_id_wp_num, _muon_id_wp_den, 
-      _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
-      _MuIso_eff_3_json, _MuID_eff_3_json, _muonInfos );
+    CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+      _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+      _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
 
     // CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
 		  //   _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,

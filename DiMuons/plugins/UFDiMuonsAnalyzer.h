@@ -273,8 +273,8 @@ public:
   float  _MuIso_SF_4_down;
 
   //json
-  boost::property_tree::ptree _MuIso_eff_3_json;
-  boost::property_tree::ptree _MuID_eff_3_json;
+  boost::property_tree::ptree _MuIso_SF_3_json;
+  boost::property_tree::ptree _MuID_SF_3_json;
 
   ///////////////////////////////////////////////////////////
   // Trees  ================================================
