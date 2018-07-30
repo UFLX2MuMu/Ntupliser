@@ -326,17 +326,19 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons ); 
   _nMuons = _muonInfos.size();
 
-  CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
-	       _IsoMu_eff_3_hist, _muonInfos, false );
-  // CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
-	 //       _IsoMu_eff_4_hist, _muonInfos, false );
-  CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
-	       _IsoMu_eff_3_hist, _muonInfos, true );
 
-  CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
-    _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
-    _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
-
+// No need to calculate SF or to store efficiency for data. - PB 30.07.2018
+//  CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
+//	       _IsoMu_eff_3_hist, _muonInfos, false );
+//  // CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
+//	 //       _IsoMu_eff_4_hist, _muonInfos, false );
+//  CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
+//	       _IsoMu_eff_3_hist, _muonInfos, true );
+//  Calculate efficiency from json file. - PB
+//  CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+//     _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+//     _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
+// Calculate efficiency from ROOT file (old way). Moved to json - PB 
   // CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
 		//   _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
 		//   _MuID_eff_3_hist, _MuIso_eff_3_hist,
@@ -349,17 +351,20 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		  // _muonInfos, _nVertices);
 
   if (_isMonteCarlo) {
+
+// Calculate trigger SF from ROOT file as old way as the json is not well formatted. - PB
     CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, false );
    //  CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
 		 // _IsoMu_SF_4_hist, _muonInfos, false );
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
-
+// Calculate scale factor using json file - PB
     CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
       _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
       _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
 
+// Calculate scale factor using ROOT file (old way) moved to json for 2017. = PB
     // CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
 		  //   _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
 		  //   _MuID_SF_3_hist, _MuIso_SF_3_hist,
