@@ -49,7 +49,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
 #from python.Samples import H2Mu_gg as samp
-from python.Samples import SingleMu_2017F as samp
+#from python.Samples import SingleMu_2017F as samp
+from python.Samples import tt as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -137,13 +138,16 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017F_output_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017F_output_test.root") )
+
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
-# process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_Roch_test.root") )
-# process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_MG_HT_2500_inf_test_100.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
+
+
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
 # /////////////////////////////////////////////////////////////
@@ -158,11 +162,11 @@ else:
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")
 process.dimuons.isVerbose  = cms.untracked.bool(False)
-process.dimuons.doSys      = cms.bool(False)
+process.dimuons.doSys      = cms.bool(True)
 process.dimuons.doSys_KaMu = cms.bool(False)
-process.dimuons.doSys_Roch = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(True)
 process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
-process.dimuons.skim_nMuons = cms.int32(2)
+process.dimuons.skim_nMuons = cms.int32(0)
 
 # # /////////////////////////////////////////////////////////////
 # # Bad event flags
