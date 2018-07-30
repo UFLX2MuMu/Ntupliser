@@ -49,7 +49,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
 #from python.Samples import H2Mu_gg as samp
-from python.Samples import SingleMu_2017B as samp
+from python.Samples import SingleMu_2017F as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -137,7 +137,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017F_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )

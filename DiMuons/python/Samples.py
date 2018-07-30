@@ -67,7 +67,6 @@ SingleMu_2017B = sample ( name   = 'SingleMu_2017B',
                           DAS    = '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD',
                           GT     = '94X_dataRun2_v6',
 #                          JEC    = '',
-                          files  = ['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'],
                           JSON   = JSON_2017[0],
                           isData = True )
 
@@ -98,6 +97,7 @@ SingleMu_2017E = sample ( name   = 'SingleMu_2017E',
 SingleMu_2017F = sample ( name   = 'SingleMu_2017F',
                           DAS    = '/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD',
                           GT     = '94X_dataRun2_v6',
+                          files  = ['file:////eos/cms//store/data/Run2017F/SingleMuon/MINIAOD/17Nov2017-v1/60000/A868A5F6-D4E9-E711-9422-FA163E31662A.root'],
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
