@@ -249,7 +249,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
       isTight =  ( corr_jet.neutralHadronEnergyFraction() < 0.90 &&
 		   corr_jet.neutralEmEnergyFraction()     < 0.90 &&
                    corr_jet.numberOfDaughters()        > 0.   );
-      if (fabs( corr_jet.eta() <= 2.4) ){
+      if (fabs( corr_jet.eta()) <= 2.4 ){
         isTight = ( isTight                                      &&
  		    corr_jet.chargedMultiplicity()         > 0.  && 
                     corr_jet.chargedHadronEnergyFraction() > 0.   );
@@ -262,7 +262,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
 		  corr_jet.neutralEmEnergyFraction()     < 0.99 &&
 		  corr_jet.neutralMultiplicity()         > 2 );
     }
-    else if (fabs (corr_jet.eta() > 3.0) ) {
+    else if (fabs (corr_jet.eta()) > 3.0 ) {
       isTight = ( corr_jet.neutralEmEnergyFraction()     < 0.90 &&
 		  corr_jet.neutralHadronEnergyFraction() > 0.02 && 
                   corr_jet.neutralMultiplicity()         > 10 );
