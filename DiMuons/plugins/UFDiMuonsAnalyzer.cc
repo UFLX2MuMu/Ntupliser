@@ -256,7 +256,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   FillEventFlags( iEvent, iSetup, evtFlagsHandle,
 		  _Flag_all, _Flag_badMu, _Flag_dupMu, _Flag_halo, 
-		  _Flag_PV, _Flag_HBHE, _Flag_HBHE_Iso, _Flag_ECAL_TP );
+		  _Flag_PV, _Flag_HBHE, _Flag_HBHE_Iso, _Flag_ECAL_TP,
+                   _Flag_BadChCand, _Flag_eeBadSc, _Flag_ecalBadCalib );
 
   // if ( !iEvent->HBHENoiseFilter()                    ) break;
   // if ( !iEvent->HBHENoiseIsoFilter()                 ) break;
@@ -776,8 +777,11 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("Flag_PV",       &_Flag_PV,       "Flag_PV/I"       );
   _outTree->Branch("Flag_HBHE",     &_Flag_HBHE,     "Flag_HBHE/I"     );
   _outTree->Branch("Flag_HBHE_Iso", &_Flag_HBHE_Iso, "Flag_HBHE_Iso/I" );
-  _outTree->Branch("Flag_ECAL_TP",  &_Flag_ECAL_TP,  "Flag_ECAL_TP/I"  );
-
+  _outTree->Branch("Flag_ECAL_TP",  &_Flag_ECAL_TP,  "Flag_ECAL_TP/I"  ); 
+  _outTree->Branch("Flag_BadChCand",    &_Flag_BadChCand,    "Flag_BadChCand/I"     );
+  _outTree->Branch("Flag_eeBadSc",      &_Flag_eeBadSc,      "Flag_eeBadSc/I"       );
+  _outTree->Branch("Flag_ecalBadCalib", &_Flag_ecalBadCalib, "Flag_ecalBadCalib/I"  );
+ 
   _outTree->Branch("IsoMu_eff_3",        &_IsoMu_eff_3,        "IsoMu_eff_3/F"        );
   _outTree->Branch("IsoMu_eff_3_up",     &_IsoMu_eff_3_up,     "IsoMu_eff_3_up/F"     );
   _outTree->Branch("IsoMu_eff_3_down",   &_IsoMu_eff_3_down,   "IsoMu_eff_3_down/F"   );
@@ -932,7 +936,8 @@ bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSe
 void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::EventSetup& iSetup,
 				       const edm::Handle<edm::TriggerResults>& evtFlagsHandle,
 				       int& _Flag_all, int& _Flag_badMu, int& _Flag_dupMu, int& _Flag_halo, 
-				       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP ) {
+				       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP,
+                                       int& _Flag_BadChCand, int& _Flag_eeBadSc, int& _Flag_ecalBadCalib  ) {
   using namespace std;
   using namespace edm;
   using namespace reco;
@@ -946,19 +951,24 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
   _Flag_HBHE     = -99;
   _Flag_HBHE_Iso = -99;
   _Flag_ECAL_TP  = -99;
+  _Flag_BadChCand = -99;
+  _Flag_eeBadSc   = -99;
+  _Flag_ecalBadCalib = -99;
 
   const TriggerNames &flagNames = iEvent.triggerNames(*evtFlagsHandle);
   const unsigned nFlags = evtFlagsHandle->size();
   for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag) {
     const string flagName = flagNames.triggerName(iFlag);
     const int flagResult = evtFlagsHandle->accept(iFlag);
-    
+   
+    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
     // std::cout << "  * " << flagName << " = " << flagResult << std::endl;
-    if (flagName == "Flag_badMuons")
-      _Flag_badMu = abs(flagResult - 1); // Reversed, for some reason
+    if (flagName == "Flag_BadPFMuonFilter")
+      _Flag_badMu = flagResult;
     if (flagName == "Flag_duplicateMuons")
-      _Flag_dupMu = abs(flagResult - 1); // Reversed, for some reason
-    if (flagName == "Flag_CSCTightHaloFilter")
+      _Flag_dupMu = 1;
+    if (flagName == "Flag_globalTightHalo2016Filter")
       _Flag_halo = flagResult;
     if (flagName == "Flag_goodVertices")
       _Flag_PV = flagResult;
@@ -968,15 +978,27 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
       _Flag_HBHE_Iso = flagResult;
     if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter")
       _Flag_ECAL_TP = flagResult;
+
+    if (flagName == "Flag_BadChargedCandidateFilter")
+      _Flag_BadChCand = flagResult;
+    if (flagName == "Flag_eeBadScFilter") // suggested only in data
+      _Flag_eeBadSc = flagResult;
+    if (flagName == "Flag_ecalBadCalibFilter")
+      _Flag_ecalBadCalib = flagResult;
+
+// PB: need to add some more flags. Flag_BadChargedCandidateFilter, Flag_eeBadScFilter (not suggested in MC), Flag_ecalBadCalibFilter
+
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
   if ( _Flag_badMu == 0 || _Flag_dupMu == 0 || _Flag_halo == 0 ||
-       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_ECAL_TP == 0 )
-    _Flag_all = 0;
+       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_HBHE_Iso == 0 || 
+       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || ((!_isMonteCarlo) && _Flag_eeBadSc == 0) )
+      _Flag_all = 0;
   if ( _Flag_badMu == 1 && _Flag_dupMu == 1 && _Flag_halo == 1 &&
-       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_ECAL_TP == 1 )
-    _Flag_all = 1;
-  
+       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_HBHE_Iso == 1 && 
+       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 && ((!_isMonteCarlo) && _Flag_eeBadSc == 1) )
+      _Flag_all = 1;
+ 
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////

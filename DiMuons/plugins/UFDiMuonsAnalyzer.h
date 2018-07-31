@@ -84,7 +84,10 @@ public:
   int _Flag_HBHE;
   int _Flag_HBHE_Iso;
   int _Flag_ECAL_TP;
-  
+  int _Flag_BadChCand;
+  int _Flag_eeBadSc;
+  int _Flag_ecalBadCalib;
+ 
   // vector of vertex information
   VertexInfos _vertexInfos;
   int _nVertices;
@@ -309,7 +312,8 @@ private:
   void FillEventFlags( const edm::Event& iEvent, const edm::EventSetup& iSetup,
 		       const edm::Handle<edm::TriggerResults>& evtFlagsHandle,
 		       int& _Flag_all, int& _Flag_badMu, int& _Flag_dupMu, int& _Flag_halo,
-		       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP );
+		       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP, 
+                       int& _Flag_BadChCand, int& _Flag_eeBadSc, int& _Flag_ecalBadCalib  );
 
   float calcHtLHE(const edm::Handle<LHEEventProduct>& LHE_handle);
   
