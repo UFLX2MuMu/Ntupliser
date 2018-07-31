@@ -1,3 +1,8 @@
+Detailes on how to update Rochester correction can be foudn in this issue
+https://github.com/UFLX2MuMu/Ntupliser/issues/29
+
+
+--------
 
 Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/RochcorMuon
 

@@ -2,7 +2,6 @@
 #define ElectroWeakAnalysis_RoccoR_H
 
 #include <boost/math/special_functions/erf.hpp>
-#include "TMath.h"
 #include "iostream"
 
 struct CrystalBall{
@@ -82,9 +81,7 @@ struct CrystalBall{
     double invcdf(double u) const{
 	if(u<cdfMa) return m + G*(F - pow(NC/u, k));
 	if(u>cdfPa) return m - G*(F - pow(C-u/NC, -k) );
-// 	return m - sqrt2 * s * boost::math::erf_inv((D - u/Ns )/sqrtPiOver2);
-// 	Using TMath instead of the boost function avoid the crash when n>NMIN and the function argument would be outside the [-1,1] boundary. The boost function would crash, while the TMath function would just return 0. RoccCor v1 has a protection against it.
-	return m - sqrt2 * s * TMath::ErfInverse((D - u/Ns )/sqrtPiOver2);
+	return m - sqrt2 * s * boost::math::erf_inv((D - u/Ns )/sqrtPiOver2);
     }
 };
 
@@ -116,9 +113,11 @@ struct RocRes{
     double rndm(int H, int F, double v) const;
     double Sigma(double pt, int H, int F) const;
     double kSpread(double gpt, double rpt, double eta, int nlayers, double w) const;
+    double kSpread(double gpt, double rpt, double eta) const;
     double kSmear(double pt, double eta, TYPE type, double v, double u) const;
     double kSmear(double pt, double eta, TYPE type, double v, double u, int n) const;
     double kExtra(double pt, double eta, int nlayers, double u, double w) const;
+    double kExtra(double pt, double eta, int nlayers, double u) const;
 };
 
 class RoccoR{
@@ -159,15 +158,20 @@ class RoccoR{
 	double getM(int T, int H, int F, int s=0, int m=0) const{return RC[s][m].CP[T][H][F].M;}
 	double getA(int T, int H, int F, int s=0, int m=0) const{return RC[s][m].CP[T][H][F].A;}
 	double getK(int T, int H, int s=0, int m=0)        const{return RC[s][m].RR.resol[H].kRes[T];}
-
-	double kScaleMC(int Q, double pt, double eta, double phi, int s=0, int m=0) const;
 	double kGenSmear(double pt, double eta, double v, double u, RocRes::TYPE TT=RocRes::Data, int s=0, int m=0) const;
+	double kScaleMC(int Q, double pt, double eta, double phi, int s=0, int m=0) const;
 
 	double kScaleDT(int Q, double pt, double eta, double phi, int s=0, int m=0) const;
-	double kScaleFromGenMC(int Q, double pt, double eta, double phi, int n, double gt, double w, int s=0, int m=0) const; 
-	double kScaleAndSmearMC(int Q, double pt, double eta, double phi, int n, double u, double w, int s=0, int m=0) const;  
+	double kSpreadMC(int Q, double pt, double eta, double phi, double gt, int s=0, int m=0) const;
+	double kSmearMC(int Q, double pt, double eta, double phi, int n, double u, int s=0, int m=0) const;
 
 	double kScaleDTerror(int Q, double pt, double eta, double phi) const;
+	double kSpreadMCerror(int Q, double pt, double eta, double phi, double gt) const;
+	double kSmearMCerror(int Q, double pt, double eta, double phi, int n, double u) const;
+
+	//old, should only be used with 2017v0
+	double kScaleFromGenMC(int Q, double pt, double eta, double phi, int n, double gt, double w, int s=0, int m=0) const; 
+	double kScaleAndSmearMC(int Q, double pt, double eta, double phi, int n, double u, double w, int s=0, int m=0) const;  
 	double kScaleFromGenMCerror(int Q, double pt, double eta, double phi, int n, double gt, double w) const; 
 	double kScaleAndSmearMCerror(int Q, double pt, double eta, double phi, int n, double u, double w) const;  
 };

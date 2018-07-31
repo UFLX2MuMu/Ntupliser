@@ -103,9 +103,9 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017v0.txt");
+  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017v1.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
-  std::string file_RochCor = "/RoccoR2017v0.txt";
+  std::string file_RochCor = "/RoccoR2017v1.txt";
   std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
   if (find_RochCor != std::string::npos)
     path_RochCor.erase(find_RochCor, file_RochCor.length());
