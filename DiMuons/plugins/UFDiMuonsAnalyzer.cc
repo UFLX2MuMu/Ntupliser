@@ -990,13 +990,13 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
 
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
-  if ( _Flag_badMu == 0 || _Flag_dupMu == 0 || _Flag_halo == 0 ||
+  if ( _Flag_badMu == 0 || _Flag_halo == 0 ||
        _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_HBHE_Iso == 0 || 
-       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || ((!_isMonteCarlo) && _Flag_eeBadSc == 0) )
+       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || ( (_isMonteCarlo==0 && _Flag_eeBadSc == 0) || (_isMonteCarlo!=0) ) )
       _Flag_all = 0;
-  if ( _Flag_badMu == 1 && _Flag_dupMu == 1 && _Flag_halo == 1 &&
+  if ( _Flag_badMu == 1 && _Flag_halo == 1 &&
        _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_HBHE_Iso == 1 && 
-       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 && ((!_isMonteCarlo) && _Flag_eeBadSc == 1) )
+       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 && ( (_isMonteCarlo==0 && _Flag_eeBadSc == 1) || (_isMonteCarlo!=0) ) )
       _Flag_all = 1;
  
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
