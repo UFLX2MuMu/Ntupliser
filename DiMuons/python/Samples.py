@@ -430,11 +430,11 @@ Background.append(tt)
 ###  Diboson  ###
 #################
 
-WW = sample ( same  = 'WW',
+WW = sample ( name  = 'WW',
               DAS   = '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
               nEvt = -1 )
 
-WW_down = sample ( same  = 'WW_down',
+WW_down = sample ( name  = 'WW_down',
                    DAS   = '/WWTo2L2Nu_NNPDF31_TuneCP5Down_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM',
                    nEvt = -1 )
 
