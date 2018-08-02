@@ -313,13 +313,7 @@ Background = []  ## All H2Mu background samples
 
 # DYJetsToLL Fall 17 list MINIAODSIM - pb 21.02.2017
 # DAS query dataset=/DYJetsToLL*/RunIIFall17*/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/DYJetsToLL_M-4to50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
+
 #/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
 #/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM
 #/DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
@@ -343,53 +337,41 @@ ZJets_AMC = sample( name = 'ZJets_AMC',
                     nEvt = -1
                   )
 
+ZJets_AMC_2 = sample ( name = 'ZJets_AMC_2',
+                       DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                       nEvt = -1 )
+
 #DYJets MLM
 ZJets_MG = sample( name = 'ZJets_MG',
                     DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
                     nEvt = -1
                   )
 
-
-# DYJets HT bins Fall17
-#
-#/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00008
-#94%
-#/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00009
-#97%
-#/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00010
-#80%
-#/DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00011
-#100%
-#/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00013
-#100%
-#/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-#SUS-RunIIFall17DRPremix-00014
-#83%
-#/DYJetsToLL_M-4to50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10_ext1-v1/ AODSIM;
-
-
-
 ## Mass bins
-#/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10-v2/AODSIM; # NO MINIAOD for the moment - pb 21.02.2018
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_120_200/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_1400_2300/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_200_400/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_3500_4500/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_400_800/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_4500_6000/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_6000_Inf/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
-#/ZToMuMu_NNPDF31_13TeV-powheg_M_800_1400/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM
+ZJets_m_10_50 = sample ( name = 'ZJets_m_10_50',
+                         DAS  = '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM',
+                         nEvt = -1 )
 
+ZJets_m_4_50_HT_100_200_1 = sample ( name = 'ZJets_m_4_50_HT_100_200_1',         DAS = '/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_100_200_2 = sample ( name = 'ZJets_m_4_50_HT_100_200_2',         DAS = '/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_200_400_1 = sample ( name = 'ZJets_m_4_50_HT_200_400_1',         DAS = '/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_200_400_2 = sample ( name = 'ZJets_m_4_50_HT_200_400_2',         DAS = '/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_400_600   = sample ( name = 'ZJets_m_4_50_HT_400_600_1',         DAS = '/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_400_600   = sample ( name = 'ZJets_m_4_50_HT_400_600_2',         DAS = '/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_600_      = sample ( name = 'ZJets_m_4_50_HT_600_',              DAS = '/DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_70_100_1  = sample ( name = 'ZJets_m_4_50_HT_70_100_1',          DAS = '/DYJetsToLL_M-4to50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', nEvt = -1 )
+ZJets_m_4_50_HT_70_100_2  = sample ( name = 'ZJets_m_4_50_HT_70_100_2',          DAS = '/DYJetsToLL_M-4to50_HT-70to100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM', nEvt = -1 )
+
+#/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-94X_mc2017_realistic_v10-v2/AODSIM; # NO MINIAOD for the moment - pb 21.02.2018
+
+ZJets_m_120_200 = sample ( name = 'ZJets_m_120_200', DAS = '/ZToMuMu_NNPDF31_13TeV-powheg_M_120_200/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM', nEvt= -1 )
 
 Background.append(ZJets_MG)
 #Background.append(ZJets_MG_HER)
 Background.append(ZJets_AMC)
+Background.append(ZJets_AMC_2)
 #Background.append(ZJets_hiM)
+
 #Background.append(ZJets_MG_HT_70_100)
 #Background.append(ZJets_MG_HT_100_200_A)
 #Background.append(ZJets_MG_HT_100_200_B)
@@ -401,6 +383,19 @@ Background.append(ZJets_AMC)
 #Background.append(ZJets_MG_HT_800_1200)
 #Background.append(ZJets_MG_HT_1200_2500)
 #Background.append(ZJets_MG_HT_2500_inf)
+
+Background.append(ZJets_m_10_50)
+Background.append(ZJets_m_120_200)
+
+#Background.append(ZJets_m_4_50_HT_100_200_1)
+#Background.append(ZJets_m_4_50_HT_100_200_2)
+#Background.append(ZJets_m_4_50_HT_200_400_1)
+#Background.append(ZJets_m_4_50_HT_200_400_2)
+#Background.append(ZJets_m_4_50_HT_400_600  )
+#Background.append(ZJets_m_4_50_HT_600_     )
+#Background.append(ZJets_m_4_50_HT_70_100_1 )
+#Background.append(ZJets_m_4_50_HT_70_100_2 )
+
 
 ####################
 ###  Single top  ###
@@ -425,6 +420,7 @@ tt = sample( name = 'tt',
              nEvt = -1
            )
 
+
 Background.append(tt)
 #Background.append(tt_ll_MG_1)
 #Background.append(tt_ll_MG_2)
@@ -434,32 +430,80 @@ Background.append(tt)
 ###  Diboson  ###
 #################
 
-# Background.append(WW)
+WW = sample ( same  = 'WW',
+              DAS   = '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+              nEvt = -1 )
+
+WW_down = sample ( same  = 'WW_down',
+                   DAS   = '/WWTo2L2Nu_NNPDF31_TuneCP5Down_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM',
+                   nEvt = -1 )
+
+WW_semilep = sample ( name = 'WW_semilep',
+                      DAS  = '/WWToLNuQQ_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                      nEvt = -1 )
+
+WZ_3l_AMC = sample ( name = 'WZ_3l_AMC',
+                     DAS  = '/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM',
+                     nEvt = -1 )
+
+ZZ_2l_2v  = sample ( name = 'ZZ_2l_2v',
+                     DAS  = '/ZZTo2L2Nu_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+                     nEvt = -1 )
+
+ZZ_4l_POW = sample ( name = 'ZZ_4l',
+                     DAS  = '/ZZTo4L_13TeV_powheg_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                     nEvt = -1 )
+
+
+Background.append(WW)
+Background.append(WW_semilep)
 # Background.append(WW_HER)
 # Background.append(WW_up)
-# Background.append(WW_down)
+Background.append(WW_down)
 # Background.append(WZ_2l)
-# Background.append(WZ_3l_AMC)
+Background.append(WZ_3l_AMC)
 # Background.append(WZ_3l_POW)
-# Background.append(ZZ_2l_2v)
+Background.append(ZZ_2l_2v)
 # Background.append(ZZ_2l_2q)
 # Background.append(ZZ_4l_AMC)
-# Background.append(ZZ_4l_POW)
+Background.append(ZZ_4l_POW)
 
 #################
 ###  Triboson  ##
 #################
 
-#Background.append(WWW)
-#Background.append(WWZ)
-#Background.append(WZZ)
-#Background.append(ZZZ)
+WWW = sample ( name = 'WWW',
+               DAS  = '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v11-v1/MINIAODSIM',
+               nEvt = -1 )
+
+
+WWZ = sample ( name = 'WWZ',
+               DAS  = '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v11-v1/MINIAODSIM',
+               nEvt = -1 )
+
+WZZ = sample ( name = 'WZZ',
+               DAS  = '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v11-v1/MINIAODSIM',
+               nEvt = -1 )
+
+ZZZ = sample ( name = 'ZZZ',
+               DAS  = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v11-v1/MINIAODSIM',
+               nEvt = -1 )
+
+Background.append(WWW)
+Background.append(WWZ)
+Background.append(WZZ)
+Background.append(ZZZ)
 
 #####################
 ###  Single top+X  ##
 #####################
 
-# Background.append(tZq)
+tZq = sample ( name = 'tZq',
+               DAS  = '/tZq_ll_4f_ckm_NLO_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+               nEvt = -1 )
+
+
+Background.append(tZq)
 # Background.append(tZq_HER)
 # Background.append(tZW)
 
@@ -467,10 +511,22 @@ Background.append(tt)
 ###  ttbar+X  ##
 ################
 
-# Background.append(ttW_1)
+ttW = sample ( name = 'ttW',
+               DAS  = '/ttWJets_TuneCP5_13TeV_madgraphMLM_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+               nEvt = -1 )
+
+ttZ = sample ( name = 'ttZ',
+               DAS  = '/ttZJets_TuneCP5_13TeV_madgraphMLM_pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v2/MINIAODSIM',
+               nEvt = -1 )
+
+ttH = sample ( name = 'ttH',
+               DAS  = '/ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+               nEvt = -1 )
+
+Background.append(ttW)
 # Background.append(ttW_2)
-# Background.append(ttZ)
-# Background.append(ttH)
+Background.append(ttZ)
+Background.append(ttH)
 
 
 DataAndMC = []
