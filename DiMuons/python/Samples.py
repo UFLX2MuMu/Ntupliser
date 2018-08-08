@@ -333,7 +333,7 @@ Background = []  ## All H2Mu background samples
 
 # DYJets inclusive Fall17
 ZJets_AMC = sample( name = 'ZJets_AMC',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
                     nEvt = -1
                   )
 
