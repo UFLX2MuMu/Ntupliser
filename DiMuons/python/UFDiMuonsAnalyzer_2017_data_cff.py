@@ -39,10 +39,11 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
+                         ## Updated 09.08.2018 : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
+                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight"),
 
                          ## Jets
                          jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
