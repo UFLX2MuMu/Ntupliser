@@ -14,17 +14,15 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          ## HLT trigger info
                          processName  = cms.string("HLT"),
-                         ## Unprescaled triggers at the end of 2017
-                         ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
-                         trigNames = cms.vstring("HLT_IsoMu24", "HLT_IsoTkMu24", 
-                                                 "HLT_IsoMu27", "HLT_IsoTkMu27",
-                                                 "HLT_IsoMu30",
-                                                 "HLT_Mu50",
-                                                 "HLT_Mu55",
-                                                 "HLT_TkMu100"),
+                         ## Unprescaled triggers for all of 2017
+                         ## June 29: https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v132
+                         ##   * Does not contain HLT_IsoMu30, HLT_Mu55, or HLT_TkMu100
+                         ##   * HLT_IsoMu24 prescaled to 0 in most PS columns
+                         ## Nov. 09: https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         trigNames = cms.vstring("HLT_IsoMu27",
+                                                 "HLT_Mu50"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
-                         #trigObjs    = cms.InputTag("selectedPatTrigger"),
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
