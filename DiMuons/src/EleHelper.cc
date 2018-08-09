@@ -131,22 +131,24 @@ bool ElePassKinematics( const pat::Electron ele, const reco::Vertex primaryVerte
     dZ  = fabs( ele.gsfTrack()->dz ( primaryVertex.position() ) );
   }
   
-  // From https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Working_points_for_2016_data_for
-  // Different than https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L890
+  // For 2016: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Working_points_for_2016_data_for
+  // For 2017: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Offline_selection_criteria_for_V
+  // Different than https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L895
   bool passDXY = dXY != -999 && ( isBarrel ? (dXY < 0.05) : (dXY < 0.10 ) );
   bool passDZ  = dZ  != -999 && ( isBarrel ? (dZ  < 0.10) : (dZ  < 0.20 ) );
 
-  return (passDXY && passDZ );  // Is this really all we need? - AWB 16.01.17
-  // // What about passMVAId53x? no_exp_inner_trkr_hits? myTrigPresel? - AWB 15.11.16
+  return (passDXY && passDZ);  // Is this really all we need? - AWB 16.01.17
+  // // What about !inCrack? passMVAId53x? no_exp_inner_trkr_hits? myTrigPresel? - AWB 15.11.16
+  // // https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L900
   // return (passDXY && passDZ && ele.passConversionVeto() && !inCrack);
   // // Does ele->passConversionVeto() return the same thing as ConversionTools::hasMatchedConversion? - AWB 15.11.16
   // // https://github.com/ikrav/EgammaWork/blob/ntupler_and_VID_demos_8.0.3/ElectronNtupler/plugins/ElectronNtuplerVIDDemo.cc#L358
-}  
-  
+}
+
 double EleCalcRelIsoPF_DeltaBeta( const pat::Electron ele ) {
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2
   // Using Delta Beta corrections - simpler, only slightly worse performance
-  // Last check that cuts were up-to-date: March 10, 2017 (AWB)
+  // Last check that cuts were up-to-date: August 9, 2018 (AWB)
   
   double iso_charged    = ele.pfIsolationVariables().sumChargedHadronPt;
   double iso_neutral    = ele.pfIsolationVariables().sumNeutralHadronEt;
