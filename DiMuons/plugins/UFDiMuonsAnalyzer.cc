@@ -16,6 +16,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   // Boolean switches from config file
   _isVerbose	 = iConfig.getUntrackedParameter<bool>("isVerbose", false);
   _isMonteCarlo	 = iConfig.getParameter         <bool>("isMonteCarlo");
+  _year          = iConfig.getParameter         <int> ("year");
   _doSys         = iConfig.getParameter         <bool>("doSys");
   _slimOut       = iConfig.getParameter         <bool>("slimOut");
   
@@ -81,11 +82,14 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muon_use_pfIso = iConfig.getParameter<bool>        ("muon_use_pfIso");
   _muon_iso_dR    = iConfig.getParameter<double>      ("muon_iso_dR");
   _muon_iso_max   = iConfig.getParameter<double>      ("muon_iso_max");
-  // Muon scale factors working points 
-  _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
-  _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
-  _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
-  _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
+
+  if (_year == 2017) {
+    // Muon scale factors working points
+    _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
+    _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
+    _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
+    _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
+  }
 
   _ele_ID      = iConfig.getParameter<std::string> ("ele_ID");
   _ele_pT_min  = iConfig.getParameter<double>      ("ele_pT_min");
