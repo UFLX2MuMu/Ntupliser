@@ -153,9 +153,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_2017_data_cff")
 else:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_2017_MC_cff")
 
 
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
