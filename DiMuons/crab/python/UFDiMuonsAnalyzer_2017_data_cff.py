@@ -82,7 +82,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 
-                         jet_ID      = cms.string("tight"),
+                         jet_ID      = cms.string("tight"), ## Recommendation as of 09.08.2018: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
                          jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(4.7),
 

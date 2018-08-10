@@ -501,13 +501,13 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   
   pat::JetCollection jetsSelected = SelectJets( jets, JetCorPar, JetRes, JetResSF, "none",
 						_muonInfos, _eleInfos, _rho,
-						_jet_ID, _jet_pT_min, _jet_eta_max, _dMet );
+						_jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet );
   
   sort(jetsSelected.begin(), jetsSelected.end(), sortJetsByPt);
 
   FillJetInfos( _jetInfos, _nJetsFwd, 
 		_nBLoose, _nBMed, _nBTight, 
-		jetsSelected, _btagName );
+		jetsSelected, _btagName, _year );
   _nJets = _jetInfos.size();
   _nJetsCent = _nJets - _nJetsFwd;
   if (_slimOut) FillSlimJetInfos( _slimJetInfos, _jetInfos );
@@ -516,19 +516,19 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if (_doSys) {
     pat::JetCollection jets_JES_up   = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JES_up",
 						   _muonInfos, _eleInfos, _rho, 
-						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JES_up );
+						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JES_up );
     pat::JetCollection jets_JES_down = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JES_down",
 						   _muonInfos, _eleInfos, _rho,
-						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JES_down );
+						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JES_down );
     // pat::JetCollection jets_JER_nom  = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_nom",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_nom );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_nom );
     // pat::JetCollection jets_JER_up   = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_up",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_up );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_up );
     // pat::JetCollection jets_JER_down = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_down",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_down );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_down );
 
     sort(jets_JES_up.begin(),   jets_JES_up.end(),   sortJetsByPt);
     sort(jets_JES_down.begin(), jets_JES_down.end(), sortJetsByPt);
@@ -538,10 +538,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     
     FillJetInfos( _jetInfos_JES_up,   _nJetsFwd_JES_up,   
 		  _nBLoose_JES_up, _nBMed_JES_up, _nBTight_JES_up, 
-		  jets_JES_up,   _btagName );
+		  jets_JES_up,   _btagName, _year );
     FillJetInfos( _jetInfos_JES_down, _nJetsFwd_JES_down, 
 		  _nBLoose_JES_down, _nBMed_JES_down, _nBTight_JES_down, 
-		  jets_JES_down, _btagName );
+		  jets_JES_down, _btagName, _year );
     _nJets_JES_up   = _jetInfos_JES_up.size();
     _nJets_JES_down = _jetInfos_JES_down.size();
     _nJetsCent_JES_up   = _nJets_JES_up   - _nJetsFwd_JES_up;
@@ -553,10 +553,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // 		  _nBLoose_JER_nom,  _nBMed_JER_nom,  _nBTight_JER_nom, 
     // FillJetInfos( _jetInfos_JER_up,   _nJetsFwd_JER_up,   
     // 		  _nBLoose_JER_up,   _nBMed_JER_up,   _nBTight_JER_up, 
-    // 		  jets_JER_up,   _btagName );
+    // 		  jets_JER_up,   _btagName, _year );
     // FillJetInfos( _jetInfos_JER_down, _nJetsFwd_JER_down, 
     // 		  _nBLoose_JER_down, _nBMed_JER_down, _nBTight_JER_down, 
-    // 		  jets_JER_down, _btagName );
+    // 		  jets_JER_down, _btagName, _year );
     // _nJets_JER_nom  = _jetInfos_JER_nom.size();
     // _nJets_JER_up   = _jetInfos_JER_up.size();
     // _nJets_JER_down = _jetInfos_JER_down.size();
