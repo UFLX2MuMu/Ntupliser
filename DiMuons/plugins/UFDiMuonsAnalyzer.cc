@@ -996,44 +996,41 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
     const string flagName = flagNames.triggerName(iFlag);
     const int flagResult = evtFlagsHandle->accept(iFlag);
    
-    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 
+    // Updating the flag for 2017 data and Fall17 MC - AWB 2018.08.10
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
     // std::cout << "  * " << flagName << " = " << flagResult << std::endl;
-    if (flagName == "Flag_BadPFMuonFilter")
-      _Flag_badMu = flagResult;
-    if (flagName == "Flag_duplicateMuons")
-      _Flag_dupMu = 1;
-    if (flagName == "Flag_globalTightHalo2016Filter")
-      _Flag_halo = flagResult;
-    if (flagName == "Flag_goodVertices")
+    if (flagName == "Flag_goodVertices") // Data and MC
       _Flag_PV = flagResult;
-    if (flagName == "Flag_HBHENoiseFilter")
+    if (flagName == "Flag_globalSuperTightHalo2016Filter") // Data and MC
+      _Flag_halo = flagResult;
+    if (flagName == "Flag_HBHENoiseFilter") // Data and MC
       _Flag_HBHE = flagResult;
-    if (flagName == "Flag_HBHENoiseIsoFilter")
+    if (flagName == "Flag_HBHENoiseIsoFilter") // Data and MC
       _Flag_HBHE_Iso = flagResult;
-    if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter")
+    if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter") // Data and MC
       _Flag_ECAL_TP = flagResult;
-
-    if (flagName == "Flag_BadChargedCandidateFilter")
+    if (flagName == "Flag_BadPFMuonFilter") // Should be ignored
+      _Flag_badMu = flagResult;
+    if (flagName == "Flag_BadChargedCandidateFilter") // Data and MC
       _Flag_BadChCand = flagResult;
-    if (flagName == "Flag_eeBadScFilter") // suggested only in data
+    if (flagName == "Flag_eeBadScFilter") // Data only
       _Flag_eeBadSc = flagResult;
-    if (flagName == "Flag_ecalBadCalibFilter")
+    if (flagName == "Flag_ecalBadCalibFilter") // Data and MC
       _Flag_ecalBadCalib = flagResult;
 
-// PB: need to add some more flags. Flag_BadChargedCandidateFilter, Flag_eeBadScFilter (not suggested in MC), Flag_ecalBadCalibFilter
+    // Extra below the Moriond 17 table, not clear if this is still applicable - AWB 2018.08.10
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+    if (flagName == "Flag_badMuons")
+      _Flag_badMu = 1;
+    if (flagName == "Flag_duplicateMuons")
+      _Flag_dupMu = 1;
+
 
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
-  if ( _Flag_badMu == 0 || _Flag_halo == 0 ||
-       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_HBHE_Iso == 0 || 
-       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || (_isMonteCarlo || _Flag_eeBadSc == 0) )
-      _Flag_all = 0;
-  if ( _Flag_badMu == 1 && _Flag_halo == 1 &&
-       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_HBHE_Iso == 1 && 
-       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 &&  (_isMonteCarlo || _Flag_eeBadSc == 1) )
-      _Flag_all = 1;
- 
+  _Flag_all = ( _Flag_PV && _Flag_halo && _Flag_HBHE && _Flag_HBHE_Iso && _Flag_ECAL_TP && 
+		_Flag_BadChCand && (_Flag_eeBadSc || _isMonteCarlo) && _Flag_ecalBadCalib );
+
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////
