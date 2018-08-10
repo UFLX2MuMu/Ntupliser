@@ -343,7 +343,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   FillMuonInfos( _muonInfos, muonsSelected, primaryVertex, verticesSelected.size(), beamSpotHandle, 
 		 iEvent, iSetup, trigObjsHandle, trigResultsHandle, _trigNames,
-		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), 
+		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), _year,
 		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons ); 
   _nMuons = _muonInfos.size();
 

@@ -20,7 +20,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const edm::Handle<pat::TriggerObjectStandAloneCollection>& _trigObjsHandle,
 		    const edm::Handle<edm::TriggerResults>& _trigResultsHandle,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR,
-		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
+		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData, const int _year,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
 		    const edm::Handle < reco::GenParticleCollection >& genPartons );

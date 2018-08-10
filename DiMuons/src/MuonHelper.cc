@@ -9,7 +9,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const edm::Handle<pat::TriggerObjectStandAloneCollection>& _trigObjsHandle,
 		    const edm::Handle<edm::TriggerResults>& _trigResultsHandle,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR, 
-		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
+		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData, const int _year,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
 		    const edm::Handle < reco::GenParticleCollection >& genPartons ) {
@@ -139,7 +139,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       
       CorrectPtRoch( _Roch_calib, _doSys_Roch, mu_vec_Roch, 
       		     pt_Roch, ptErr_Roch, pt_Roch_sys_up, pt_Roch_sys_down,
-      		     charge_Roch, trk_layers_Roch, GEN_pt, _isData );
+		     charge_Roch, trk_layers_Roch, GEN_pt, _isData, _year );
       
       _muonInfo.pt_Roch           = pt_Roch;
       _muonInfo.ptErr_Roch        = ptErr_Roch;
