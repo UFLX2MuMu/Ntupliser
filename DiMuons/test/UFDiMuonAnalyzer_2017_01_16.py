@@ -133,9 +133,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("Single
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_2016_data_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_2016_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")

@@ -20,7 +20,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const edm::Handle<pat::TriggerObjectStandAloneCollection>& _trigObjsHandle,
 		    const edm::Handle<edm::TriggerResults>& _trigResultsHandle,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR,
-		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
+		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData, const int _year,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
 		    const edm::Handle < reco::GenParticleCollection >& genPartons );
@@ -50,15 +50,15 @@ float CalcL1TPhi( const float mu_pt, const float mu_eta, float mu_phi, const int
 bool SameSector( float phi1, float phi2 );
 float CalcDPhi( const float phi1, const float phi2 );
 
-void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
-                     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
-                     const boost::property_tree::ptree _iso_json, const boost::property_tree::ptree _id_json, 
-                     const MuonInfos _muonInfos );
+void CalcMuIDIsoEff2017( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down, std::string _id_wp_num, std::string _id_wp_den,
+			 float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, std::string _iso_wp_num, std::string _iso_wp_den,
+			 const boost::property_tree::ptree _iso_json, const boost::property_tree::ptree _id_json, 
+			 const MuonInfos _muonInfos );
 
-void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
-                     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
-                     const TH2F* _ID_hist, const TH2F* _Iso_hist,
-                     const TH1F* _ID_vtx, const TH1F* _Iso_vtx,
-                     const MuonInfos _muonInfos, const int _nVtx );
+void CalcMuIDIsoEff2016( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
+			 float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down,
+			 const TH2F* _ID_hist, const TH2F* _Iso_hist,
+			 const TH1F* _ID_vtx, const TH1F* _Iso_vtx,
+			 const MuonInfos _muonInfos, const int _nVtx );
 
 #endif  // #ifndef MUON_HELPER

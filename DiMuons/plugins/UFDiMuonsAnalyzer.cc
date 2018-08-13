@@ -16,6 +16,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   // Boolean switches from config file
   _isVerbose	 = iConfig.getUntrackedParameter<bool>("isVerbose", false);
   _isMonteCarlo	 = iConfig.getParameter         <bool>("isMonteCarlo");
+  _year          = iConfig.getParameter         <int> ("year");
   _doSys         = iConfig.getParameter         <bool>("doSys");
   _slimOut       = iConfig.getParameter         <bool>("slimOut");
   
@@ -32,12 +33,13 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   // _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (edm::InputTag("slimmedPatTrigger","","PAT"));
 
   // Event flags
+  // _evtFlagsToken = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","PAT") );
   _evtFlagsToken = consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>("evtFlags") );
 
   // Underlying event
   _beamSpotToken      = consumes<reco::BeamSpot>        (iConfig.getParameter<edm::InputTag>("beamSpotTag"));
   _primaryVertexToken = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexTag"));
-  _PupInfoToken       = consumes< std::vector<PileupSummaryInfo> >           (edm::InputTag ("slimmedAddPileupInfo"));
+  _PupInfoToken       = consumes<std::vector<PileupSummaryInfo> >            (edm::InputTag ("slimmedAddPileupInfo"));
 
   // Muons
   _muonCollToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonColl"));
@@ -81,11 +83,14 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muon_use_pfIso = iConfig.getParameter<bool>        ("muon_use_pfIso");
   _muon_iso_dR    = iConfig.getParameter<double>      ("muon_iso_dR");
   _muon_iso_max   = iConfig.getParameter<double>      ("muon_iso_max");
-  // Muon scale factors working points 
-  _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
-  _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
-  _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
-  _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
+
+  if (_year == 2017) {
+    // Muon scale factors working points
+    _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
+    _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
+    _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
+    _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
+  }
 
   _ele_ID      = iConfig.getParameter<std::string> ("ele_ID");
   _ele_pT_min  = iConfig.getParameter<double>      ("ele_pT_min");
@@ -103,15 +108,19 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017v1.txt");
+  std::string cfg_RochCor_str = "";
+  if (_year == 2016) cfg_RochCor_str = "Ntupliser/RochCor/data/Feb06/config.txt";
+  if (_year == 2017) cfg_RochCor_str = "Ntupliser/RochCor/data/RoccoR2017v1.txt";
+  edm::FileInPath cfg_RochCor( cfg_RochCor_str );
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
-  std::string file_RochCor = "/RoccoR2017v1.txt";
+  std::string file_RochCor = (_year == 2017 ? "/RoccoR2017v1.txt" : (_year == 2016 ? "/config.txt" : "") );
   std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
   if (find_RochCor != std::string::npos)
     path_RochCor.erase(find_RochCor, file_RochCor.length());
 
   std::cout << "Rochester correction files located in " << path_RochCor << std::endl;
-  _Roch_calib.init(path_RochCor+file_RochCor);
+  if (_year == 2016) _Roch_calib.init(path_RochCor);
+  if (_year == 2017) _Roch_calib.init(path_RochCor+file_RochCor);
   _doSys_Roch = iConfig.getParameter<bool>("doSys_Roch");
 
   if (_isMonteCarlo) {
@@ -122,47 +131,58 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
     _PU_wgt_hist_down = (TH1D*) _PU_wgt_file->Get("PU_wgt_down");
   }
 
+
+  // Block for 2016 efficiency scale factors.  Still using temporarily for 2017, until JSON-based efficiencies work. - AWB 10.08.2018
   edm::FileInPath path_IsoMu_eff_3("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_3_file"));
+  edm::FileInPath path_IsoMu_eff_4("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_4_file"));
   _IsoMu_eff_3_file = new TFile(path_IsoMu_eff_3.fullPath().c_str());
+  _IsoMu_eff_4_file = new TFile(path_IsoMu_eff_4.fullPath().c_str());
   _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
+  _IsoMu_eff_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
   _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
+  _IsoMu_SF_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
+  
+  edm::FileInPath path_MuID_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
+  edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
+  _MuID_eff_3_file = new TFile(path_MuID_eff_3.fullPath().c_str());
+  _MuID_eff_4_file = new TFile(path_MuID_eff_4.fullPath().c_str());
+  _MuID_eff_3_hist = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  _MuID_eff_4_hist = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  _MuID_SF_3_hist  = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
+  _MuID_SF_4_hist  = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
+  _MuID_eff_3_vtx  = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  _MuID_eff_4_vtx  = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  _MuID_SF_3_vtx   = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
+  _MuID_SF_4_vtx   = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
+  
+  edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
+  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
+  _MuIso_eff_3_file = new TFile(path_MuIso_eff_3.fullPath().c_str());
+  _MuIso_eff_4_file = new TFile(path_MuIso_eff_4.fullPath().c_str());
+  _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  _MuIso_eff_4_hist = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
+  _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
+  _MuIso_SF_4_hist  = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
+  _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  _MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
+  _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+  _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+  // End block for 2016 efficiency scale factors.  Still using temporarily for 2017, until JSON-based efficiencies work. - AWB 10.08.2018
 
-  edm::FileInPath path_MuID_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
-  //edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
-
-  std::ifstream _MuID_SF_3_json_file(path_MuID_SF_3.fullPath().c_str(), std::ifstream::binary);
-  if (!_MuID_SF_3_json_file){
-    std::cerr << "Error opening file " << path_MuID_SF_3.fullPath().c_str() << std::endl;
+  // Somehow combines 2016 efficiency file with 2017 JSON? I'm confused ... - AWB 10.08.2018
+  std::ifstream _MuID_SF_3_json_file(path_MuID_eff_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuID_SF_3_json_file) {
+    std::cerr << "Error opening file " << path_MuID_eff_3.fullPath().c_str() << std::endl;
     return;
   }
   boost::property_tree::json_parser::read_json(_MuID_SF_3_json_file, _MuID_SF_3_json);
 
-  //_MuID_eff_3_file = new TFile(path_MuID_eff_3.fullPath().c_str());
-  //_MuID_eff_4_file = new TFile(path_MuID_eff_4.fullPath().c_str());
-  //_MuID_eff_3_hist = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  //_MuID_eff_4_hist = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  //_MuID_SF_3_hist  = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
-  //_MuID_SF_4_hist  = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
-  //_MuID_eff_3_vtx  = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  //_MuID_eff_4_vtx  = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  //_MuID_SF_3_vtx   = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
-  //_MuID_SF_4_vtx   = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
-
-  edm::FileInPath path_MuIso_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
-//  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
-
-  std::ifstream _MuIso_SF_3_json_file(path_MuIso_SF_3.fullPath().c_str(), std::ifstream::binary);
-  if (!_MuIso_SF_3_json_file){
-    std::cerr << "Error opening file " << path_MuIso_SF_3.fullPath().c_str() << std::endl;
+  std::ifstream _MuIso_SF_3_json_file(path_MuIso_eff_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuIso_SF_3_json_file) {
+    std::cerr << "Error opening file " << path_MuIso_eff_3.fullPath().c_str() << std::endl;
     return;
   }
   boost::property_tree::json_parser::read_json(_MuIso_SF_3_json_file, _MuIso_SF_3_json);
-
-  // _MuIso_eff_3_file = new TFile();//path_MuIso_eff_3.fullPath().c_str());  
-  // _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  // _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  // _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  // _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
 
 } // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
 
@@ -173,7 +193,7 @@ UFDiMuonsAnalyzer::~UFDiMuonsAnalyzer() {
     _PU_wgt_file->Close();
 
   _IsoMu_eff_3_file->Close();
-//  _IsoMu_eff_4_file->Close();
+  _IsoMu_eff_4_file->Close();
 
 }
 
@@ -323,59 +343,68 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   FillMuonInfos( _muonInfos, muonsSelected, primaryVertex, verticesSelected.size(), beamSpotHandle, 
 		 iEvent, iSetup, trigObjsHandle, trigResultsHandle, _trigNames,
-		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), 
+		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), _year,
 		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons ); 
   _nMuons = _muonInfos.size();
 
-
-// No need to calculate SF or to store efficiency for data. - PB 30.07.2018
-//  CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
-//	       _IsoMu_eff_3_hist, _muonInfos, false );
-//  // CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
-//	 //       _IsoMu_eff_4_hist, _muonInfos, false );
-//  CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
-//	       _IsoMu_eff_3_hist, _muonInfos, true );
-//  Calculate efficiency from json file. - PB
-//  CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
-//     _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
-//     _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
-// Calculate efficiency from ROOT file (old way). Moved to json - PB 
-  // CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
-		//   _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
-		//   _MuID_eff_3_hist, _MuIso_eff_3_hist,
-		//   _MuID_eff_3_vtx, _MuIso_eff_3_vtx,
-		//   _muonInfos, _nVertices);
-  //CalcMuIDIsoEff( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
-		  // _MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
-		  // _MuID_eff_4_hist, _MuIso_eff_4_hist,
-		  // _MuID_eff_4_vtx, _MuIso_eff_4_vtx,
-		  // _muonInfos, _nVertices);
-
+  if ( _year == 2016 ) {
+    CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
+		 _IsoMu_eff_3_hist, _muonInfos, false );
+    CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
+		 _IsoMu_eff_4_hist, _muonInfos, false );
+    CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
+		 _IsoMu_eff_3_hist, _muonInfos, true );
+    
+    CalcMuIDIsoEff2016( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
+			_MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
+			_MuID_eff_3_hist, _MuIso_eff_3_hist,
+			_MuID_eff_3_vtx, _MuIso_eff_3_vtx,
+			_muonInfos, _nVertices );
+    CalcMuIDIsoEff2016( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
+			_MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
+			_MuID_eff_4_hist, _MuIso_eff_4_hist,
+			_MuID_eff_4_vtx, _MuIso_eff_4_vtx,
+			_muonInfos, _nVertices );
+  }
+  else if ( _year == 2017 ) {
+    //  Calculate efficiency from json file. - PB
+    //  CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den,
+    //     _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+    //     _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
+  }
+    
   if (_isMonteCarlo) {
 
-// Calculate trigger SF from ROOT file as old way as the json is not well formatted. - PB
-    CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
-		 _IsoMu_SF_3_hist, _muonInfos, false );
-   //  CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
-		 // _IsoMu_SF_4_hist, _muonInfos, false );
-    CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
-		 _IsoMu_SF_3_hist, _muonInfos, true );
-// Calculate scale factor using json file - PB
-    CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
-      _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
-      _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
+    { // Block for 2016 efficiency scale factors.  Still using temporarily for 2017, until JSON-based efficiencies work. - AWB 10.08.2018
 
-// Calculate scale factor using ROOT file (old way) moved to json for 2017. = PB
-    // CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
-		  //   _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
-		  //   _MuID_SF_3_hist, _MuIso_SF_3_hist,
-		  //   _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
-		  //   _muonInfos, _nVertices);
-    // CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
-		  //   _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
-		  //   _MuID_SF_4_hist, _MuIso_SF_4_hist,
-		  //   _MuID_SF_4_vtx, _MuIso_SF_4_vtx,
-		  //   _muonInfos, _nVertices);
+      // Calculate trigger SF from ROOT file as old way as the json is not well formatted. - PB
+      CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
+		   _IsoMu_SF_3_hist, _muonInfos, false );
+      CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
+		   _IsoMu_SF_4_hist, _muonInfos, false );
+      CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
+		   _IsoMu_SF_3_hist, _muonInfos, true );
+    } // End block for 2016 efficiency scale factors.  Still using temporarily for 2017, until JSON-based efficiencies work. - AWB 10.08.2018
+
+    if ( _year == 2016 ) {
+      CalcMuIDIsoEff2016( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
+			  _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
+			  _MuID_SF_3_hist, _MuIso_SF_3_hist,
+			  _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
+			  _muonInfos, _nVertices );
+      CalcMuIDIsoEff2016( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
+			  _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
+			  _MuID_SF_4_hist, _MuIso_SF_4_hist,
+			  _MuID_SF_4_vtx, _MuIso_SF_4_vtx,
+			  _muonInfos, _nVertices );
+    }
+    else if ( _year == 2017 ) {
+      // Calculate scale factor using json file - PB
+      CalcMuIDIsoEff2017( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+			  _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+			  _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
+    }
+
   }
 
 
@@ -497,13 +526,13 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   
   pat::JetCollection jetsSelected = SelectJets( jets, JetCorPar, JetRes, JetResSF, "none",
 						_muonInfos, _eleInfos, _rho,
-						_jet_ID, _jet_pT_min, _jet_eta_max, _dMet );
+						_jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet );
   
   sort(jetsSelected.begin(), jetsSelected.end(), sortJetsByPt);
 
   FillJetInfos( _jetInfos, _nJetsFwd, 
 		_nBLoose, _nBMed, _nBTight, 
-		jetsSelected, _btagName );
+		jetsSelected, _btagName, _year );
   _nJets = _jetInfos.size();
   _nJetsCent = _nJets - _nJetsFwd;
   if (_slimOut) FillSlimJetInfos( _slimJetInfos, _jetInfos );
@@ -512,19 +541,19 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if (_doSys) {
     pat::JetCollection jets_JES_up   = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JES_up",
 						   _muonInfos, _eleInfos, _rho, 
-						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JES_up );
+						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JES_up );
     pat::JetCollection jets_JES_down = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JES_down",
 						   _muonInfos, _eleInfos, _rho,
-						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JES_down );
+						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JES_down );
     // pat::JetCollection jets_JER_nom  = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_nom",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_nom );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_nom );
     // pat::JetCollection jets_JER_up   = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_up",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_up );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_up );
     // pat::JetCollection jets_JER_down = SelectJets( jets, JetCorPar, JetRes, JetResSF, "JER_down",
     // 						   _muonInfos, _eleInfos, _rho,
-    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _dMet_JER_down );
+    // 						   _jet_ID, _jet_pT_min, _jet_eta_max, _year, _dMet_JER_down );
 
     sort(jets_JES_up.begin(),   jets_JES_up.end(),   sortJetsByPt);
     sort(jets_JES_down.begin(), jets_JES_down.end(), sortJetsByPt);
@@ -534,10 +563,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     
     FillJetInfos( _jetInfos_JES_up,   _nJetsFwd_JES_up,   
 		  _nBLoose_JES_up, _nBMed_JES_up, _nBTight_JES_up, 
-		  jets_JES_up,   _btagName );
+		  jets_JES_up,   _btagName, _year );
     FillJetInfos( _jetInfos_JES_down, _nJetsFwd_JES_down, 
 		  _nBLoose_JES_down, _nBMed_JES_down, _nBTight_JES_down, 
-		  jets_JES_down, _btagName );
+		  jets_JES_down, _btagName, _year );
     _nJets_JES_up   = _jetInfos_JES_up.size();
     _nJets_JES_down = _jetInfos_JES_down.size();
     _nJetsCent_JES_up   = _nJets_JES_up   - _nJetsFwd_JES_up;
@@ -549,10 +578,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // 		  _nBLoose_JER_nom,  _nBMed_JER_nom,  _nBTight_JER_nom, 
     // FillJetInfos( _jetInfos_JER_up,   _nJetsFwd_JER_up,   
     // 		  _nBLoose_JER_up,   _nBMed_JER_up,   _nBTight_JER_up, 
-    // 		  jets_JER_up,   _btagName );
+    // 		  jets_JER_up,   _btagName, _year );
     // FillJetInfos( _jetInfos_JER_down, _nJetsFwd_JER_down, 
     // 		  _nBLoose_JER_down, _nBMed_JER_down, _nBTight_JER_down, 
-    // 		  jets_JER_down, _btagName );
+    // 		  jets_JER_down, _btagName, _year );
     // _nJets_JER_nom  = _jetInfos_JER_nom.size();
     // _nJets_JER_up   = _jetInfos_JER_up.size();
     // _nJets_JER_down = _jetInfos_JER_down.size();
@@ -785,6 +814,9 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("IsoMu_eff_3",        &_IsoMu_eff_3,        "IsoMu_eff_3/F"        );
   _outTree->Branch("IsoMu_eff_3_up",     &_IsoMu_eff_3_up,     "IsoMu_eff_3_up/F"     );
   _outTree->Branch("IsoMu_eff_3_down",   &_IsoMu_eff_3_down,   "IsoMu_eff_3_down/F"   );
+  _outTree->Branch("IsoMu_eff_4",        &_IsoMu_eff_4,        "IsoMu_eff_4/F"        );
+  _outTree->Branch("IsoMu_eff_4_up",     &_IsoMu_eff_4_up,     "IsoMu_eff_4_up/F"     );
+  _outTree->Branch("IsoMu_eff_4_down",   &_IsoMu_eff_4_down,   "IsoMu_eff_4_down/F"   );
   _outTree->Branch("IsoMu_eff_bug",      &_IsoMu_eff_bug,      "IsoMu_eff_bug/F"      );
   _outTree->Branch("IsoMu_eff_bug_up",   &_IsoMu_eff_bug_up,   "IsoMu_eff_bug_up/F"   );
   _outTree->Branch("IsoMu_eff_bug_down", &_IsoMu_eff_bug_down, "IsoMu_eff_bug_down/F" );
@@ -799,14 +831,17 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("MuIso_eff_3",        &_MuIso_eff_3,        "MuIso_eff_3/F"        );
   _outTree->Branch("MuIso_eff_3_up",     &_MuIso_eff_3_up,     "MuIso_eff_3_up/F"     );
   _outTree->Branch("MuIso_eff_3_down",   &_MuIso_eff_3_down,   "MuIso_eff_3_down/F"   );
-  // _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
-  // _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
-  // _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
+  _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
+  _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
+  _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
 
   if (_isMonteCarlo) {
       _outTree->Branch("IsoMu_SF_3",        &_IsoMu_SF_3,        "IsoMu_SF_3/F"        );
     _outTree->Branch("IsoMu_SF_3_up",     &_IsoMu_SF_3_up,     "IsoMu_SF_3_up/F"     );
     _outTree->Branch("IsoMu_SF_3_down",   &_IsoMu_SF_3_down,   "IsoMu_SF_3_down/F"   );
+    _outTree->Branch("IsoMu_SF_4",        &_IsoMu_SF_4,        "IsoMu_SF_4/F"        );
+    _outTree->Branch("IsoMu_SF_4_up",     &_IsoMu_SF_4_up,     "IsoMu_SF_4_up/F"     );
+    _outTree->Branch("IsoMu_SF_4_down",   &_IsoMu_SF_4_down,   "IsoMu_SF_4_down/F"   );
     _outTree->Branch("IsoMu_SF_bug",      &_IsoMu_SF_bug,      "IsoMu_SF_bug/F"      );
     _outTree->Branch("IsoMu_SF_bug_up",   &_IsoMu_SF_bug_up,   "IsoMu_SF_bug_up/F"   );
     _outTree->Branch("IsoMu_SF_bug_down", &_IsoMu_SF_bug_down, "IsoMu_SF_bug_down/F" );
@@ -821,9 +856,9 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("MuIso_SF_3",        &_MuIso_SF_3,        "MuIso_SF_3/F"        );
     _outTree->Branch("MuIso_SF_3_up",     &_MuIso_SF_3_up,     "MuIso_SF_3_up/F"     );
     _outTree->Branch("MuIso_SF_3_down",   &_MuIso_SF_3_down,   "MuIso_SF_3_down/F"   );
-  //   _outTree->Branch("MuIso_SF_4",        &_MuIso_SF_4,        "MuIso_SF_4/F"        );
-  //   _outTree->Branch("MuIso_SF_4_up",     &_MuIso_SF_4_up,     "MuIso_SF_4_up/F"     );
-  //   _outTree->Branch("MuIso_SF_4_down",   &_MuIso_SF_4_down,   "MuIso_SF_4_down/F"   );
+    _outTree->Branch("MuIso_SF_4",        &_MuIso_SF_4,        "MuIso_SF_4/F"        );
+    _outTree->Branch("MuIso_SF_4_up",     &_MuIso_SF_4_up,     "MuIso_SF_4_up/F"     );
+    _outTree->Branch("MuIso_SF_4_down",   &_MuIso_SF_4_down,   "MuIso_SF_4_down/F"   );
   }
 
   // MC information
@@ -961,44 +996,41 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
     const string flagName = flagNames.triggerName(iFlag);
     const int flagResult = evtFlagsHandle->accept(iFlag);
    
-    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 
+    // Updating the flag for 2017 data and Fall17 MC - AWB 2018.08.10
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
     // std::cout << "  * " << flagName << " = " << flagResult << std::endl;
-    if (flagName == "Flag_BadPFMuonFilter")
-      _Flag_badMu = flagResult;
-    if (flagName == "Flag_duplicateMuons")
-      _Flag_dupMu = 1;
-    if (flagName == "Flag_globalTightHalo2016Filter")
-      _Flag_halo = flagResult;
-    if (flagName == "Flag_goodVertices")
+    if (flagName == "Flag_goodVertices") // Data and MC
       _Flag_PV = flagResult;
-    if (flagName == "Flag_HBHENoiseFilter")
+    if (flagName == "Flag_globalSuperTightHalo2016Filter") // Data and MC
+      _Flag_halo = flagResult;
+    if (flagName == "Flag_HBHENoiseFilter") // Data and MC
       _Flag_HBHE = flagResult;
-    if (flagName == "Flag_HBHENoiseIsoFilter")
+    if (flagName == "Flag_HBHENoiseIsoFilter") // Data and MC
       _Flag_HBHE_Iso = flagResult;
-    if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter")
+    if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter") // Data and MC
       _Flag_ECAL_TP = flagResult;
-
-    if (flagName == "Flag_BadChargedCandidateFilter")
+    if (flagName == "Flag_BadPFMuonFilter") // Should be ignored
+      _Flag_badMu = flagResult;
+    if (flagName == "Flag_BadChargedCandidateFilter") // Data and MC
       _Flag_BadChCand = flagResult;
-    if (flagName == "Flag_eeBadScFilter") // suggested only in data
+    if (flagName == "Flag_eeBadScFilter") // Data only
       _Flag_eeBadSc = flagResult;
-    if (flagName == "Flag_ecalBadCalibFilter")
+    if (flagName == "Flag_ecalBadCalibFilter") // Data and MC
       _Flag_ecalBadCalib = flagResult;
 
-// PB: need to add some more flags. Flag_BadChargedCandidateFilter, Flag_eeBadScFilter (not suggested in MC), Flag_ecalBadCalibFilter
+    // Extra below the Moriond 17 table, not clear if this is still applicable - AWB 2018.08.10
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+    if (flagName == "Flag_badMuons")
+      _Flag_badMu = 1;
+    if (flagName == "Flag_duplicateMuons")
+      _Flag_dupMu = 1;
+
 
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
-  if ( _Flag_badMu == 0 || _Flag_halo == 0 ||
-       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_HBHE_Iso == 0 || 
-       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || (_isMonteCarlo || _Flag_eeBadSc == 0) )
-      _Flag_all = 0;
-  if ( _Flag_badMu == 1 && _Flag_halo == 1 &&
-       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_HBHE_Iso == 1 && 
-       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 &&  (_isMonteCarlo || _Flag_eeBadSc == 1) )
-      _Flag_all = 1;
- 
+  _Flag_all = ( _Flag_PV && _Flag_halo && _Flag_HBHE && _Flag_HBHE_Iso && _Flag_ECAL_TP && 
+		_Flag_BadChCand && (_Flag_eeBadSc || _isMonteCarlo) && _Flag_ecalBadCalib );
+
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////

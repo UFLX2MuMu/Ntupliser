@@ -25,7 +25,7 @@ void FillSlimJetInfos( SlimJetInfos& _slimJetInfos, const JetInfos _jetInfos ) {
 void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
 		   int& _nBLoose, int& _nBMed, int& _nBTight,
 		   const pat::JetCollection jetsSelected,
-		   const std::string _btagName) {
+		   const std::string _btagName, const int _year ) {
 
   _jetInfos.clear();
   _nJetsFwd  = 0;
@@ -70,12 +70,19 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     _jetInfo.jecUnc    = -1.0;
     _jetInfo.jecFactor = jet.jecFactor("Uncorrected");
-   
-    //with deepCSV need to sum two disriminators: probb and probbb
-    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X 
-    _jetInfo.CSV  = jet.bDiscriminator(_btagName+":probb") + jet.bDiscriminator(_btagName+":probbb");
-    if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
-    if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
+
+    if (_year == 2016) {
+      _jetInfo.CSV  = jet.bDiscriminator(_btagName);
+      if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
+      if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
+    }
+    else if (_year == 2017) {
+      // With deepCSV need to sum two disriminators: probb and probbb
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X 
+      _jetInfo.CSV  = jet.bDiscriminator(_btagName+":probb") + jet.bDiscriminator(_btagName+":probbb");
+      if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
+      if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
+    }
     _jetInfo.puID = jet.userFloat("pileupJetId:fullDiscriminant");
     
     const reco::GenJet* genJet = jet.genJet();
@@ -111,14 +118,24 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     if ( fabs( jet.eta() ) < 2.4 ) nJetsCent += 1;
     else                           _nJetsFwd += 1;
+
     // https://twiki.cern.ch/twiki/bin/view/CMS/BtagPOG
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.06.01 (PB)
     // https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
     if ( fabs( jet.eta() ) < 2.4 ) {
-      if ( _jetInfo.CSV > 0.1522 )   _nBLoose  += 1;
-      if ( _jetInfo.CSV > 0.4941 )   _nBMed    += 1;
-      if ( _jetInfo.CSV > 0.8001 )   _nBTight  += 1;
+      if ( _year == 2016 ) {
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
+	if ( _jetInfo.CSV > 0.5426 )   _nBLoose  += 1;
+	if ( _jetInfo.CSV > 0.8484 )   _nBMed    += 1;
+	if ( _jetInfo.CSV > 0.9535 )   _nBTight  += 1;
+      }
+      else if ( _year == 2017 ) {
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.06.01 (PB)
+	if ( _jetInfo.CSV > 0.1522 )   _nBLoose  += 1;
+	if ( _jetInfo.CSV > 0.4941 )   _nBMed    += 1;
+	if ( _jetInfo.CSV > 0.8001 )   _nBTight  += 1;
+      }
     }
+
     _jetInfos.push_back( _jetInfo );
 
   }  // End loop: for (int i = 0; i < nJets; i++)
@@ -136,7 +153,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
 			       JME::JetResolutionScaleFactor& JetResSF, const std::string _JEC_syst,
 			       const MuonInfos&_muonInfos, const EleInfos& _eleInfos, const double _rho,
 			       const std::string _jet_ID, const double _jet_pT_min, const double _jet_eta_max,
-			       TLorentzVector& _dMet ) {
+			       const int _year, TLorentzVector& _dMet ) {
   
   // Following https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
   //       and https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
@@ -238,35 +255,71 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
     if ( corr_jet.pt()          < _jet_pT_min  ) continue;
     if ( fabs( corr_jet.eta() ) > _jet_eta_max ) continue;
 
-    // Implementing Jet ID.
-    // Following the JetMET POG recommendation.
-    // For 2017 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2017    
-    bool isLoose = true; // Loose is not recommended, nor supported anymore. Setting it to 1.
+    // Implementing Jet ID
+    // Following the JetMET POG recommendation
+    // For 2016 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2016 (as of 10.08.2018)
+    // For 2017 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2017 (as of 10.08.2018)
+    bool isLoose = false;
     bool isTight = false;
 
     if ( fabs( corr_jet.eta() ) <= 2.7 ) {
 
-      isTight =  ( corr_jet.neutralHadronEnergyFraction() < 0.90 &&
-		   corr_jet.neutralEmEnergyFraction()     < 0.90 &&
-                   corr_jet.numberOfDaughters()        > 0.   );
-      if (fabs( corr_jet.eta()) <= 2.4 ){
-        isTight = ( isTight                                      &&
- 		    corr_jet.chargedMultiplicity()         > 0.  && 
-                    corr_jet.chargedHadronEnergyFraction() > 0.   );
-      }		   
-
-    } // End if ( fabs( corr_jet.eta() ) < 2.7 )
-    else if ( fabs(corr_jet.eta()) > 2.7 && fabs( corr_jet.eta() ) <= 3.0 ) {
-
-      isTight = ( corr_jet.neutralEmEnergyFraction()     > 0.02 &&
+      isLoose = ( corr_jet.neutralHadronEnergyFraction() < 0.99 &&
 		  corr_jet.neutralEmEnergyFraction()     < 0.99 &&
+		  ( corr_jet.chargedMultiplicity() +
+		    corr_jet.neutralMultiplicity() )     > 1 );
+      
+      isTight = ( isLoose                                       &&
+		  corr_jet.neutralHadronEnergyFraction() < 0.90 &&
+		  corr_jet.neutralEmEnergyFraction()     < 0.90 );
+      
+      if ( fabs( corr_jet.eta()) <= 2.4 ) {
+	
+	isLoose &= ( corr_jet.chargedHadronEnergyFraction() > 0.   &&
+		     corr_jet.chargedMultiplicity()         > 0    &&
+		     corr_jet.chargedEmEnergyFraction()     < 0.99 );
+	  
+	if ( _year == 2016 ) {
+	  isTight &= isLoose;
+	}
+	else if ( _year == 2017 ) {
+	  isTight &= ( corr_jet.chargedHadronEnergyFraction() > 0. &&
+                       corr_jet.chargedMultiplicity()         > 0  );
+	}
+      } // End  if ( fabs( corr_jet.eta()) <= 2.4 )
+      
+    } // End if ( fabs( corr_jet.eta() ) <= 2.7 )
+
+    else if ( fabs( corr_jet.eta() ) <= 3.0 ) {
+
+      isLoose = ( corr_jet.neutralEmEnergyFraction()     > 0.01 &&
+		  corr_jet.neutralHadronEnergyFraction() < 0.98 &&
 		  corr_jet.neutralMultiplicity()         > 2 );
-    }
-    else if (fabs (corr_jet.eta()) > 3.0 ) {
-      isTight = ( corr_jet.neutralEmEnergyFraction()     < 0.90 &&
-		  corr_jet.neutralHadronEnergyFraction() > 0.02 && 
-                  corr_jet.neutralMultiplicity()         > 10 );
-    }
+
+      if ( _year == 2016 ) {
+	isTight = isLoose;
+      }
+      else if ( _year == 2017 ) {
+	isTight = ( corr_jet.neutralEmEnergyFraction()     > 0.02 &&
+		    corr_jet.neutralEmEnergyFraction()     < 0.99 &&
+		    corr_jet.neutralMultiplicity()         > 2 );
+      }
+    } // End else if ( fabs( corr_jet.eta() ) <= 3.0 )
+    
+    else {
+
+      isLoose = ( corr_jet.neutralEmEnergyFraction() < 0.90 &&
+		  corr_jet.neutralMultiplicity()     > 10 );
+      
+      if ( _year == 2016 ) {
+	isTight = isLoose;
+      }
+      else if ( _year == 2017 ) {
+	isTight = ( corr_jet.neutralEmEnergyFraction()     < 0.90 &&
+		    corr_jet.neutralHadronEnergyFraction() > 0.02 &&
+		    corr_jet.neutralMultiplicity()         > 10 );
+      }
+    } // End else
 
     if (_jet_ID.find("loose") != std::string::npos && !isLoose) continue;
     if (_jet_ID.find("tight") != std::string::npos && !isTight) continue;
