@@ -4,25 +4,29 @@ import FWCore.ParameterSet.Config as cms
 DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
-                         isMonteCarlo = cms.bool(False),
-                         year         = cms.int32(2016),
+                         isMonteCarlo = cms.bool(True),
                          doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
+                         ## No Skimming for MC
                          skim_nMuons = cms.int32(2),
-                         skim_trig   = cms.bool(True),
+                         skim_trig   = cms.bool(False),
                          
                          ## HLT trigger info
+                         ## Unprescaled triggers at the end of 2017
+                         ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         
                          processName  = cms.string("HLT"),
-                         ## Unprescaled triggers at the end of 2016
-                         ## https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
-                         trigNames = cms.vstring("HLT_IsoMu22_eta2p1", "HLT_IsoTkMu22_eta2p1", 
-                                                 "HLT_IsoMu24", "HLT_IsoTkMu24", 
-                                                 "HLT_Mu50", "HLT_TkMu50"),
+                         trigNames = cms.vstring("HLT_IsoMu24", "HLT_IsoTkMu24", 
+                                                 "HLT_IsoMu27", "HLT_IsoTkMu27",
+                                                 "HLT_IsoMu30",
+                                                 "HLT_Mu50",
+                                                 "HLT_Mu55",
+                                                 "HLT_TkMu100"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
-                         trigObjs    = cms.InputTag("selectedPatTrigger"),
+                         trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
                          evtFlags = cms.InputTag("TriggerResults","","PAT"),
@@ -38,16 +42,16 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
+                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
+                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
+                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
+                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
 
                          ## Jets
                          jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
                          jetType  = cms.string("AK4PFchs"),
-                         btagName = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
-                         rhoTag   = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
+                         btagName = cms.string("pfDeepCSVJetTags"),
+                         rhoTag  = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
 
                          ## MET
                          metTag = cms.InputTag("slimmedMETs"),
@@ -63,29 +67,34 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          vertex_z_max    = cms.double(24.0),
 
                          muon_ID        = cms.string("medium"),
-                         muon_pT_min    = cms.double(10.0),
+                         muon_pT_min    = cms.double(20.0),
                          muon_eta_max   = cms.double( 2.4),
                          muon_trig_dR   = cms.double( 0.1),
                          muon_use_pfIso = cms.bool(True),
                          muon_iso_dR    = cms.double( 0.4),
                          muon_iso_max   = cms.double(0.25),
 
-                         ele_ID      = cms.string("loose"),
+                         muon_id_sf_wp_num = cms.string("MediumID"),
+                         muon_id_sf_wp_den = cms.string("genTracks"),
+                         muon_iso_sf_wp_num = cms.string("LooseRelIso"),
+                         muon_iso_sf_wp_den = cms.string("MediumID"),
+
+                         ele_ID      = cms.string("medium"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 
-                         jet_ID      = cms.string("loose"),
-                         jet_pT_min  = cms.double(30.0),
+                         jet_ID      = cms.string("tight"),
+                         jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(4.7),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
                          Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
-                         MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
-                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
-                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
+                         MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
+                         #MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
+                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         #MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

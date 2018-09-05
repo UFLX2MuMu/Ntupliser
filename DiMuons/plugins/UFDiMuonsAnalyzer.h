@@ -394,7 +394,6 @@ private:
   // Selection Criteria for event and objects in config file
   bool _isVerbose;   
   bool _isMonteCarlo;
-  int  _year;
   bool _doSys;
   bool _slimOut;
 

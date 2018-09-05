@@ -5,7 +5,6 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(False),
-                         year         = cms.int32(2016),
                          doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 

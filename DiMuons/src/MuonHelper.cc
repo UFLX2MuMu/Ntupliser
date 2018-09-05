@@ -9,7 +9,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const edm::Handle<pat::TriggerObjectStandAloneCollection>& _trigObjsHandle,
 		    const edm::Handle<edm::TriggerResults>& _trigResultsHandle,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR, 
-		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData, const int _year,
+		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
 		    const edm::Handle < reco::GenParticleCollection >& genPartons ) {
@@ -139,7 +139,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       
       CorrectPtRoch( _Roch_calib, _doSys_Roch, mu_vec_Roch, 
       		     pt_Roch, ptErr_Roch, pt_Roch_sys_up, pt_Roch_sys_down,
-		     charge_Roch, trk_layers_Roch, GEN_pt, _isData, _year );
+      		     charge_Roch, trk_layers_Roch, GEN_pt, _isData );
       
       _muonInfo.pt_Roch           = pt_Roch;
       _muonInfo.ptErr_Roch        = ptErr_Roch;
@@ -532,28 +532,28 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 }
 
 
-// Function to calculate muon ID and Isolation scale factor from json file, for 2017 - PB 30.07.2018
+// Function toi calculate muon ID and Isolation scale factor from json file. - PB 30.07.2018
 // Could be used also to calculate the efficiency from json file but it would require some small adaptation. For the moment we need only SF.
-void CalcMuIDIsoEff2017( float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::string _id_wp_num, std::string _id_wp_den,
-			 float& _Iso_sf, float& _Iso_sf_up, float& _Iso_sf_down, std::string _iso_wp_num, std::string _iso_wp_den,
-			 const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id,
-			 const MuonInfos _muonInfos ) {
-  
-  // Needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
+void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::string _id_wp_num, std::string _id_wp_den,
+         float& _Iso_sf, float& _Iso_sf_up, float& _Iso_sf_down, std::string _iso_wp_num, std::string _iso_wp_den,
+         const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
+         const MuonInfos _muonInfos) {
+
+  // needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
   typedef boost::property_tree::ptree::path_type path;
-  // eta bins for SF
+  //eta bins for SF
   std::vector<float> absetabins{0.00, 0.90, 1.20, 2.10, 2.40};
-  // pt bins for SF
+  //pt bins for SF
   std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
-  
+
   _ID_sf       = 1.;
   _ID_sf_up    = 1.;
   _ID_sf_down  = 1.;
   _Iso_sf      = 1.;
   _Iso_sf_up   = 1.;
   _Iso_sf_down = 1.;
-  
-  // Getting a specific value 
+
+  //getting a specific value 
   // float scale_factor = 0.;
   // scale_factor = json_iso.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
   // std::cout << scale_factor << std::endl;
@@ -564,25 +564,25 @@ void CalcMuIDIsoEff2017( float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, st
 
   int nMu = int(_muonInfos.size());
   // Compute muon ID efficiency or scale factor
-  for ( int iMu = 0; iMu < nMu; iMu++ ) {
-    for ( int _abseta = 0; _abseta < int(absetabins.size()) - 1; _abseta++ ) {
-      if ( abs(_muonInfos.at(iMu).eta) <  absetabins.at(_abseta)   ) continue; 
+  for (int iMu = 0; iMu < nMu; iMu++){
+    for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
+      if ( abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta)) continue; 
       if ( abs(_muonInfos.at(iMu).eta) >= absetabins.at(_abseta+1) ) continue;
       _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
-      _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta + 1);
-    }
-    if ( _min_eta.str().compare(_max_eta.str()) == 0 ) { // if compare is == 0 the two strings are equal
+      _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
+   }
+   if(_min_eta.str().compare(_max_eta.str()) == 0) { // if compare is ==0 the two strings are equal
       std::cout << "WARNING: Something fishy in the SF assignment. Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
-    for ( int _pt = 0; _pt < int(ptbins.size()) - 1; _pt++ ) {
-      if ( _muonInfos.at(iMu).pt <  ptbins.at(_pt)   ) continue; 
+    for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
+      if ( _muonInfos.at(iMu).pt < ptbins.at(_pt) ) continue; 
       if ( _muonInfos.at(iMu).pt >= ptbins.at(_pt+1) ) continue; 
       _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
-    } // End loop over pt bins
-    if ( _min_pt.str().compare(_max_pt.str()) == 0 ) { // if compare is == 0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
+    } // loop pt bin 
+   if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
       std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
@@ -596,15 +596,15 @@ void CalcMuIDIsoEff2017( float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, st
     // Iso
     _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
     _Iso_sf = json_iso.get<float>(path(_value_string.c_str(),'/'));
-    //    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
-    //    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
-    //    std::cout << "Iso_eff = " << _Iso_sf << std::endl;
+//    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
+//    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
+//    std::cout << "Iso_eff = " << _Iso_sf << std::endl;
     _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
     _Iso_sf_up = _Iso_sf + json_iso.get<float>(path(_err_string.c_str(),'/'));
     _Iso_sf_down = _Iso_sf - json_iso.get<float>(path(_err_string.c_str(),'/'));
-    // Cleaning the strings
+    //cleaning the strings
     _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
-  } // End loop over muons
+  } // loop muons
 
   // for (auto& array_element : json_iso) {
   //   std::cout << array_element.first << std::endl;
@@ -612,15 +612,15 @@ void CalcMuIDIsoEff2017( float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, st
   //       std::cout << property.first << " = " << property.second.get_value<std::string>() << std::endl;
   //   }
   // }
-  return;
-} // End function: void CalcMuIDIsoEff2017()
+return;
+}
 
-void CalcMuIDIsoEff2016( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
-			 float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, 
-			 const TH2F* _ID_hist, const TH2F* _Iso_hist, 
-			 const TH1F* _ID_vtx, const TH1F* _Iso_vtx,
-			 const MuonInfos _muonInfos, const int _nVtx ) {
-  
+void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
+		     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, 
+		     const TH2F* _ID_hist, const TH2F* _Iso_hist, 
+		     const TH1F* _ID_vtx, const TH1F* _Iso_vtx,
+		     const MuonInfos _muonInfos, const int _nVtx ) {
+
   _ID_eff       = 1.;
   _ID_eff_up    = 1.;
   _ID_eff_down  = 1.;
@@ -719,4 +719,5 @@ void CalcMuIDIsoEff2016( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
     break;
   }
 
-} // End function: void CalcMuIDIsoEff2016()
+}
+

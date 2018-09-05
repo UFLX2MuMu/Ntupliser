@@ -94,9 +94,9 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("stage_
 # /////////////////////////////////////////////////////////////
 
 if thisIsData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_2016_data_cff")
+  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_2016_MC_cff")
+  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 
