@@ -4,21 +4,18 @@ import FWCore.ParameterSet.Config as cms
 DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
-                         isMonteCarlo = cms.bool(True),
-                         year         = cms.int32(2017),
+                         isMonteCarlo = cms.bool(False),
                          doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
-                         ## No Skimming for MC
                          skim_nMuons = cms.int32(2),
-                         skim_trig   = cms.bool(False),
+                         skim_trig   = cms.bool(True),
                          
                          ## HLT trigger info
+                         processName  = cms.string("HLT"),
                          ## Unprescaled triggers at the end of 2017
                          ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
-                         
-                         processName  = cms.string("HLT"),
                          trigNames = cms.vstring("HLT_IsoMu24", "HLT_IsoTkMu24", 
                                                  "HLT_IsoMu27", "HLT_IsoTkMu27",
                                                  "HLT_IsoMu30",
@@ -27,10 +24,11 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                                                  "HLT_TkMu100"),
 
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
+                         #trigObjs    = cms.InputTag("selectedPatTrigger"),
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","PAT"),
+                         evtFlags = cms.InputTag("TriggerResults","","RECO"),
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -51,8 +49,8 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## Jets
                          jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
                          jetType  = cms.string("AK4PFchs"),
-                         btagName = cms.string("pfDeepCSVJetTags"),
-                         rhoTag  = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
+                         btagName = cms.string("pfDeepCSVJetTags"), #need to update it to deepCSV
+                         rhoTag   = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
 
                          ## MET
                          metTag = cms.InputTag("slimmedMETs"),
@@ -84,7 +82,7 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 
-                         jet_ID      = cms.string("tight"), ## Recommendation as of 09.08.2018: https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
+                         jet_ID      = cms.string("tight"),
                          jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(4.7),
 
