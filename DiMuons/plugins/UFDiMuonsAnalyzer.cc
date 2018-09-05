@@ -961,14 +961,14 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
     const string flagName = flagNames.triggerName(iFlag);
     const int flagResult = evtFlagsHandle->accept(iFlag);
    
-    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 
+    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 - AWB 2018.08.10 
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
     // std::cout << "  * " << flagName << " = " << flagResult << std::endl;
     if (flagName == "Flag_BadPFMuonFilter")
       _Flag_badMu = flagResult;
     if (flagName == "Flag_duplicateMuons")
       _Flag_dupMu = 1;
-    if (flagName == "Flag_globalTightHalo2016Filter")
+    if (flagName == "Flag_globalSuperTightHalo2016Filter")
       _Flag_halo = flagResult;
     if (flagName == "Flag_goodVertices")
       _Flag_PV = flagResult;
@@ -986,19 +986,11 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
     if (flagName == "Flag_ecalBadCalibFilter")
       _Flag_ecalBadCalib = flagResult;
 
-// PB: need to add some more flags. Flag_BadChargedCandidateFilter, Flag_eeBadScFilter (not suggested in MC), Flag_ecalBadCalibFilter
-
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
-  if ( _Flag_badMu == 0 || _Flag_halo == 0 ||
-       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_HBHE_Iso == 0 || 
-       _Flag_ECAL_TP == 0  || _Flag_BadChCand == 0 || _Flag_ecalBadCalib == 0 || (_isMonteCarlo || _Flag_eeBadSc == 0) )
-      _Flag_all = 0;
-  if ( _Flag_badMu == 1 && _Flag_halo == 1 &&
-       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_HBHE_Iso == 1 && 
-       _Flag_ECAL_TP == 1 && _Flag_BadChCand == 1 && _Flag_ecalBadCalib == 1 &&  (_isMonteCarlo || _Flag_eeBadSc == 1) )
-      _Flag_all = 1;
- 
+  _Flag_all = ( _Flag_PV && _Flag_halo && _Flag_HBHE && _Flag_HBHE_Iso && _Flag_ECAL_TP &&
+                _Flag_BadChCand && (_Flag_eeBadSc || _isMonteCarlo) && _Flag_ecalBadCalib );
+
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////
