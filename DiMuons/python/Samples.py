@@ -1,7 +1,7 @@
 
 class sample:
-    def __init__(self, name='', DAS='', inputDBS='global', nEvt=0, files=[], GT='94X_mc2017_realistic_v12', 
-                 JEC='94X_mc2017_realistic_v13', runs=[], JSON=[], isData=False):
+    def __init__(self, name='', DAS='', inputDBS='global', nEvt=0, files=[], GT='94X_mc2017_realistic_v14', 
+                 JEC='94X_mc2017_realistic_v14', runs=[], JSON=[], isData=False):
         self.name   = name   ## User-assigned dataset name
         self.DAS    = DAS    ## DAS directory
         self.inputDBS = inputDBS  # to be used in crab in case of private production. config.Data.inputDBS = 'global' or 'phys03'
@@ -21,8 +21,6 @@ class sample:
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/
 JSON_2017 = ['data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt']  ## 41.37 /fb
 
-PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
-
 #####################################
 ###  Global tag and dataset info  ###
 #####################################
@@ -30,7 +28,9 @@ PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 # 2017 Data
 # More info at https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis
 # Suggested GT (see frontier conditions twiki for more info)
-# 94X_dataRun2_ReReco_EOY17_v2
+# 94X_dataRun2_ReReco_EOY17_v6
+# This is in conflict with the recommandation of the miniAOD of using 94X_dataRun2_v6 - hopefully not a big difference. 94X_dataRun2_ReReco_EOY17_v6 is more recent : 2018-03 compared to 2018-02 of the 94X_dataRun2_v6. PB 2018.09.05 
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#2017_and_2016_re_miniAOD_94X_ver
 
 # GT for data from the twiki of HtoMuMu2017: 94X_dataRun2_v6
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToMuMu_at_13_TeV_2017
@@ -59,45 +59,49 @@ PB_wdir = '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/'
 #/SingleMuon/Run2017F-PromptReco-v1/MINIAOD
 #/SingleMuon/Run2017G-PromptReco-v1/MINIAOD
 #/SingleMuon/Run2017H-PromptReco-v1/MINIAOD
+#/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD
+#/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD
+#/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD
+#/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD
+#/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD
 
-
-#ReReco MINIAOD 17Nov2017
-
+#ReReco MINIAOD 31March2018
+#GT for data : 94X_dataRun2_ReReco_EOY17_v6
 SingleMu_2017B = sample ( name   = 'SingleMu_2017B',
-                          DAS    = '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_v6',
+                          DAS    = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD',
+                          GT     = '94X_dataRun2_ReReco_EOY17_v6',
 #                          JEC    = '',
+                          files = ['/store/data/Run2017B/SingleMuon/MINIAOD/31Mar2018-v1/80000/0E555487-7241-E811-9209-002481CFC92C.root'],
                           JSON   = JSON_2017[0],
                           isData = True )
 
 SingleMu_2017C = sample ( name   = 'SingleMu_2017C',
-                          DAS    = '/SingleMuon/Run2017C-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_v6',
+                          DAS    = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD',
+                          GT     = '94X_dataRun2_ReReco_EOY17_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
 
 
 SingleMu_2017D = sample ( name   = 'SingleMu_2017D',
-                          DAS    = '/SingleMuon/Run2017D-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_v6',
+                          DAS    = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD',
+                          GT     = '94X_dataRun2_ReReco_EOY17_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
 
 
 SingleMu_2017E = sample ( name   = 'SingleMu_2017E',
-                          DAS    = '/SingleMuon/Run2017E-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_v6',
+                          DAS    = '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD',
+                          GT     = '94X_dataRun2_ReReco_EOY17_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
 
 
 SingleMu_2017F = sample ( name   = 'SingleMu_2017F',
-                          DAS    = '/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD',
-                          GT     = '94X_dataRun2_v6',
-                          files  = ['file:////eos/cms//store/data/Run2017F/SingleMuon/MINIAOD/17Nov2017-v1/60000/A868A5F6-D4E9-E711-9422-FA163E31662A.root'],
+                          DAS    = '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD',
+                          GT     = '94X_dataRun2_ReReco_EOY17_v6',
 #                          JEC    = '',
                           JSON   = JSON_2017[0],
                           isData = True )
@@ -139,9 +143,8 @@ DAS_era_sig = 'RunIIFall17DRPremix-94X_mc2017_realistic*/MINIAODSIM'
 
 ## Gluon-gluon fusion
 H2Mu_gg = sample( name  = 'H2Mu_gg',
-                  DAS   = '/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                  inputDBS = 'phys03',
-                  files  = ['file:///eos/cms//store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'],
+                  DAS   = '/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                  files  = ['/store/mc/RunIIFall17MiniAODv2/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/20000/5AC9148F-9842-E811-892B-3417EBE535DA.root'],
                   nEvt  = -1
                 )
 
@@ -225,7 +228,7 @@ H2Mu_ttH = sample( name = 'H2Mu_ttH',
 #ZdToMuMu_M20_eps0p02_eta2p6 = sample( name  = 'Zd2Mu_20',
 #                                      DAS   = '/DarkPhoton/avartak-ZdToMuMu-M20-eps0p02-etal2p6_SCOUT-d069282eca76b6fde70ab5192475fd6a/USER',
 #                                      nEvt  = 250000,
-#                                      files = [ PB_wdir + 'Zd2Mu_M20_test.root',
+#                                      files = [ '/afs/cern.ch/work/b/bortigno/x2mm_ufl_944/src/Ntupliser/DiMuons/' + 'Zd2Mu_M20_test.root' 
 #                                      '/store/user/avartak/DarkPhoton/ZdToMuMu-M20-eps0p02-etal2p6_SCOUT/170901_214525/0000/genscout_1.root' ])
 #
 Zd150 = sample( name = 'Zd150',
