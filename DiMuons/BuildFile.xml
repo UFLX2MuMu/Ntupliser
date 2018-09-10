@@ -35,5 +35,9 @@
 
 <use name="PhysicsTools/UtilAlgos"/>
 
+<use name="RecoVertex/KinematicFit"/>
+<use name="MagneticField/ParametrizedEngine"/>
+
+
 <use name="Ntupliser/RochCor"/>
 <!-- <use name="RochCor/Calibration"/> -->

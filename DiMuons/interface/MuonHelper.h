@@ -6,11 +6,11 @@
 #include "Ntupliser/DiMuons/interface/MuonInfo.h"
 #include "Ntupliser/DiMuons/interface/PtCorrKalman.h"
 #include "Ntupliser/DiMuons/interface/PtCorrRoch.h"
+#include "Ntupliser/DiMuons/interface/KinematicFitMuonCorrections.h"
 // Classes or json handling
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
 #include <iomanip> // setprecision
-
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
