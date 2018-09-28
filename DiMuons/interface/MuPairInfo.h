@@ -50,6 +50,10 @@ struct MuPairInfo {
   Double_t mass_Roch_sys_down;
   Double_t pt_Roch_sys_down;
 
+  Double_t mass_kinfit;
+  Double_t massErr_kinfit;
+  Double_t pt_kinfit;
+
   void init();
 
 };

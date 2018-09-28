@@ -46,5 +46,9 @@ void MuPairInfo::init() {
   mass_Roch_sys_down = -999;
   pt_Roch_sys_down   = -999;
 
+  mass_kinfit          = -999;
+  massErr_kinfit       = -999;
+  pt_kinfit            = -999;
+ 
 } // End void MuPairInfo::init()
 

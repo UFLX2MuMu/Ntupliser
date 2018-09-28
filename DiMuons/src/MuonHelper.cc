@@ -21,6 +21,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
 
   // Testing Kinematic fit : Needs to be integrated in the Ntupliser data format - PB 10.09.2018
+
+  TLorentzVector mu1_tlv;
+  TLorentzVector mu2_tlv; 
+
   if( nMuons > 1){
     //Instatiate KinematicVertexFitter object
     KinematicVertexFitter kinfit;
@@ -34,16 +38,17 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     
     //getting the B_s decay vertex
     RefCountedKinematicVertex dimu_vertex = kinfittree->currentDecayVertex();
-  
+ 
     //accessing the reconstructed Bs meson parameters:
     //AlgebraicVector7 dimu_kinfit_par = dimu_kinfit->currentState().kinematicParameters().vector();
-  
+    //TLorentzVector higgs_tlv;
+    //higgs_tlv.SetXYZM(dimu_kinfit_par.At(3),dimu_kinfit_par.At(4), dimu_kinfit_par.At(5), dimu_kinfit_par.At(6));
     //and their joint covariance matrix:
     //AlgebraicMatrix77 dimu_kinfit_er = dimu_kinfit->currentState().kinematicParametersError().matrix();
   
     //Now navigating down the tree 
     bool child = kinfittree->movePointerToTheFirstChild();
-    TLorentzVector mu1_tlv;
+    //TLorentzVector mu1_tlv;
   
     if (child){
     RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
@@ -51,20 +56,21 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
     }
    
-    std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
+    //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
   
     //Now navigating down the tree 
     bool nextchild = kinfittree->movePointerToTheNextChild();
   
-    TLorentzVector mu2_tlv;
-    if (nextchild){
+   if (nextchild){
     RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
     AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
     mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
     }
    
-    std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
-  
+    //std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
+ 
+    //std::cout << "Kin fit mass from kinfit: " << higgs_tlv.M()  << " - Kin fit mass from tlv: " << (mu1_tlv+mu2_tlv).M()<< std::endl; 
+ 
   } //if nMuons>1
 
 
@@ -152,6 +158,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.pt_KaMu_clos_down = pt_KaMu_clos_down;
 
       // Kinematic Fit corrections
+      if(i==0) _muonInfo.pt_kinfit  = mu1_tlv.Pt(); // to be added in the muonInfo dataformat
+      if(i==1) _muonInfo.pt_kinfit  = mu2_tlv.Pt();
+      //std::cout << "@muoninfo: muon info pt[" << i << "] = "  << _muonInfo.pt_kinfit << std::endl;
  
       // Rochester-calibrated pT
       TLorentzVector mu_vec_Roch, GEN_vec;
