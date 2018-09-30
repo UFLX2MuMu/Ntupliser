@@ -40,12 +40,12 @@ test_str = '_prod2017_{0}'.format(prod_version)
 # samps.extend(SingleMu)
 # samps.extend(Signal)
 # samps.extend(Background)
-samps.extend(DataAndMC)
+#samps.extend(DataAndMC)
 
 # test_run = True
 # test_str = '_v1'
 # samps.append(SingleMu_2016C)
-# samps.append(H2Mu_gg)
+samps.append(H2Mu_gg)
 # samps.append(ZJets_MG_HT_2500_inf)
 
 # samps.append(SingleMu_2017B)
