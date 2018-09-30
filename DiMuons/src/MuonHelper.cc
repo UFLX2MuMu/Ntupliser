@@ -30,43 +30,48 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     KinematicVertexFitter kinfit;
     //Fit and retrieve the tree
     RefCountedKinematicTree kinfittree = kinfit.Fit(muonsSelected); 
-  
-    //accessing the tree components 
-    kinfittree->movePointerToTheTop();
-    //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
-    RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
-    
-    //getting the B_s decay vertex
-    RefCountedKinematicVertex dimu_vertex = kinfittree->currentDecayVertex();
  
-    //accessing the reconstructed Bs meson parameters:
-    //AlgebraicVector7 dimu_kinfit_par = dimu_kinfit->currentState().kinematicParameters().vector();
-    //TLorentzVector higgs_tlv;
-    //higgs_tlv.SetXYZM(dimu_kinfit_par.At(3),dimu_kinfit_par.At(4), dimu_kinfit_par.At(5), dimu_kinfit_par.At(6));
-    //and their joint covariance matrix:
-    //AlgebraicMatrix77 dimu_kinfit_er = dimu_kinfit->currentState().kinematicParametersError().matrix();
-  
-    //Now navigating down the tree 
-    bool child = kinfittree->movePointerToTheFirstChild();
-    //TLorentzVector mu1_tlv;
-  
-    if (child){
-    RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
-    AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
-    mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
-    }
+    if(kinfittree->isEmpty() == 1 || kinfittree->isConsistent() == 0)
+       std::cout << "Kinematic Fit unsuccesfull" << std::endl;
+    else{
+      //accessing the tree components 
+      kinfittree->movePointerToTheTop();
+      //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
+      RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
+      
+      //getting the B_s decay vertex
+      RefCountedKinematicVertex dimu_vertex = kinfittree->currentDecayVertex();
    
-    //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
-  
-    //Now navigating down the tree 
-    bool nextchild = kinfittree->movePointerToTheNextChild();
-  
-   if (nextchild){
-    RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
-    AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
-    mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
-    }
-   
+      //accessing the reconstructed Bs meson parameters:
+      //AlgebraicVector7 dimu_kinfit_par = dimu_kinfit->currentState().kinematicParameters().vector();
+      //TLorentzVector higgs_tlv;
+      //higgs_tlv.SetXYZM(dimu_kinfit_par.At(3),dimu_kinfit_par.At(4), dimu_kinfit_par.At(5), dimu_kinfit_par.At(6));
+      //and their joint covariance matrix:
+      //AlgebraicMatrix77 dimu_kinfit_er = dimu_kinfit->currentState().kinematicParametersError().matrix();
+    
+      //Now navigating down the tree 
+      bool child = kinfittree->movePointerToTheFirstChild();
+      //TLorentzVector mu1_tlv;
+    
+      if (child){
+      RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
+      AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
+      mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
+      }
+     
+      //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
+    
+      //Now navigating down the tree 
+      bool nextchild = kinfittree->movePointerToTheNextChild();
+    
+      if (nextchild){
+      RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
+      AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
+      mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
+      }
+
+    } // end else - isEmpty()
+
     //std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
  
     //std::cout << "Kin fit mass from kinfit: " << higgs_tlv.M()  << " - Kin fit mass from tlv: " << (mu1_tlv+mu2_tlv).M()<< std::endl; 
