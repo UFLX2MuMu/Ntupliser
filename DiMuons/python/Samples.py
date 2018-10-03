@@ -160,8 +160,8 @@ H2Mu_gg = sample( name  = 'H2Mu_gg',
 
 ## Vector boson fusion
 H2Mu_VBF = sample( name = 'H2Mu_VBF',
-                   DAS  = '/VBFH_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                   inputDBS = 'phys03',
+                   DAS  = '/VBFHToMuMu_M125_13TeV_amcatnlo_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+#                   inputDBS = 'phys03',
                    nEvt = -1 )
 
 #H2Mu_VBF_120 = sample( name = 'H2Mu_VBF_120',
@@ -202,9 +202,9 @@ H2Mu_WH_neg = sample( name = 'H2Mu_WH_neg',
 
 ## ZH
 H2Mu_ZH = sample( name = 'H2Mu_ZH',
-                  DAS  = '/ZH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                  inputDBS = 'phys03',
-                  nEvt = 249748 ) ## 250 k
+                  DAS  = '/ZH_HToMuMu_ZToAll_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+#                  inputDBS = 'phys03',
+                  nEvt = -1 ) ## 250 k
 
 #H2Mu_ZH_120 = sample( name = 'H2Mu_ZH_120',
 #                  DAS  = '/ZH_HToMuMu_M120_13TeV_powheg_pythia8/'+DAS_era_sig,
@@ -217,8 +217,8 @@ H2Mu_ZH = sample( name = 'H2Mu_ZH',
 
 ## ttH
 H2Mu_ttH = sample( name = 'H2Mu_ttH',
-                   DAS  = '/ttH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                   inputDBS = 'phys03',
+                   DAS  = '/ttHToMuMu_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM',
+#                   inputDBS = 'phys03',
                    nEvt = -1 )
 
 ###############
