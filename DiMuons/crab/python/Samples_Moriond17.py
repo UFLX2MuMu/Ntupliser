@@ -128,6 +128,85 @@ SingleMu.append(SingleMu_2016G)
 SingleMu.append(SingleMu_2016H_1)
 SingleMu.append(SingleMu_2016H_2)
 
+
+DoubleMu_2016B = sample( name   = 'DoubleMu_2016B',
+                         DAS    = '/DoubleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD',
+                         GT     = '80X_dataRun2_2016SeptRepro_v7',
+                         JEC    = 'Summer16_23Sep2016BCDV4_DATA',
+                         JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016C = sample( name   = 'DoubleMu_2016C',
+                         DAS    = '/DoubleMuon/Run2016C-03Feb2017-v1/MINIAOD',
+                         GT     = '80X_dataRun2_2016SeptRepro_v7',
+                         JEC    = 'Summer16_23Sep2016BCDV4_DATA',
+                         JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016D = sample( name   = 'DoubleMu_2016D',
+                         DAS    = '/DoubleMuon/Run2016D-03Feb2017-v1/MINIAOD',
+                         GT     = '80X_dataRun2_2016SeptRepro_v7',
+                         JEC    = 'Summer16_23Sep2016BCDV4_DATA',
+                         JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016E = sample( name   = 'DoubleMu_2016E',
+                         DAS    = '/DoubleMuon/Run2016E-03Feb2017-v1/MINIAOD',
+                         GT     = '80X_dataRun2_2016SeptRepro_v7',
+                         JEC    = 'Summer16_23Sep2016EFV4_DATA',
+                         JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016F_1 = sample( name   = 'DoubleMu_2016F_1',
+                           DAS    = '/DoubleMuon/Run2016F-03Feb2017-v1/MINIAOD',
+                           GT     = '80X_dataRun2_2016SeptRepro_v7',
+                           JEC    = 'Summer16_23Sep2016EFV4_DATA',
+                           runs   = [0, 278801],
+                           JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016F_2 = sample( name   = 'DoubleMu_2016F_2',
+                           DAS    = '/DoubleMuon/Run2016F-03Feb2017-v1/MINIAOD',
+                           GT     = '80X_dataRun2_2016SeptRepro_v7',
+                           JEC    = 'Summer16_23Sep2016GV4_DATA',
+                           runs   = [278802, 999999],
+                           JSON   = JSON_2016[0],
+                           isData = True)
+
+DoubleMu_2016G = sample( name   = 'DoubleMu_2016G',
+                         DAS    = '/DoubleMuon/Run2016G-03Feb2017-v1/MINIAOD',
+                         GT     = '80X_dataRun2_2016SeptRepro_v7',
+                         JEC    = 'Summer16_23Sep2016GV4_DATA',
+                         JSON   = JSON_2016[0],
+                         isData = True)
+
+DoubleMu_2016H_1 = sample( name   = 'DoubleMu_2016H_1',
+                           DAS    = '/DoubleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD',
+                           GT     = '80X_dataRun2_Prompt_v16',
+                           JEC    = 'Summer16_23Sep2016HV4_DATA',
+                           JSON   = JSON_2016[0],
+                           isData = True)
+
+DoubleMu_2016H_2 = sample( name   = 'DoubleMu_2016H_2',
+                           DAS    = '/DoubleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD',
+                           GT     = '80X_dataRun2_Prompt_v16',
+                           JEC    = 'Summer16_23Sep2016HV4_DATA',
+                           JSON   = JSON_2016[0],
+                           isData = True)
+
+DoubleMu = []  ## All DoubleMuon datasets
+
+# DoubleMu.append(DoubleMu_2016B)
+# DoubleMu.append(DoubleMu_2016C)
+# DoubleMu.append(DoubleMu_2016D)
+# DoubleMu.append(DoubleMu_2016E)
+# DoubleMu.append(DoubleMu_2016F_1)
+# DoubleMu.append(DoubleMu_2016F_2)
+# DoubleMu.append(DoubleMu_2016G)
+# DoubleMu.append(DoubleMu_2016H_1)
+# DoubleMu.append(DoubleMu_2016H_2)
+
+
 # =======================================================================================================
 # ------------------------------- SIGNAL ----------------------------------------------------------------
 # =======================================================================================================
@@ -247,23 +326,47 @@ DAS_AMC       = 'TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv'
 ZJets_AMC_dir = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/PUMoriond17_HCALDebug_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/'
 ZJets_MG_HT_2500_inf_dir = 'DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/'
 
-ZJets_MG = sample( name = 'ZJets_MG',
-                   DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM',
-                   nEvt = 49144274 ) ## 49 million 
-
-ZJets_MG_HER = sample( name = 'ZJets_MG_HER',
-                       DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_30M/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
-                       nEvt =  29813625 ) ## 30 million
-
 ZJets_AMC = sample( name = 'ZJets_AMC',
-                    DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_HCALDebug_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
-                    nEvt = 28968252,  ## 29 million
+                    DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM',
+                    nEvt = 122055388,  ## 122 million
                     files = [ AWB_dir+ZJets_AMC_dir+'00312D7A-FEBD-E611-A713-002590DB923E.root' ] )
+
+ZJets_AMC_0j_A = sample( name = 'ZJets_AMC_0j_A',
+                         DAS  = '/DYToLL_0J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_1+'_ext1-v1/MINIAODSIM',
+                         nEvt = 49579613 )  ## 50 million
+
+ZJets_AMC_0j_B = sample( name = 'ZJets_AMC_0j_B',
+                         DAS  = '/DYToLL_0J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_2+'-v1/MINIAODSIM',
+                         nEvt = 44253240 )  ## 44 million
+
+ZJets_AMC_1j_A = sample( name = 'ZJets_AMC_1j_A',
+                         DAS  = '/DYToLL_1J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_1+'_ext1-v1/MINIAODSIM',
+                         nEvt = 49902571 )  ## 50 million
+
+ZJets_AMC_1j_B = sample( name = 'ZJets_AMC_1j_B',
+                         DAS  = '/DYToLL_1J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_2+'-v1/MINIAODSIM',
+                         nEvt = 41597712 )  ## 42 million
+
+ZJets_AMC_2j_A = sample( name = 'ZJets_AMC_2j_A',
+                         DAS  = '/DYToLL_2J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_1+'_ext1-v1/MINIAODSIM',
+                         nEvt = 47974554 )  ## 48 million
+
+ZJets_AMC_2j_B = sample( name = 'ZJets_AMC_2j_B',
+                         DAS  = '/DYToLL_2J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_1+'-v2/MINIAODSIM',
+                         nEvt = 42324802 )  ## 42 million
 
 ZJets_hiM = sample( name = 'ZJets_hiM',
                     DAS  = '/DYJetsToLL_M-100to200_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM',
                     nEvt = 1083606 ) ## 1.1 million
                     ## GT   = 'Spring16_23Sep2016V2_MC' ) ## Need a different global tag? - AWB 19.01.17
+
+ZJets_MG = sample( name = 'ZJets_MG',
+                   DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/'+DAS_era_bkg_1+'_ext1-v2/MINIAODSIM',
+                   nEvt = 49144274 ) ## 49 million 
+
+ZJets_MG_HER = sample( name = 'ZJets_MG_HER',
+                       DAS  = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_30M/'+DAS_era_bkg_1+'-v1/MINIAODSIM',
+                       nEvt =  29813625 ) ## 30 million
 
 ZJets_MG_HT_70_100 = sample( name = 'ZJets_MG_HT_70_100',
                              DAS  = '/DYJetsToLL_M-50_HT-70to100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
@@ -311,21 +414,27 @@ ZJets_MG_HT_2500_inf = sample( name = 'ZJets_MG_HT_2500_inf',
                                files = [ AWB_dir+ZJets_MG_HT_2500_inf_dir+'308C289B-B8C0-E611-A7C6-0025905A606A.root' ],
                                )
 
-Background.append(ZJets_MG)
-# Background.append(ZJets_MG_HER)
 Background.append(ZJets_AMC)
-Background.append(ZJets_hiM)
-Background.append(ZJets_MG_HT_70_100)
-Background.append(ZJets_MG_HT_100_200_A)
-Background.append(ZJets_MG_HT_100_200_B)
-Background.append(ZJets_MG_HT_200_400_A)
-Background.append(ZJets_MG_HT_200_400_B)
-Background.append(ZJets_MG_HT_400_600_A)
-Background.append(ZJets_MG_HT_400_600_B)
-Background.append(ZJets_MG_HT_600_800)
-Background.append(ZJets_MG_HT_800_1200)
-Background.append(ZJets_MG_HT_1200_2500)
-Background.append(ZJets_MG_HT_2500_inf)
+# Background.append(ZJets_AMC_0j_A)
+# Background.append(ZJets_AMC_0j_B)
+# Background.append(ZJets_AMC_1j_A)
+# Background.append(ZJets_AMC_1j_B)
+# Background.append(ZJets_AMC_2j_A)
+# Background.append(ZJets_AMC_2j_B)
+# Background.append(ZJets_hiM)
+# Background.append(ZJets_MG)
+# Background.append(ZJets_MG_HER)
+# Background.append(ZJets_MG_HT_70_100)
+# Background.append(ZJets_MG_HT_100_200_A)
+# Background.append(ZJets_MG_HT_100_200_B)
+# Background.append(ZJets_MG_HT_200_400_A)
+# Background.append(ZJets_MG_HT_200_400_B)
+# Background.append(ZJets_MG_HT_400_600_A)
+# Background.append(ZJets_MG_HT_400_600_B)
+# Background.append(ZJets_MG_HT_600_800)
+# Background.append(ZJets_MG_HT_800_1200)
+# Background.append(ZJets_MG_HT_1200_2500)
+# Background.append(ZJets_MG_HT_2500_inf)
 
 ####################
 ###  Single top  ###
