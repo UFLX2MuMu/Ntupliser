@@ -161,7 +161,7 @@ H2Mu_VBF_120 = sample( name = 'H2Mu_VBF_120',
                        DAS  = '/VBF_HToMuMu_M120_13TeV_powheg_pythia8/'+DAS_era_sig,
                        nEvt = 249200 ) ## 250 k
 
-H2Mu_VBF_120 = sample( name = 'H2Mu_VBF_130',
+H2Mu_VBF_130 = sample( name = 'H2Mu_VBF_130',
                        DAS  = '/VBF_HToMuMu_M130_13TeV_powheg_pythia8/'+DAS_era_sig,
                        nEvt = 249200 ) ## 250 k
 
@@ -197,11 +197,11 @@ H2Mu_ZH = sample( name = 'H2Mu_ZH',
                   nEvt = 249748 ) ## 250 k
 
 H2Mu_ZH_120 = sample( name = 'H2Mu_ZH_120',
-                  DAS  = '/ZH_HToMuMu_M125_13TeV_powheg_pythia8/'+DAS_era_sig,
+                  DAS  = '/ZH_HToMuMu_M120_13TeV_powheg_pythia8/'+DAS_era_sig,
                   nEvt = 249748 ) ## 250 k
 
 H2Mu_ZH_130 = sample( name = 'H2Mu_ZH_130',
-                      DAS  = '/ZH_HToMuMu_M125_13TeV_powheg_pythia8/'+DAS_era_sig,
+                      DAS  = '/ZH_HToMuMu_M130_13TeV_powheg_pythia8/'+DAS_era_sig,
                       nEvt = 249748 ) ## 250 k
 
 # ## ttH

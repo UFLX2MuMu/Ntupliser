@@ -14,7 +14,7 @@ config.JobType.outputFiles = ['tuple.root'] ## Must be the same as the output fi
 config.JobType.pluginName = 'Analysis'
 
 config.section_('Data')
-config.Data.inputDBS = 'DBS'
+config.Data.inputDBS = 'global'
 
 config.Data.inputDataset = 'STR'
 # config.Data.lumiMask = 'STR'
@@ -23,7 +23,7 @@ config.Data.useParent = False
 config.Data.splitting = 'STR'
 config.Data.unitsPerJob = NUM  ## Should take ~10 minutes for 100k events
 
-config.Data.outLFNDirBase = '/store/group/phys_higgs/HiggsExo/H2Mu/UF/ntuples/data_2017_and_mc_fall17/'
+config.Data.outLFNDirBase = '/store/group/phys_higgs/HiggsExo/H2Mu/UF/ntuples/Moriond17/Mar13_hiM/'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'STR'
 
