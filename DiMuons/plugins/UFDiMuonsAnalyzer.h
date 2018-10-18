@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 //=========================================================
-// UFDiMuonsAnalyzer.h                                   //
+// DiMuons.h                                   //
 //=========================================================
 //                                                       //
 // H->MuMu Analyzer for UF. Handed down and revamped     //
@@ -27,7 +27,7 @@
 // Class Definition ======================================
 //////////////////////////////////////////////////////////
 
-class UFDiMuonsAnalyzer : public edm::EDAnalyzer {
+class DiMuons : public edm::EDAnalyzer {
 
 public:
 
@@ -35,8 +35,8 @@ public:
   // Constructors/Destructors===============================
   //////////////////////////////////////////////////////////
 
-  explicit UFDiMuonsAnalyzer(const edm::ParameterSet&);
-  ~UFDiMuonsAnalyzer();
+  explicit DiMuons(const edm::ParameterSet&);
+  ~DiMuons();
 
   ///////////////////////////////////////////////////////////
   // Basic types ===========================================
@@ -417,6 +417,6 @@ private:
   std::vector < int > _hltPrescale;
 };
 
-DEFINE_FWK_MODULE(UFDiMuonsAnalyzer);
+DEFINE_FWK_MODULE(DiMuons);
 #endif
 

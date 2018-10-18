@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 ## Assumes you are looking at miniAOD
-DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
+DiMuons = cms.EDAnalyzer('DiMuons',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(False),

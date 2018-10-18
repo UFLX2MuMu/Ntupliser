@@ -1,5 +1,5 @@
 # =============================================================#
-# UFDiMuonsAnalyzer                                             #
+# DiMuons                                             #
 # =============================================================#
 # Makes stage1 trees.                                          #
 # Adds a cleaner vector of jets to each event.                 #
@@ -15,7 +15,7 @@
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("UFDiMuonsAnalyzer")
+process = cms.Process("DiMuons")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -136,13 +136,13 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_
 # process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_Roch_test.root") )
 # process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_MG_HT_2500_inf_test_100.root") )
 # /////////////////////////////////////////////////////////////
-# Load UFDiMuonsAnalyzer
+# Load DiMuons
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")

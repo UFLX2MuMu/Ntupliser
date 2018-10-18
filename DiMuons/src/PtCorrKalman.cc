@@ -38,7 +38,7 @@ void CorrectPtKaMu( KalmanMuonCalibrator& _calib, const bool _doSys,
 
   // Variations on the scale of the muon pt
   // In principle not an uncertainty on the pt resolution
-  // Quadruples the running time of the entire UFDiMuonsAnalyzer NTuple-maker
+  // Quadruples the running time of the entire DiMuons NTuple-maker
   // Goes from ~31s per 4k events to ~2m 08s
   std::vector< std::pair<double, double> > pt_up_down;
   double sum_sq_up   = 0;
@@ -63,7 +63,7 @@ void CorrectPtKaMu( KalmanMuonCalibrator& _calib, const bool _doSys,
     }
   }
   
-  // Increases the running fime of the UFDiMuonsAnalyzer NTuple-maker by ~33%
+  // Increases the running fime of the DiMuons NTuple-maker by ~33%
   // Goes from ~31s per 4k events to ~42s
   _calib.varyClosure(+1);
   double pt_clos_up   = _calib.getCorrectedPt( pt_v2, _eta, _phi, _charge );

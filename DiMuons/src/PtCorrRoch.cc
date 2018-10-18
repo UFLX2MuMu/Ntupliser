@@ -36,7 +36,7 @@ void CorrectPtRoch( const RoccoR _calib, const bool _doSys, const TLorentzVector
   double sum_sq_down = 0;
   
   // Throw 100 toys to generate uncertainty on correction
-  // Even with 100 toys, only increases UFDiMuonsAnalyzer NTuple-maker time from 2 min for 10k events to 2:20
+  // Even with 100 toys, only increases DiMuons NTuple-maker time from 2 min for 10k events to 2:20
   for (int i = 0; i < 100; i++) {
     if (!_doSys) break;
     

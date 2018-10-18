@@ -1,5 +1,5 @@
 # =============================================================#
-# UFDiMuonsAnalyzer                                             #
+# DiMuons                                             #
 # =============================================================#
 # Makes stage1 trees.                                          #
 # Adds a cleaner vector of jets to each event.                 #
@@ -15,7 +15,7 @@
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("UFDiMuonsAnalyzer")
+process = cms.Process("DiMuons")
 
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -144,13 +144,13 @@ if thisIsData:
 process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_vec_test.root") )
 
 # /////////////////////////////////////////////////////////////
-# Load UFDiMuonsAnalyzer
+# Load DiMuons
 # /////////////////////////////////////////////////////////////
 
 if thisIsData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag   = cms.InputTag("cleanJets")

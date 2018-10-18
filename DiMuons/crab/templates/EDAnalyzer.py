@@ -1,5 +1,5 @@
 # =============================================================#
-# UFDiMuonsAnalyzer                                            #
+# DiMuons                                            #
 # =============================================================#
 # Makes stage 1 trees.                                         #
 # Originally Made by Justin Hugon. Edited by Andrew Carnes and #
@@ -12,7 +12,7 @@
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("UFDiMuonsAnalyzer")
+process = cms.Process("DiMuons")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -110,13 +110,13 @@ if samp.isData:
 process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
 
 # /////////////////////////////////////////////////////////////
-# Load UFDiMuonsAnalyzer
+# Load DiMuons
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
 else:
-  process.load("UfHMuMuCode.UFDiMuonsAnalyzer.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
 
 process.dimuons = process.DiMuons.clone()
 

@@ -1,8 +1,8 @@
 
-#include "Ntupliser/DiMuons/plugins/UFDiMuonsAnalyzer.h"
+#include "Ntupliser/DiMuons/plugins/DiMuons.h"
 
 // Constructor
-UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
+DiMuons::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _numEvents(0)
 {
   // Initialize the weighted count and the trees.
@@ -152,10 +152,10 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
   _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
 
-} // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
+} // End constructor: DiMuons::UFDiMuonsAnalyzer
 
 // Destructor
-UFDiMuonsAnalyzer::~UFDiMuonsAnalyzer() {
+DiMuons::~UFDiMuonsAnalyzer() {
 
   if (_isMonteCarlo)
     _PU_wgt_file->Close();
@@ -166,7 +166,7 @@ UFDiMuonsAnalyzer::~UFDiMuonsAnalyzer() {
 }
 
 // Called once per event
-void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void DiMuons::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
   // ------------------------
   // COUNT EVENTS AND WEIGHTS 
@@ -188,7 +188,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     edm::Handle<LHEEventProduct> LHE_handle;
     iEvent.getByToken(_LHE_token, LHE_handle);
     if (!LHE_handle.isValid()) {
-      std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting LHEEventProduct from Event!" << std::endl;
+      std::cout << "DiMuons::analyze: Error in getting LHEEventProduct from Event!" << std::endl;
       return;
     }
 
@@ -209,14 +209,14 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::TriggerResults> trigResultsHandle;
   iEvent.getByToken(_trigResultsToken, trigResultsHandle);
   if (!trigResultsHandle.isValid()) {
-    std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting TriggerResults product from Event!" << std::endl;
+    std::cout << "DiMuons::analyze: Error in getting TriggerResults product from Event!" << std::endl;
     return;
   }
 
   edm::Handle<pat::TriggerObjectStandAloneCollection> trigObjsHandle;
   iEvent.getByToken(_trigObjsToken, trigObjsHandle);
   if (!trigObjsHandle.isValid()) {
-    std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting TriggerObjects product from Event!" << std::endl;
+    std::cout << "DiMuons::analyze: Error in getting TriggerObjects product from Event!" << std::endl;
     return;
   }
 
@@ -238,7 +238,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::TriggerResults> evtFlagsHandle;
   iEvent.getByToken(_evtFlagsToken, evtFlagsHandle);
   if (!evtFlagsHandle.isValid()) {
-    std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting event flags from Event!" << std::endl;
+    std::cout << "DiMuons::analyze: Error in getting event flags from Event!" << std::endl;
     return;
   }
 
@@ -625,7 +625,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   _outTree->Fill();
   if (_isVerbose) std::cout << "\nD O N E !!! WITH EVENT!" << std::endl;
   return;  
-} // End void UFDiMuonsAnalyzer::analyze
+} // End void DiMuons::analyze
 
 	
 ///////////////////////////////////////////////////////////
@@ -634,7 +634,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 // Method called once each job just before starting event loop
 // Set up TTrees where we save all of the info gathered in the analyzer
-void UFDiMuonsAnalyzer::beginJob() {
+void DiMuons::beginJob() {
 
   displaySelection();
 
@@ -834,7 +834,7 @@ void UFDiMuonsAnalyzer::beginJob() {
 // BeginJob ==============================================
 //////////////////////////////////////////////////////////
 
-void UFDiMuonsAnalyzer::endJob() 
+void DiMuons::endJob() 
 {
 // Method called once each job just after ending the event loop
 // Set up the meta data ttree and save it.
@@ -862,7 +862,7 @@ void UFDiMuonsAnalyzer::endJob()
 //-------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSetup& iSetup, 
+bool DiMuons::isHltPassed(const edm::Event& iEvent, const edm::EventSetup& iSetup, 
 				    const edm::Handle<edm::TriggerResults>& trigResultsHandle,
                                     const std::vector<std::string> desiredTrigNames) 
 {
@@ -910,7 +910,7 @@ bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSe
 //-------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::EventSetup& iSetup,
+void DiMuons::FillEventFlags(const edm::Event& iEvent, const edm::EventSetup& iSetup,
 				       const edm::Handle<edm::TriggerResults>& evtFlagsHandle,
 				       int& _Flag_all, int& _Flag_badMu, int& _Flag_dupMu, int& _Flag_halo, 
 				       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP ) {
@@ -958,13 +958,13 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
        _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_ECAL_TP == 1 )
     _Flag_all = 1;
   
-} // End function: void UFDiMuonsAnalyzer::FillEventFlags()
+} // End function: void DiMuons::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////
 //-------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-float UFDiMuonsAnalyzer::calcHtLHE(const edm::Handle<LHEEventProduct>& LHE_handle) {
+float DiMuons::calcHtLHE(const edm::Handle<LHEEventProduct>& LHE_handle) {
 
   int   num_isr_me = 0;
   float ht_isr_me  = 0;
@@ -997,9 +997,9 @@ float UFDiMuonsAnalyzer::calcHtLHE(const edm::Handle<LHEEventProduct>& LHE_handl
 //-------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-void UFDiMuonsAnalyzer::displaySelection() {
+void DiMuons::displaySelection() {
 
-  std::cout << "\n\n*** UFDiMuonsAnalyzer Configuration ***\n";
+  std::cout << "\n\n*** DiMuons Configuration ***\n";
 
   // cout object / event cuts - AWB 14.11.16
   std::cout << "_vertex_ndof_min = " << _vertex_ndof_min << std::endl;
@@ -1040,8 +1040,8 @@ void UFDiMuonsAnalyzer::displaySelection() {
 //-- ----------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-bool UFDiMuonsAnalyzer::sortMuonsByPt    (pat::Muon i,     pat::Muon j    ) { return (i.pt() > j.pt()); }
-bool UFDiMuonsAnalyzer::sortElesByPt     (pat::Electron i, pat::Electron j) { return (i.pt() > j.pt()); }
-// bool UFDiMuonsAnalyzer::sortTausByPt     (pat::Tau i,      pat::Tau j     ) { return (i.pt() > j.pt()); }
-bool UFDiMuonsAnalyzer::sortJetsByPt     (pat::Jet i,      pat::Jet j     ) { return (i.pt() > j.pt()); }
+bool DiMuons::sortMuonsByPt    (pat::Muon i,     pat::Muon j    ) { return (i.pt() > j.pt()); }
+bool DiMuons::sortElesByPt     (pat::Electron i, pat::Electron j) { return (i.pt() > j.pt()); }
+// bool DiMuons::sortTausByPt     (pat::Tau i,      pat::Tau j     ) { return (i.pt() > j.pt()); }
+bool DiMuons::sortJetsByPt     (pat::Jet i,      pat::Jet j     ) { return (i.pt() > j.pt()); }
 
