@@ -263,6 +263,13 @@ Zd2Mu_180 = sample ( name = 'Zd2Mu_180',
                     )
 
 
+Zd2Mu_70 = sample ( name = 'Zd2Mu_70',
+                     DAS  = '/DarkPhoton/swmukher-ZdToMuMu-70-eps0p02_AOD-c3d6de13a4792afb4dd0c4ab58e49a3d/USER',
+                     files = ['/store/user/swmukher/DarkPhoton/ZdToMuMu-70-eps0p02_AOD/181006_233015/0000/aod_99.root'],
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
+
 
 
 Signal = []  ## All H2Mu signal samples
