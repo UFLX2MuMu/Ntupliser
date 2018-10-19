@@ -360,8 +360,8 @@ ZJets_MG = sample( name = 'ZJets_MG',
                     nEvt = -1
                   )
 
-ZJets_MG_2 = sample( name = 'ZJets_MG_2'
-                     DAS = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+ZJets_MG_2 = sample( name = 'ZJets_MG_2',
+                     DAS = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM',
                      nEvt = -1
                    )
 
