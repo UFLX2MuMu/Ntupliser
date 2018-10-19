@@ -342,20 +342,28 @@ Background = []  ## All H2Mu background samples
 
 
 # DYJets inclusive Fall17
+#what is this /DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017RECOPF_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM
+
 ZJets_AMC = sample( name = 'ZJets_AMC',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
                     nEvt = -1
                   )
 
+
 ZJets_AMC_2 = sample ( name = 'ZJets_AMC_2',
-                       DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                       DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM',
                        nEvt = -1 )
 
 #DYJets MLM
 ZJets_MG = sample( name = 'ZJets_MG',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
                     nEvt = -1
                   )
+
+ZJets_MG_2 = sample( name = 'ZJets_MG_2'
+                     DAS = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+                     nEvt = -1
+                   )
 
 ## Mass bins
 ZJets_m_10_50 = sample ( name = 'ZJets_m_10_50',
@@ -379,7 +387,7 @@ ZJets_m_120_200 = sample ( name = 'ZJets_m_120_200', DAS = '/ZToMuMu_NNPDF31_13T
 Background.append(ZJets_MG)
 #Background.append(ZJets_MG_HER)
 Background.append(ZJets_AMC)
-Background.append(ZJets_AMC_2)
+#Background.append(ZJets_AMC_2)
 #Background.append(ZJets_hiM)
 
 #Background.append(ZJets_MG_HT_70_100)
@@ -425,8 +433,9 @@ Background.append(ZJets_m_120_200)
 # Creation time: 2018-01-08 16:44:57, Dataset size: 8.3TB, Number of blocks: 203, Number of events: 153596015, Number of files: 2849, Physics group: NoGroup, Status: VALID, Type: mc
 
 tt = sample( name = 'tt',
-             DAS  = '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
-             files = ['/store/mc/RunIIFall17MiniAOD/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0021B93F-59F3-E711-9B8D-14DDA924324B.root'],
+# should I use the new premixing? for pre-production I am not.
+# /TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM
+             DAS  = '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
              nEvt = -1
            )
 
