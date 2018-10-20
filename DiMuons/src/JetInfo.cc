@@ -46,8 +46,9 @@ void JetInfo::init() {
   genInvF    = -999;
   genAuxF    = -999;
   
-  CSV  = -999;
-  puID = -999;
+  CSV     = -999;
+  deepCSV = -999;
+  puID    = -999;
 
 } // End void JetInfo::init()
 

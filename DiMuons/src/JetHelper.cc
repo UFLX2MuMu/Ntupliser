@@ -16,6 +16,7 @@ void FillSlimJetInfos( SlimJetInfos& _slimJetInfos, const JetInfos _jetInfos ) {
     s.jecFactor = j.jecFactor;
     s.jecUnc    = j.jecUnc;
     s.CSV       = j.CSV;
+    s.deepCSV   = j.deepCSV;
     s.puID      = j.puID;
     _slimJetInfos.push_back(s);
   }
@@ -71,10 +72,11 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     _jetInfo.jecUnc    = -1.0;
     _jetInfo.jecFactor = jet.jecFactor("Uncorrected");
     
-    _jetInfo.CSV  = jet.bDiscriminator(_btagName);
+    _jetInfo.CSV     = jet.bDiscriminator(_btagName);
     if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
     if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
-    _jetInfo.puID = jet.userFloat("pileupJetId:fullDiscriminant");
+    _jetInfo.deepCSV = jet.bDiscriminator("pfDeepCSVJetTags:probb") + jet.bDiscriminator("pfDeepCSVJetTags:probbb");
+    _jetInfo.puID    = jet.userFloat("pileupJetId:fullDiscriminant");
     
     const reco::GenJet* genJet = jet.genJet();
     if (genJet != NULL) {

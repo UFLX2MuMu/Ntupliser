@@ -16,8 +16,9 @@ struct SlimJetInfo {
   Float_t jecFactor;
   Float_t jecUnc   ;
 
-  Float_t CSV ;
-  Float_t puID;
+  Float_t CSV    ;
+  Float_t deepCSV;
+  Float_t puID   ;
 
 };
 
@@ -73,8 +74,9 @@ struct JetInfo {
   Float_t genInvF;  // Invisible Fraction
   Float_t genAuxF;  // Auxiliary Fraction (Undecayed Sigmas, etc.)
 
-  Float_t CSV ;  // Btag CSV_v2
-  Float_t puID;  // PUID
+  Float_t CSV ;     // Btag CSV_v2
+  Float_t deepCSV;  // DeepFlavor tagger, sum of p(b) + p(bb)
+  Float_t puID;     // PUID
 
   void init();
 
