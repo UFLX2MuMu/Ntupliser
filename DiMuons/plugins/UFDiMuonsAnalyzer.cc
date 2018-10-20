@@ -5,6 +5,8 @@
 UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _numEvents(0)
 {
+  std::cout << "\nInside UFDiMuonsAnalyzer constructor" << std::endl;
+
   // Initialize the weighted count and the trees.
   // Use the file service to make the trees so that it knows to save them.
   _sumEventWeights = 0;
@@ -92,19 +94,22 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _jet_pT_min  = iConfig.getParameter<double>      ("jet_pT_min");
   _jet_eta_max = iConfig.getParameter<double>      ("jet_eta_max");
 
+  std::cout << "Opening Kalman Muon Calibrator files located in:" << std::endl;
+  std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"    << std::endl;
+  std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV"       << std::endl;
   if (_isMonteCarlo) _KaMu_calib = KalmanMuonCalibrator("MC_80X_13TeV");
   else               _KaMu_calib = KalmanMuonCalibrator("DATA_80X_13TeV");
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/Feb06/config.txt");
+  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2016v1.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
-  std::string file_RochCor = "/config.txt";
-  std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
-  if (find_RochCor != std::string::npos)
-    path_RochCor.erase(find_RochCor, file_RochCor.length());
+  // std::string file_RochCor = "/RoccoR2016v1.txt";
+  // std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
+  // if (find_RochCor != std::string::npos)
+  //   path_RochCor.erase(find_RochCor, file_RochCor.length());
 
-  std::cout << "Rochester correction files located in " << path_RochCor << std::endl;
+  std::cout << "Opening Rochester Correction files located in " << path_RochCor << std::endl;
   _Roch_calib.init(path_RochCor);
   _doSys_Roch = iConfig.getParameter<bool>("doSys_Roch");
 
@@ -150,6 +155,8 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
   _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
   _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+
+  std::cout << "Finished with UFDiMuonsAnalyzer constructor\n" << std::endl;
 
 } // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
 

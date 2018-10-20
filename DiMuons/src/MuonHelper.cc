@@ -527,7 +527,7 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 
   float abs_dPhi  = acos( cos(phi2 - phi1) );
   float sign_dPhi = sin(phi2 - phi1) / fabs( sin(phi2 - phi1) );
-  std::cout << "phi1 = " << phi1 << ", phi2 = " << phi2 << ", dPhi = " << abs_dPhi*sign_dPhi << " (sign = " << sign_dPhi << ")" << std::endl;
+  // std::cout << "phi1 = " << phi1 << ", phi2 = " << phi2 << ", dPhi = " << abs_dPhi*sign_dPhi << " (sign = " << sign_dPhi << ")" << std::endl;
   return abs_dPhi*sign_dPhi;
 }
 
