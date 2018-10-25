@@ -1,24 +1,28 @@
 #! /usr/bin/env python 
 
-from python.Samples_Moriond17 import *
 import time  ## For timestamp on crab jobs
-import os  ## For executable permissions on scripts
+import os    ## For executable permissions on scripts
+import sys
+
+sys.path.insert(0, '%s/../python' % os.getcwd())
+from Samples_2016_94X_v2 import *
 
 samps = []
 
 ## Get the samples you want to make a crab config file for 
-test_run = False
-test_str = '_hiM'
-# samps.extend(SingleMu)
-# samps.extend(Signal)
-# samps.extend(Background)
-samps.extend(DataAndMC)
+# test_run = False
+# test_str = '_hiM'
+# # samps.extend(SingleMu)
+# # samps.extend(Signal)
+# # samps.extend(Background)
+# samps.extend(DataAndMC)
 
-# test_run = True
-# test_str = '_v1'
-# samps.append(SingleMu_2016C)
+test_run = True
+test_str = '_LepMVA_3l_test_v1'
+samps.extend(SingleMu)
 # samps.append(H2Mu_gg)
-# samps.append(ZJets_MG_HT_2500_inf)
+samps.append(ZJets_AMC)
+samps.append(tt_ll_AMC)
 
 for samp in samps:
     print '\nCreating analyzer and crab config for %s' % samp.name
@@ -36,7 +40,7 @@ for samp in samps:
         line = line.replace('samp.DAS', "'%s'" % samp.DAS)
         line = line.replace('samp.GT', "'%s'" % samp.GT)
         line = line.replace('samp.files', str(samp.files))
-        line = line.replace('samp.JSON', "'%s'" % samp.JSON)
+        # line = line.replace('samp.JSON', "'%s'" % samp.JSON)
         # line = line.replace('samp.inputDBS','%s' %samp.inputDBS)
 
         out_file.write(line)
@@ -64,19 +68,16 @@ for samp in samps:
 
         if samp.isData and 'lumiMask' in line: 
             line = line.replace('# config.Data.lumiMask', 'config.Data.lumiMask')
-            line = line.replace("= 'STR'", "= '%s'" % samp.JSON)
+            line = line.replace("= 'STR'", "= '%s/../%s'" % (os.getcwd(), samp.JSON) )
 
         if 'splitting' in line:
-            if samp.isData:
-                line = line.replace("= 'STR'", "= 'LumiBased'")
-            else:
-                line = line.replace("= 'STR'", "= 'FileBased'")
+            line = line.replace("= 'STR'", "= 'FileBased'")
 
         if 'unitsPerJob' in line:
             if test_run:
-                line = line.replace('= NUM', '= 1')
+                line = line.replace('= NUM', '= 5')
             elif samp.isData:
-                line = line.replace('= NUM', '= 100')
+                line = line.replace('= NUM', '= 10')
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
@@ -100,7 +101,7 @@ print '\nCreating submit_all.sh and check_all.sh scripts'
 out_file = open('submit_all.sh', 'w')
 out_file.write('#!/bin/bash\n')
 out_file.write('\n')
-#out_file.write('source /cvmfs/cms.cern.ch/crab3/crab.csh\n')
+# out_file.write('source /cvmfs/cms.cern.ch/crab3/crab.csh\n')
 out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
@@ -115,6 +116,6 @@ out_file.write('\n')
 # out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
-    out_file.write('crab status -d logs/crab_%s_%s\n' % (samp.name, time.strftime('%Y_%m_%d')))
+    out_file.write('crab status -d logs/crab_%s_%s%s\n' % (samp.name, time.strftime('%Y_%m_%d'), test_str))
 out_file.close()
 os.chmod('check_all.sh', 0o744)

@@ -44,7 +44,7 @@ AWB_dir = '/store/user/abrinke1/HiggsToMuMu/samples/'
 
 
 SingleMu_2016B = sample( name   = 'SingleMu_2016B',
-                         DAS    = '/SingleMuon/Run2016B-17Jul2018_ver2-v2/MINIAOD',
+                         DAS    = '/SingleMuon/Run2016B-17Jul2018_ver2-v1/MINIAOD',
                          GT     = '94X_dataRun2_v10',
                          JEC    = 'Summer16_07Aug2017All_V11_DATA',
                          JSON   = JSON_2016,
@@ -52,7 +52,7 @@ SingleMu_2016B = sample( name   = 'SingleMu_2016B',
 
 SingleMu_2016C = sample( name   = 'SingleMu_2016C',
                          DAS    = '/SingleMuon/Run2016C-17Jul2018-v1/MINIAOD',
-                         files = [ AWB_dir+'SingleMuon_Run2016C/17Jul2018-v1/004A1ACA-D5EA-E611-885F-B499BAA6776E.root' ],
+                         files = [ AWB_dir+'SingleMuon_Run2016C/17Jul2018-v1/D6E4B6C8-1C9B-E811-8C98-90E2BAD5729C.root' ],
                          GT     = '94X_dataRun2_v10',
                          JEC    = 'Summer16_07Aug2017All_V11_DATA',
                          JSON   = JSON_2016,
@@ -282,7 +282,7 @@ DAS_AMC       = 'TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv'
 ###################
 ###  Drell-Yan  ###
 ###################
-ZJets_AMC_dir = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/94X_mcRun2_asymptotic_v3/'
+ZJets_AMC_dir            = 'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/94X_mcRun2_asymptotic_v3/'
 ZJets_MG_HT_2500_inf_dir = 'DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/'
 
 ZJets_AMC = sample( name = 'ZJets_AMC',
@@ -290,17 +290,17 @@ ZJets_AMC = sample( name = 'ZJets_AMC',
                     nEvt = 120777245,  ## 121 million
                     files = [ AWB_dir+ZJets_AMC_dir+'2ECA84BD-B0CA-E811-9449-1866DA890B94.root' ] )
 
-# ZJets_AMC_0j_A = sample( name = 'ZJets_AMC_0j_A',
-#                          DAS  = '/DYToLL_0J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC+'_ext1-v1/MINIAODSIM',
-#                          nEvt = 49579613 )  ## 50 million
+ZJets_AMC_0j_A = sample( name = 'ZJets_AMC_0j_A',
+                         DAS  = '/DYToLL_0J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC+'_ext1-v1/MINIAODSIM',
+                         nEvt = 49538540 )  ## 50 million
 
 # ZJets_AMC_0j_B = sample( name = 'ZJets_AMC_0j_B',
 #                          DAS  = '/DYToLL_0J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_2+'-v1/MINIAODSIM',
 #                          nEvt = 44253240 )  ## 44 million
 
-# ZJets_AMC_1j_A = sample( name = 'ZJets_AMC_1j_A',
-#                          DAS  = '/DYToLL_1J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC+'_ext1-v1/MINIAODSIM',
-#                          nEvt = 49902571 )  ## 50 million
+ZJets_AMC_1j_A = sample( name = 'ZJets_AMC_1j_A',
+                         DAS  = '/DYToLL_1J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC+'_ext1-v1/MINIAODSIM',
+                         nEvt = 50121080 )  ## 50 million
 
 # ZJets_AMC_1j_B = sample( name = 'ZJets_AMC_1j_B',
 #                          DAS  = '/DYToLL_1J_13TeV-amcatnloFXFX-pythia8/'+DAS_era_bkg_2+'-v1/MINIAODSIM',
@@ -374,9 +374,9 @@ ZJets_MG_HER = sample( name = 'ZJets_MG_HER',
 #                                )
 
 Background.append(ZJets_AMC)
-# Background.append(ZJets_AMC_0j_A)
+Background.append(ZJets_AMC_0j_A)
 # Background.append(ZJets_AMC_0j_B)
-# Background.append(ZJets_AMC_1j_A)
+Background.append(ZJets_AMC_1j_A)
 # Background.append(ZJets_AMC_1j_B)
 # Background.append(ZJets_AMC_2j_A)
 # Background.append(ZJets_AMC_2j_B)
@@ -471,7 +471,7 @@ Background.append(tt_ll_AMC)
 
 # WZ_3l_AMC = sample( name = 'WZ_3l_AMC',
 #                     DAS  = '/WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC+'-v1/MINIAODSIM',
-#                     nEvt = 11887464 ) ## 12 million 
+#                     nEvt = 11887464 ) ## 12 million
 
 # WZ_3l_POW = sample( name = 'WZ_3l_POW',
 #                     DAS  = '/WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/'+DAS_era_MC+'-v1/MINIAODSIM',

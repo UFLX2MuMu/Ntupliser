@@ -1,8 +1,8 @@
 # =============================================================#
 #                      UFDiMuonsAnalyzer                       #
 #                                                              #
-# Stripped down, no updateJetCollection, apparently not needed #
-# egmGsfElectronID necessary for electron ID - AWB 23.10.2018  #
+# Unscheduled, as recommended - much faster!                   #
+# Also lets updateJetCollection work out of the box            #
 # =============================================================#
 
 
@@ -24,6 +24,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # /////////////////////////////////////////////////////////////
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
+
+# from python.Samples_2016_94X_v2 import SingleMu_2016C as samp
+# from python.Samples_2016_94X_v2 import H2Mu_gg as samp
+from python.Samples_2016_94X_v2 import ZJets_AMC as samp
+# from python.Samples_2016_94X_v2 import ZJets_MG_HT_2500_inf as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -60,18 +65,21 @@ process.source = cms.Source('PoolSource',fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
 
-# # use a JSON file when locally executing cmsRun
-# if samp.isData:
-#     import FWCore.PythonUtilities.LumiList as LumiList
-#     process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
-#     # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
+# use a JSON file when locally executing cmsRun
+if samp.isData:
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
+    # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
 
 
 # /////////////////////////////////////////////////////////////
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service('TFileService', fileName = cms.string('tuple.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C_Unched_noJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_GEN_Unched.root') )
+process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC_Unched_noJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf_Unsched.root') )
 
 
 # /////////////////////////////////////////////////////////////
@@ -87,6 +95,29 @@ eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_
 for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
 
 
+# # /////////////////////////////////////////////////////////////
+# # Update jet energy corrections
+# # /////////////////////////////////////////////////////////////
+
+# ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+# ## See also https://github.com/cms-sw/cmssw/blob/CMSSW_7_6_X/PhysicsTools/PatAlgos/test/patTuple_updateJets_fromMiniAOD_cfg.py
+# ## Some details based on https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/jetSequence_cff.py
+# ## And additionall https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeJetTools_cff.py#L47
+# from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+# process.load('Configuration.StandardSequences.MagneticField_cff') # needed for pfImpactParameterTagInfos
+
+# updateJetCollection(
+#     process,
+#     jetSource = cms.InputTag('slimmedJets'),
+#     labelName = 'UpdatedJEC',
+#     jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
+#     ## Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+#     btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+#                            'pfDeepCSVJetTags:probb',
+#                            'pfDeepCSVJetTags:probbb' ]
+#     )
+
+
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
 # /////////////////////////////////////////////////////////////
@@ -96,6 +127,14 @@ if samp.isData:
 else:
   process.load('Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff')
 
+process.dimuons.isVerbose  = cms.untracked.bool(False)
+process.dimuons.doSys      = cms.bool(True)
+process.dimuons.doSys_KaMu = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(True)
+process.dimuons.slimOut    = cms.bool(True)
+
+process.dimuons.jetsTag    = cms.InputTag('slimmedJets')
+
 
 # # /////////////////////////////////////////////////////////////
 # # Save output tree
@@ -104,12 +143,12 @@ else:
 # outCommands = cms.untracked.vstring('keep *')
 
 # process.treeOut = cms.OutputModule('PoolOutputModule',
-#                                    fileName = cms.untracked.string('GluGlu_HToMuMu_M125_JEC_10k_tree.root'),
+#                                    fileName = cms.untracked.string('tree.root'),
 #                                    outputCommands = outCommands
 #                                    )
 
 # process.treeOut_step = cms.EndPath(process.treeOut) ## Keep output tree
-
+    
 
 # /////////////////////////////////////////////////////////////
 # Set the order of operations

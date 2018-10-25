@@ -1,8 +1,8 @@
 # =============================================================#
 #                      UFDiMuonsAnalyzer                       #
 #                                                              #
-# Stripped down, no updateJetCollection, apparently not needed #
-# egmGsfElectronID necessary for electron ID - AWB 23.10.2018  #
+# Scheduled, no longer recommended - much slower               #
+# Also complicates updateJetCollection                         #
 # =============================================================#
 
 
@@ -25,9 +25,9 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-from python.Samples_2016_94X_v2 import SingleMu_2016C as samp
+# from python.Samples_2016_94X_v2 import SingleMu_2016C as samp
 # from python.Samples_2016_94X_v2 import H2Mu_gg as samp
-# from python.Samples_2016_94X_v2 import ZJets_AMC as samp
+from python.Samples_2016_94X_v2 import ZJets_AMC as samp
 # from python.Samples_2016_94X_v2 import ZJets_MG_HT_2500_inf as samp
 
 if samp.isData:
@@ -76,10 +76,12 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_GEN.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C_Sched_slimmedJets_noJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_GEN_Sched.root') )
+process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC_Sched_slimmedJets_noJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC_Sched_updatedPatJetsUpdatedJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC_Sched_updatedPatJetsTransientCorrectedUpdatedJEC.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf_Sched.root') )
 
 
 # /////////////////////////////////////////////////////////////
@@ -93,6 +95,32 @@ switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
            'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff' ]
 for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
+
+
+# # /////////////////////////////////////////////////////////////
+# # Update jet energy corrections
+# # /////////////////////////////////////////////////////////////
+
+# ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+# ## See also https://github.com/cms-sw/cmssw/blob/CMSSW_7_6_X/PhysicsTools/PatAlgos/test/patTuple_updateJets_fromMiniAOD_cfg.py
+# ## Some details based on https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/jetSequence_cff.py
+# from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+# process.load('Configuration.StandardSequences.MagneticField_cff') # needed for pfImpactParameterTagInfos
+
+# updateJetCollection(
+#     process,
+#     jetSource = cms.InputTag('slimmedJets'),
+#     labelName = 'UpdatedJEC',
+#     jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
+#     ## Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+#     btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+#                            'pfDeepCSVJetTags:probb',
+#                            'pfDeepCSVJetTags:probbb' ]
+#     ## Requires switch to 'updatedPatJetsTransientCorrectedUpdatedJEC' as jetsTag input source
+#     ## https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/python/tools/jetTools.py#L1660
+#     )
+
+# process.jetSequence = cms.Sequence(process.patAlgosToolsTask)
 
 
 # /////////////////////////////////////////////////////////////
@@ -110,7 +138,21 @@ process.dimuons.doSys_KaMu = cms.bool(False)
 process.dimuons.doSys_Roch = cms.bool(True)
 process.dimuons.slimOut    = cms.bool(True)
 
-process.dimuons.jetsTag    = cms.InputTag('slimmedJets')
+## No warning, deepCSV and jecFactor apparently filled
+## Exactly identical nJets and jets pt, eta, jecFactor, CSV, and deepCSV to Unscheduled
+## Also exactly identical eles mvaID and lepMVA, and muons lepMVA
+process.dimuons.jetsTag = cms.InputTag('slimmedJets')
+
+# # ## Gives following fatal exception: This JEC level L1FastJet does not exist.
+# process.dimuons.jetsTag = cms.InputTag('updatedPatJetsUpdatedJEC')
+
+# ## Gives following warning:
+# ## %MSG-w L3Absolute not found:  PATJetUpdater:updatedPatJetsUpdatedJEC
+# ## L2L3Residual and L3Absolute are not part of the jetCorrFactors
+# ## of module patJetCorrFactorsUpdatedJEC. Jets will remain uncorrected.
+# ## Exactly identical nJets and jets pt, eta, and jecFactor to Unscheduled
+# ## *VERY* slightly different CSV and deepCSV, also lepMVA
+# process.dimuons.jetsTag = cms.InputTag('updatedPatJetsTransientCorrectedUpdatedJEC')
 
 
 # # /////////////////////////////////////////////////////////////
@@ -133,15 +175,13 @@ process.dimuons.jetsTag    = cms.InputTag('slimmedJets')
     
 print 'About to run the process path'
 
-## Unscheduled running Recommended at least by JetMET, but apparently 'default' and not necessary in CMSSW >= 9_1_0
-## https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideUnscheduledExecution
+process.p = cms.Path( # process.BadPFMuonFilter *
+                      process.egmGsfElectronIDSequence *  ## See eleIDs above
+                      # process.jetSequence *  ## See updateJetCollection above
+                      process.dimuons )
 
-## Following struture seen in:
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/test/runMiniAnalyzer_cfg.py#L169
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeJetTools_cff.py#L47
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeEGM_cff.py#L67
+# ## https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideUnscheduledExecution
+# from FWCore.ParameterSet.Utilities import convertToUnscheduled
+# convertToUnscheduled(process)
 
-process.egamma_step = cms.Path( process.egmGsfElectronIDSequence )  ## See eleIDs above
-process.ntuple_step = cms.Path( process.dimuons )
-
-process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )
+# process.schedule = cms.Schedule(process.p, process.treeOut_step)

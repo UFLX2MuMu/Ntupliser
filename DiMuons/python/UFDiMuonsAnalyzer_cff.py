@@ -20,11 +20,11 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                                                  "HLT_IsoMu24", "HLT_IsoTkMu24", 
                                                  "HLT_Mu50", "HLT_TkMu50"),
 
-                         trigResults = cms.InputTag("TriggerResults","","HLT"),
-                         trigObjs    = cms.InputTag("selectedPatTrigger"),
+                         trigResults = cms.InputTag("TriggerResults",    "", "HLT"),  ## HLT, RECO, PAT? - AWB 23.10.2018
+                         trigObjs    = cms.InputTag("slimmedPatTrigger", "", "DQM"),  ## Only label available
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","PAT"),
+                         evtFlags = cms.InputTag("TriggerResults", "", "HLT"),  ## HLT, RECO, PAT? - AWB 23.10.2018
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -34,6 +34,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
                          doSys_Roch = cms.bool(True),
+                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
@@ -41,12 +42,23 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
                          eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
                          eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
+                         eleIdMva    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
+                         ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt'),
 
                          ## Jets
-                         jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
+                         ## Not clear which jet tag below should be used - AWB 21.10.2018
+                         jetsTag  = cms.InputTag('slimmedJets'),
+                         # jetsTag  = cms.InputTag('updatedPatJetsUpdatedJEC'),
+                         # jetsTag  = cms.InputTag('updatedPatJetsTransientCorrectedUpdatedJEC'),
                          jetType  = cms.string("AK4PFchs"),
                          btagName = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
-                         rhoTag   = cms.InputTag("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
+                         rhoTag   = cms.InputTag("fixedGridRhoFastjetAll"), ## No idea if this is right, matches TOP-18-008 - AWB 15.10.2018
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L144
+
+                         ## PF cands
+                         pfCandsTag = cms.InputTag("packedPFCandidates"),
 
                          ## MET
                          metTag = cms.InputTag("slimmedMETs"),
@@ -74,8 +86,8 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ele_eta_max = cms.double(2.5),
 
                          jet_ID      = cms.string("loose"),
-                         jet_pT_min  = cms.double(30.0),
-                         jet_eta_max = cms.double(4.7),
+                         jet_pT_min  = cms.double(20.0),
+                         jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
