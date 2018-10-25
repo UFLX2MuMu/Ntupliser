@@ -11,10 +11,11 @@ struct MuonInfo {
   Bool_t isStandAlone;
   Bool_t isGlobal    ;
 
-  Bool_t isTightID ;
-  Bool_t isMediumID;
+  Bool_t isTightID     ;
+  Bool_t isMediumID    ;
   Bool_t isMediumID2016;
-  Bool_t isLooseID ;
+  Bool_t isLooseID     ;
+  Float_t lepMVA       ;
 
   Int_t    charge;
   Double_t pt    ;
@@ -41,9 +42,11 @@ struct MuonInfo {
 
   Float_t d0_BS;
   Float_t dz_BS;
-
   Float_t d0_PV;
   Float_t dz_PV;
+  Float_t IP_3D;
+  Float_t SIP_3D;
+  Float_t segCompat;
 
   Float_t relIso           ;
   Float_t relCombIso       ;
@@ -51,6 +54,15 @@ struct MuonInfo {
   Float_t trackIsoSumPtCorr;
   Float_t hcalIso          ;
   Float_t ecalIso          ;
+  Float_t relIsoEA03       ;
+  Float_t relIsoEA04       ;
+  Float_t miniIso          ;
+  Float_t miniIsoCharged   ;
+
+  Int_t   jet_trkMult;
+  Float_t jet_ptRel  ;
+  Float_t jet_ptRatio;
+  Float_t jet_deepCSV;
 
   // PF information
   Bool_t isPF;

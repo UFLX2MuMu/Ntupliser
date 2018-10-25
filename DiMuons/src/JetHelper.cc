@@ -140,7 +140,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
   
   // Following https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
   //       and https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
-  // Last check that cuts were up-to-date: March 10, 2017 (AWB)
+  // Last check that cuts were up-to-date: 23.10.2018 (AWB)
   // Modeled after "isGoodJet" in https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc
   // VBF H-->bb analysis: http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=HIG-16-003
   // Is PU jet ID used at some point in the sequence? (http://cds.cern.ch/record/1581583) Or just charged hadron subtraction (CHS)?
@@ -217,6 +217,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
     // Use 15 GeV jets with < 90% EM energy and not overlapping a muon to correct MET
     // Modeled after https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#Type_I_Correction_Propagation_of
     //  - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+    //  - Quite close to https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
     bool use_for_MET_corr = true;
     if ( pre_vec.Pt() < 15 || corr_jet.chargedEmEnergyFraction() + corr_jet.neutralEmEnergyFraction() > 0.9 )
       use_for_MET_corr = false;

@@ -119,4 +119,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 
+// Lepton isolation
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 #endif  // #ifndef COMMON_INCLUDES

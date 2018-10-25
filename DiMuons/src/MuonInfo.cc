@@ -11,6 +11,7 @@ void MuonInfo::init() {
     isMediumID     = -999;
     isMediumID2016 = -999;
     isLooseID      = -999;
+    lepMVA         = -999;
     
     charge = -999;
     pt     = -999;
@@ -34,11 +35,13 @@ void MuonInfo::init() {
     pt_Roch_sys_up   = -999;
     pt_Roch_sys_down = -999;
      
-    d0_BS = -999;
-    dz_BS = -999;
-    
-    d0_PV = -999;
-    dz_PV = -999;
+    d0_BS     = -999;
+    dz_BS     = -999;
+    d0_PV     = -999;
+    dz_PV     = -999;
+    IP_3D     = -999;
+    SIP_3D    = -999;
+    segCompat = -999;
 
     relIso = -999;
     
@@ -47,6 +50,16 @@ void MuonInfo::init() {
     hcalIso           = -999;
     ecalIso           = -999;
     relCombIso        = -999;
+    relIsoEA03        = -999;
+    relIsoEA04        = -999;
+    miniIso           = -999;
+    miniIsoCharged    = -999;
+
+    jet_trkMult = -999;
+    jet_ptRel   = -999;
+    jet_ptRatio = -999;
+    jet_deepCSV = -999;
+
     
     isPF = -999;
     

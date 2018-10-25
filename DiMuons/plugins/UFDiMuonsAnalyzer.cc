@@ -3,7 +3,9 @@
 
 // Constructor
 UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
-  _numEvents(0)
+  _numEvents(0),
+  muEffArea (iConfig.getParameter<edm::FileInPath>("muEffArea").fullPath()),
+  eleEffArea(iConfig.getParameter<edm::FileInPath>("eleEffArea").fullPath())
 {
   std::cout << "\nInside UFDiMuonsAnalyzer constructor" << std::endl;
 
@@ -30,10 +32,10 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _trigNames    = iConfig.getParameter<std::vector<std::string>>("trigNames");
 
   _trigResultsToken = consumes<edm::TriggerResults>                    (iConfig.getParameter<edm::InputTag>("trigResults"));
-  _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (edm::InputTag("slimmedPatTrigger","","PAT"));
+  _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getParameter<edm::InputTag>("trigObjs"));
 
   // Event flags
-  _evtFlagsToken = consumes<edm::TriggerResults>( edm::InputTag("TriggerResults","","PAT") );
+  _evtFlagsToken = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("evtFlags"));
 
   // Underlying event
   _beamSpotToken      = consumes<reco::BeamSpot>        (iConfig.getParameter<edm::InputTag>("beamSpotTag"));
@@ -49,6 +51,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _eleIdLooseToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdLoose"));
   _eleIdMediumToken = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdMedium"));
   _eleIdTightToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdTight"));
+  _eleIdMvaToken    = consumes< edm::ValueMap<float> >   (iConfig.getParameter<edm::InputTag>("eleIdMva"));
 
   // // Taus
   // _tauCollToken = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauColl"));
@@ -60,6 +63,9 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _rhoToken  = consumes<double>( iConfig.getParameter<edm::InputTag>("rhoTag"));
   _jetType   = iConfig.getParameter<std::string>("jetType");
   _btagName  = iConfig.getParameter<std::string>("btagName");
+
+  // PF Candidates
+  _pfCandsToken = consumes<std::vector<pat::PackedCandidate>>(iConfig.getParameter<edm::InputTag>("pfCandsTag"));
 
   // GEN objects
   _genJetsToken           = consumes<reco::GenJetCollection>          (iConfig.getParameter<edm::InputTag>("genJetsTag"));
@@ -94,7 +100,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _jet_pT_min  = iConfig.getParameter<double>      ("jet_pT_min");
   _jet_eta_max = iConfig.getParameter<double>      ("jet_eta_max");
 
-  std::cout << "Opening Kalman Muon Calibrator files located in:" << std::endl;
+  std::cout << "\nOpening Kalman Muon Calibrator files located in:" << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"    << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV"       << std::endl;
   if (_isMonteCarlo) _KaMu_calib = KalmanMuonCalibrator("MC_80X_13TeV");
@@ -104,14 +110,20 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   // Jigger path name for crab
   edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2016v1.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
-  // std::string file_RochCor = "/RoccoR2016v1.txt";
-  // std::string::size_type find_RochCor = path_RochCor.find(file_RochCor);
-  // if (find_RochCor != std::string::npos)
-  //   path_RochCor.erase(find_RochCor, file_RochCor.length());
 
-  std::cout << "Opening Rochester Correction files located in " << path_RochCor << std::endl;
+  std::cout << "\nOpening Rochester Correction files located in:" << std::endl;
+  std::cout << "  * " << path_RochCor << std::endl;
   _Roch_calib.init(path_RochCor);
   _doSys_Roch = iConfig.getParameter<bool>("doSys_Roch");
+
+  // Book BDT reader for lepMVA
+  edm::FileInPath cfg_LepMVA_mu ("Ntupliser/DiMuons/data/LepMVA/mu_tZqTTV16_BDTG.weights.xml");
+  edm::FileInPath cfg_LepMVA_ele("Ntupliser/DiMuons/data/LepMVA/el_tZqTTV16_BDTG.weights.xml");
+  std::cout << "\nBooking Lepton MVA with files in:" << std::endl;
+  std::cout << "  * " << cfg_LepMVA_mu.fullPath().c_str() << std::endl;
+  std::cout << "  * " << cfg_LepMVA_ele.fullPath().c_str() << std::endl;
+  _lepMVA_mu  = BookLepMVA( _lepVars_mu,  "2016", "mu",  cfg_LepMVA_mu.fullPath().c_str()  );
+  _lepMVA_ele = BookLepMVA( _lepVars_ele, "2016", "ele", cfg_LepMVA_ele.fullPath().c_str() );
 
   if (_isMonteCarlo) {
     edm::FileInPath path_PU_wgt("Ntupliser/DiMuons/data/Pileup/"+iConfig.getParameter<std::string>("PU_wgt_file"));
@@ -156,7 +168,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
   _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
 
-  std::cout << "Finished with UFDiMuonsAnalyzer constructor\n" << std::endl;
+  std::cout << "\nFinished with UFDiMuonsAnalyzer constructor\n" << std::endl;
 
 } // End constructor: UFDiMuonsAnalyzer::UFDiMuonsAnalyzer
 
@@ -300,9 +312,20 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<pat::MuonCollection> muons;
   iEvent.getByToken(_muonCollToken, muons);
 
+  // Get jets, rho, and pfCands: needed for effective area isolation and lepMVA
+  edm::Handle<pat::JetCollection> jets;
+  if (!_jetsToken.isUninitialized())
+    iEvent.getByToken(_jetsToken, jets);
+  edm::Handle<double> rhoHandle;
+  iEvent.getByToken(_rhoToken, rhoHandle);
+  double _rho = *rhoHandle;
+  edm::Handle<std::vector<pat::PackedCandidate>> pfCands;
+  iEvent.getByToken(_pfCandsToken, pfCands);
+
   pat::MuonCollection muonsSelected = SelectMuons( muons, primaryVertex, _muon_ID,
 						   _muon_pT_min, _muon_eta_max, _muon_trig_dR,
-						   _muon_use_pfIso, _muon_iso_dR, _muon_iso_max );
+						   _muon_use_pfIso, _muon_iso_dR, _muon_iso_max,
+						   _rho, muEffArea );
   // Throw away event if there are too few muons
   if ( muonsSelected.size() < (unsigned int) _skim_nMuons )
     return;
@@ -317,7 +340,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   FillMuonInfos( _muonInfos, muonsSelected, primaryVertex, verticesSelected.size(), beamSpotHandle, 
 		 iEvent, iSetup, trigObjsHandle, trigResultsHandle, _trigNames,
 		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), 
-		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons ); 
+		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons,
+		 _lepVars_mu, _lepMVA_mu, _rho, jets, pfCands, muEffArea );
   _nMuons = _muonInfos.size();
 
   CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
@@ -417,24 +441,32 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::ValueMap<bool>>       ele_id_loose;
   edm::Handle<edm::ValueMap<bool>>       ele_id_medium;
   edm::Handle<edm::ValueMap<bool>>       ele_id_tight;
+  edm::Handle<edm::ValueMap<float>>      ele_id_mva;
 
   iEvent.getByToken(_eleCollToken,     eles);
   iEvent.getByToken(_eleIdVetoToken,   ele_id_veto); 
   iEvent.getByToken(_eleIdLooseToken,  ele_id_loose); 
   iEvent.getByToken(_eleIdMediumToken, ele_id_medium); 
   iEvent.getByToken(_eleIdTightToken,  ele_id_tight); 
+  iEvent.getByToken(_eleIdMvaToken,    ele_id_mva);
 
   std::vector<std::array<bool, 4>> ele_ID_pass;
-  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_id_veto,
-  						     ele_id_loose, ele_id_medium, ele_id_tight,
-  						     _ele_ID, _ele_pT_min, _ele_eta_max,
-						     ele_ID_pass );
+  double ele_mva_val;
+  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_id_veto, ele_id_loose,
+						     ele_id_medium, ele_id_tight, ele_id_mva, _ele_ID,
+						     _ele_pT_min, _ele_eta_max, ele_ID_pass, ele_mva_val );
   
   // Sort the selected electrons by pT
   sort(elesSelected.begin(), elesSelected.end(), sortElesByPt);
   
-  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass );
+  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass, ele_mva_val,
+		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
+
+  // Throw away event if there are less than 3 leptons
+  if ( muonsSelected.size() + elesSelected.size() < 3 )
+    return;
+
 
   // // ----
   // // TAUS
@@ -455,13 +487,6 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // JETS
   // ----
   if (_isVerbose) std::cout << "\nFilling JetInfo" << std::endl;
-  edm::Handle < pat::JetCollection > jets;
-  if(!_jetsToken.isUninitialized()) 
-    iEvent.getByToken(_jetsToken, jets);
-
-  edm::Handle<double> rhoHandle;
-  iEvent.getByToken(_rhoToken, rhoHandle);
-  double _rho = *rhoHandle;
 
   // Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetCorUncertainties
   //   - Last check that procedure was up-to-date: March 10, 2017 (AWB) 
