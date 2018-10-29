@@ -128,7 +128,7 @@ void FillLepMVAVars( LepMVAVars & vars, const EleInfo & ele,
   vars.segmentCompatibility   = -999;  // For muons only
 
   TLorentzVector ele_vec;
-  ele_vec.SetPtEtaPhiM( ele.pt, ele.eta, ele.phi, 0.105658367 );
+  ele_vec.SetPtEtaPhiM( ele.pt, ele.eta, ele.phi, 0.000511 );
   ROOT::Math::LorentzVector< ROOT::Math::PxPyPzE4D<double> > ele_p4 ( ele_vec.Px(), ele_vec.Py(), ele_vec.Pz(), ele_vec.E() );
 
   float min_dR = 999;
