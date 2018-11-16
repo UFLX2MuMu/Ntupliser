@@ -160,8 +160,8 @@ H2Mu_gg = sample( name  = 'H2Mu_gg',
 
 ## Vector boson fusion
 H2Mu_VBF = sample( name = 'H2Mu_VBF',
-                   DAS  = '/VBFH_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                   inputDBS = 'phys03',
+                   DAS  = '/VBFHToMuMu_M125_13TeV_amcatnlo_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+#                   inputDBS = 'phys03',
                    nEvt = -1 )
 
 #H2Mu_VBF_120 = sample( name = 'H2Mu_VBF_120',
@@ -202,9 +202,9 @@ H2Mu_WH_neg = sample( name = 'H2Mu_WH_neg',
 
 ## ZH
 H2Mu_ZH = sample( name = 'H2Mu_ZH',
-                  DAS  = '/ZH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                  inputDBS = 'phys03',
-                  nEvt = 249748 ) ## 250 k
+                  DAS  = '/ZH_HToMuMu_ZToAll_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+#                  inputDBS = 'phys03',
+                  nEvt = -1 ) ## 250 k
 
 #H2Mu_ZH_120 = sample( name = 'H2Mu_ZH_120',
 #                  DAS  = '/ZH_HToMuMu_M120_13TeV_powheg_pythia8/'+DAS_era_sig,
@@ -217,8 +217,8 @@ H2Mu_ZH = sample( name = 'H2Mu_ZH',
 
 ## ttH
 H2Mu_ttH = sample( name = 'H2Mu_ttH',
-                   DAS  = '/ttH_HToMuMu_M125_13TeV_powheg_pythia8/amarini-Fall17_94X-MINIAODSIM-65c6b29ab922da94b788da955c09b417/USER',
-                   inputDBS = 'phys03',
+                   DAS  = '/ttHToMuMu_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM',
+#                   inputDBS = 'phys03',
                    nEvt = -1 )
 
 ###############
@@ -262,6 +262,13 @@ Zd2Mu_180 = sample ( name = 'Zd2Mu_180',
                      nEvt = -1
                     )
 
+
+Zd2Mu_70 = sample ( name = 'Zd2Mu_70',
+                     DAS  = '/DarkPhoton/swmukher-ZdToMuMu-70-eps0p02_AOD-c3d6de13a4792afb4dd0c4ab58e49a3d/USER',
+                     files = ['/store/user/swmukher/DarkPhoton/ZdToMuMu-70-eps0p02_AOD/181006_233015/0000/aod_99.root'],
+                     inputDBS = 'phys03',
+                     nEvt = -1
+                    )
 
 
 
@@ -335,20 +342,28 @@ Background = []  ## All H2Mu background samples
 
 
 # DYJets inclusive Fall17
+#what is this /DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017RECOPF_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM
+
 ZJets_AMC = sample( name = 'ZJets_AMC',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
                     nEvt = -1
                   )
 
+
 ZJets_AMC_2 = sample ( name = 'ZJets_AMC_2',
-                       DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                       DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM',
                        nEvt = -1 )
 
 #DYJets MLM
 ZJets_MG = sample( name = 'ZJets_MG',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10_ext1-v1/MINIAODSIM',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
                     nEvt = -1
                   )
+
+ZJets_MG_2 = sample( name = 'ZJets_MG_2',
+                     DAS = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM',
+                     nEvt = -1
+                   )
 
 ## Mass bins
 ZJets_m_10_50 = sample ( name = 'ZJets_m_10_50',
@@ -372,7 +387,7 @@ ZJets_m_120_200 = sample ( name = 'ZJets_m_120_200', DAS = '/ZToMuMu_NNPDF31_13T
 Background.append(ZJets_MG)
 #Background.append(ZJets_MG_HER)
 Background.append(ZJets_AMC)
-Background.append(ZJets_AMC_2)
+#Background.append(ZJets_AMC_2)
 #Background.append(ZJets_hiM)
 
 #Background.append(ZJets_MG_HT_70_100)
@@ -418,8 +433,9 @@ Background.append(ZJets_m_120_200)
 # Creation time: 2018-01-08 16:44:57, Dataset size: 8.3TB, Number of blocks: 203, Number of events: 153596015, Number of files: 2849, Physics group: NoGroup, Status: VALID, Type: mc
 
 tt = sample( name = 'tt',
-             DAS  = '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM',
-             files = ['/store/mc/RunIIFall17MiniAOD/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/0021B93F-59F3-E711-9B8D-14DDA924324B.root'],
+# should I use the new premixing? for pre-production I am not.
+# /TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM
+             DAS  = '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
              nEvt = -1
            )
 

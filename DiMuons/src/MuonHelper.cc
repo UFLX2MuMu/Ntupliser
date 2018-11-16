@@ -649,7 +649,7 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
    if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
-      std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      //std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
