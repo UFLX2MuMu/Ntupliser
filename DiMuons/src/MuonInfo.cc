@@ -33,6 +33,9 @@ void MuonInfo::init() {
     ptErr_Roch       = -999;
     pt_Roch_sys_up   = -999;
     pt_Roch_sys_down = -999;
+
+    pt_kinfit          = -999;
+    ptErr_kinfit       = -999;
      
     d0_BS = -999;
     dz_BS = -999;

@@ -146,7 +146,7 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
       FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
 		      _muonInfos.at(iMu1), _muonInfos.at(iMu2),
 		      _muonInfos.at(iMu1).pt_kinfit, _muonInfos.at(iMu2).pt_kinfit,
-		      _muonInfos.at(iMu1).ptErr_Roch, _muonInfos.at(iMu2).ptErr_Roch );
+		      _muonInfos.at(iMu1).ptErr_kinfit, _muonInfos.at(iMu2).ptErr_kinfit );
       
       _pairInfo.mass_kinfit    = pair_vec.nom.M();
       _pairInfo.massErr_kinfit = massErr;

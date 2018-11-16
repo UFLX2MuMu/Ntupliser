@@ -23,7 +23,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
   // Testing Kinematic fit : Needs to be integrated in the Ntupliser data format - PB 10.09.2018
 
   TLorentzVector mu1_tlv;
-  TLorentzVector mu2_tlv; 
+  TLorentzVector mu2_tlv;
+
+  float mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
+  float mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
 
   if( nMuons > 1){
     //Instatiate KinematicVertexFitter object
@@ -39,9 +42,16 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
       RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
       
-      //getting the B_s decay vertex
+      //getting the dimuon decay vertex
       RefCountedKinematicVertex dimu_vertex = kinfittree->currentDecayVertex();
-   
+      if(dimu_vertex->vertexIsValid()){
+      std::cout << "Vertex chiSquare = " << dimu_vertex->chiSquared() << std::endl;
+      std::cout << "vertex ndf = " << dimu_vertex->degreesOfFreedom() << std::endl;
+      std::cout << "Vertex Global point x,y,z = " << dimu_vertex->position().x() << " , " << dimu_vertex->position().y() << std::endl;
+      //std::cout << "Global error x,y,z = " << dimu_vertex->error() << std::endl;
+
+
+      }  
       //accessing the reconstructed Bs meson parameters:
       //AlgebraicVector7 dimu_kinfit_par = dimu_kinfit->currentState().kinematicParameters().vector();
       //TLorentzVector higgs_tlv;
@@ -56,14 +66,27 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       if (child){
       RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
       AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
+      AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
+      std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
+      std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
+      std::cout << "Covariant matrix" << std::endl;
+      std::cout << mu1_kinfit_cov(3,3) << std::endl;
+      std::cout << " - " << mu1_kinfit_cov(4,4) << std::endl;
+      std::cout << " -      -    " << mu1_kinfit_cov(5,5) << std::endl;
+      std::cout << "Muon pt uncertainty = " << sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)) << std::endl;
+      mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
       mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
+      std::cout << "muon pt = " << mu1_tlv.Pt() << std::endl;
+      std::cout << "muon phi = " << mu1_tlv.Phi() << std::endl;
       }
      
       //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
     
       //Now navigating down the tree 
       bool nextchild = kinfittree->movePointerToTheNextChild();
-    
+   
+      //TODO: do the same as in mu1 for the cov matrix and ptErr
+ 
       if (nextchild){
       RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
       AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
@@ -211,6 +234,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.ptErr_Roch        = ptErr_Roch;
       _muonInfo.pt_Roch_sys_up    = pt_Roch_sys_up;
       _muonInfo.pt_Roch_sys_down  = pt_Roch_sys_down;
+
+    //TODO: Remove debug cout
+    std::cout << "Rochester pt and uncert = " << pt_Roch << " +- " << ptErr_Roch << std::endl;
       
     } // End if (muon.isTrackerMuon())
 
