@@ -43,6 +43,10 @@ void MuonInfo::init() {
     d0_PV = -999;
     dz_PV = -999;
 
+    d0_PV_kinfit = -999;
+    dz_PV_kinfit = -999;
+    chi2_kinfit = -999;
+
     relIso = -999;
     
     trackIsoSumPt     = -999;
