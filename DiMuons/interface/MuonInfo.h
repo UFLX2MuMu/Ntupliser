@@ -51,6 +51,7 @@ struct MuonInfo {
   Float_t d0_PV_kinfit;
   Float_t dz_PV_kinfit;
   Float_t chi2_kinfit;
+  UInt_t ndf_kinfit;
 
   Float_t relIso           ;
   Float_t relCombIso       ;

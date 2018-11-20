@@ -46,6 +46,7 @@ void MuonInfo::init() {
     d0_PV_kinfit = -999;
     dz_PV_kinfit = -999;
     chi2_kinfit = -999;
+    ndf_kinfit = 0; // unsigned int
 
     relIso = -999;
     

@@ -152,8 +152,10 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
       _pairInfo.massErr_kinfit = massErr;
       _pairInfo.pt_kinfit      = pair_vec.nom.Pt();
     }
- 
 
+    // TODO: Implement systematics for kinfit
+ 
+    // Rochester
     if ( _muonInfos.at(iMu1).pt_Roch > 0 && _muonInfos.at(iMu2).pt_Roch > 0 ) {
       FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
 		      _muonInfos.at(iMu1), _muonInfos.at(iMu2),
