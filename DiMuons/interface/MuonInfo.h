@@ -39,13 +39,19 @@ struct MuonInfo {
   Double_t pt_Roch_sys_up   ;
   Double_t pt_Roch_sys_down ;
 
-  Double_t pt_kinfit;
+  Double_t pt_kinfit        ;
+  Double_t ptErr_kinfit     ;
 
   Float_t d0_BS;
   Float_t dz_BS;
 
   Float_t d0_PV;
   Float_t dz_PV;
+
+  Float_t d0_PV_kinfit;
+  Float_t dz_PV_kinfit;
+  Float_t chi2_kinfit;
+  UInt_t ndf_kinfit;
 
   Float_t relIso           ;
   Float_t relCombIso       ;
