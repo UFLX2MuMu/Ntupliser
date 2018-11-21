@@ -30,7 +30,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
   
   RefCountedKinematicVertex dimu_vertex;
   
-
+  // TODO: Handle higher order effecrs when the events has more than 2 selected muons. For the moment the kinematic fit is run on all possible muons in the collections selectedMuons. 
+  // The result is store for the first fit and for the first two muons. For ggH and VBF this should be enough, but ttH or VH might need to cover higher order effects.
+  // Ideally we should run it only for opposite signed couple of muons and store the pt_kinfit as a vector/array per each muons with an index to the pair related to it.
   if( nMuons > 1){
     //Instatiate KinematicVertexFitter object
     KinematicVertexFitter kinfit;
@@ -48,21 +50,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       //getting the dimuon decay vertex
       //RefCountedKinematicVertex 
       dimu_vertex = kinfittree->currentDecayVertex();
-      if(dimu_vertex->vertexIsValid()){
-        std::cout << "Vertex chiSquare = " << dimu_vertex->chiSquared() << std::endl;
-        std::cout << "vertex ndf = " << dimu_vertex->degreesOfFreedom() << std::endl;
-        std::cout << "Vertex Global point x,y,z = " << dimu_vertex->position().x() << " , " << dimu_vertex->position().y() << std::endl;
-      //std::cout << "Global error x,y,z = " << dimu_vertex->error() << std::endl;
-
-
-      }  
-      //accessing the reconstructed Bs meson parameters:
-      //AlgebraicVector7 dimu_kinfit_par = dimu_kinfit->currentState().kinematicParameters().vector();
-      //TLorentzVector higgs_tlv;
-      //higgs_tlv.SetXYZM(dimu_kinfit_par.At(3),dimu_kinfit_par.At(4), dimu_kinfit_par.At(5), dimu_kinfit_par.At(6));
-      //and their joint covariance matrix:
-      //AlgebraicMatrix77 dimu_kinfit_er = dimu_kinfit->currentState().kinematicParametersError().matrix();
-    
+   
       //Now navigating down the tree 
       bool child = kinfittree->movePointerToTheFirstChild();
       //TLorentzVector mu1_tlv;
@@ -71,26 +59,21 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
         AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
         AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
-        std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
-        std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
-        std::cout << "Covariant matrix" << std::endl;
-        std::cout << mu1_kinfit_cov(3,3) << std::endl;
-        std::cout << " - " << mu1_kinfit_cov(4,4) << std::endl;
-        std::cout << " -      -    " << mu1_kinfit_cov(5,5) << std::endl;
-        std::cout << "Muon pt uncertainty = " << sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)) << std::endl;
         mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
         mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
-        std::cout << "muon pt = " << mu1_tlv.Pt() << std::endl;
-        std::cout << "muon phi = " << mu1_tlv.Phi() << std::endl;
+//        std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
+//        std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
+//        std::cout << "Covariant matrix" << std::endl;
+//        std::cout << mu1_kinfit_cov(3,3) << std::endl;
+//        std::cout << " - " << mu1_kinfit_cov(4,4) << std::endl;
+//        std::cout << " -      -    " << mu1_kinfit_cov(5,5) << std::endl;
+//        std::cout << "Muon pt uncertainty = " << sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)) << std::endl;
       }
      
-      //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
     
       //Now navigating down the tree 
       bool nextchild = kinfittree->movePointerToTheNextChild();
    
-      //TODO: do the same as in mu1 for the cov matrix and ptErr
- 
       if (nextchild){
         RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
         AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
@@ -101,8 +84,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
     } // end else - isEmpty()
 
+    //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
     //std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
- 
     //std::cout << "Kin fit mass from kinfit: " << higgs_tlv.M()  << " - Kin fit mass from tlv: " << (mu1_tlv+mu2_tlv).M()<< std::endl; 
  
   } //if nMuons>1
@@ -236,8 +219,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.pt_Roch_sys_up    = pt_Roch_sys_up;
       _muonInfo.pt_Roch_sys_down  = pt_Roch_sys_down;
 
-    //TODO: Remove debug cout
-    std::cout << "Rochester pt and uncert = " << pt_Roch << " +- " << ptErr_Roch << std::endl;
+    // DEBUG: Rochester pt
+    // std::cout << "Rochester pt and uncert = " << pt_Roch << " +- " << ptErr_Roch << std::endl;
      
     } // End if (muon.isTrackerMuon())
 
@@ -295,10 +278,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.pt_kinfit = muon.muonBestTrack()->pt();
         _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError(); 
     }
-    //std::cout << "@muoninfo: muon info pt[" << i << "] = "  << _muonInfo.pt_kinfit << std::endl;
-    //WIP: Checking DO
-    if(dimu_vertex != NULL )
-      std::cout << "d0_PV track = " << track.dxy( primaryVertex.position() ) << ", d0_PV muons " << muon.muonBestTrack()->dxy(primaryVertex.position()) << ", kinfit d0_PV = " << sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) ) << std::endl;
+
+    //DEBUG: Checking dO
+    //if(dimu_vertex != NULL )
+    //  std::cout << "d0_PV track = " << track.dxy( primaryVertex.position() ) << ", d0_PV muons " << muon.muonBestTrack()->dxy(primaryVertex.position()) << ", kinfit d0_PV = " << sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) ) << std::endl;
 
     // Standard isolation
     _muonInfo.trackIsoSumPt     = muon.isolationR03().sumPt;
