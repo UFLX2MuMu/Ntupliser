@@ -299,7 +299,53 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   
   bool _onlyPV = true;  // Only fill primary vertex
   FillVertexInfos( _vertexInfos, _nVertices, verticesSelected, _onlyPV );
-  
+
+
+
+  // -------------
+  // GEN PARTICLES
+  // -------------
+
+  // Get GEN muons for Rochester corrections
+  edm::Handle<reco::GenParticleCollection> genPartons;
+
+  if (_isMonteCarlo) {
+ 
+    iEvent.getByToken(_prunedGenParticleToken, genPartons);
+
+    // Parents
+    if (_isVerbose) std::cout << "\nFilling GenParentInfo" << std::endl;
+
+    FillGenParentInfos( _genParentInfos, genPartons, 
+			std::vector<int> {6, 22, 23, 24, 25}, 
+			_isMonteCarlo );
+    _nGenParents = _genParentInfos.size();
+
+    // Muons
+    if (_isVerbose) std::cout << "\nFilling GenMuonInfo" << std::endl;
+    FillGenMuonInfos( _genMuonInfos, _genParentInfos, genPartons, _isMonteCarlo );
+    _nGenMuons = _genMuonInfos.size();
+    _nGenParents = _genParentInfos.size();
+
+    if (_isVerbose) std::cout << "\nFilling GenMuPairInfo" << std::endl;
+    FillGenMuPairInfos( _genMuPairInfos, _genMuonInfos );
+    _nGenMuPairs = _genMuPairInfos.size();
+
+    // Jets
+    if (_isVerbose) std::cout << "\nFilling GenJetInfo" << std::endl;
+    edm::Handle < reco::GenJetCollection > genJets;
+    if (!_genJetsToken.isUninitialized()) 
+      iEvent.getByToken(_genJetsToken, genJets);
+
+    FillGenJetInfos( _genJetInfos, genJets, _isMonteCarlo );
+    _nGenJets = _genJetInfos.size();
+
+  } // End conditional: if (_isMonteCarlo)
+
+
+
+
+
   // -----
   // MUONS
   // -----
@@ -316,15 +362,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   // Sort the selected muons by pT
   sort(muonsSelected.begin(), muonsSelected.end(), sortMuonsByPt);
-  
-  // Get GEN muons for Rochester corrections
-  edm::Handle<reco::GenParticleCollection> genPartons;
-  iEvent.getByToken(_prunedGenParticleToken, genPartons);
-
+ 
   FillMuonInfos( _muonInfos, muonsSelected, primaryVertex, verticesSelected.size(), beamSpotHandle, 
 		 iEvent, iSetup, trigObjsHandle, trigResultsHandle, _trigNames,
 		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), 
-		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons ); 
+		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, _genMuonInfos ); 
   _nMuons = _muonInfos.size();
 
 
@@ -609,40 +651,6 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // FillMhtInfo( _mhtInfo_JER_up, _muonInfos, _eleInfos, _jetInfos_JER_up ); 
     // FillMhtInfo( _mhtInfo_JER_down, _muonInfos, _eleInfos, _jetInfos_JER_down ); 
   }
-
-  // -------------
-  // GEN PARTICLES
-  // -------------
-  if (_isMonteCarlo) {
-    // Parents
-    if (_isVerbose) std::cout << "\nFilling GenParentInfo" << std::endl;
-
-    FillGenParentInfos( _genParentInfos, genPartons, 
-			std::vector<int> {6, 22, 23, 24, 25}, 
-			_isMonteCarlo );
-    _nGenParents = _genParentInfos.size();
-
-    // Muons
-    if (_isVerbose) std::cout << "\nFilling GenMuonInfo" << std::endl;
-    FillGenMuonInfos( _genMuonInfos, _genParentInfos, genPartons, _isMonteCarlo );
-    _nGenMuons = _genMuonInfos.size();
-    _nGenParents = _genParentInfos.size();
-
-    if (_isVerbose) std::cout << "\nFilling GenMuPairInfo" << std::endl;
-    FillGenMuPairInfos( _genMuPairInfos, _genMuonInfos );
-    _nGenMuPairs = _genMuPairInfos.size();
-
-    // Jets
-    if (_isVerbose) std::cout << "\nFilling GenJetInfo" << std::endl;
-    edm::Handle < reco::GenJetCollection > genJets;
-    if (!_genJetsToken.isUninitialized()) 
-      iEvent.getByToken(_genJetsToken, genJets);
-
-    FillGenJetInfos( _genJetInfos, genJets, _isMonteCarlo );
-    _nGenJets = _genJetInfos.size();
-
-  } // End conditional: if (_isMonteCarlo)
-
 
   // ============================
   // Store everything in an NTuple

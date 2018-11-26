@@ -7,6 +7,7 @@
 #include "Ntupliser/DiMuons/interface/PtCorrKalman.h"
 #include "Ntupliser/DiMuons/interface/PtCorrRoch.h"
 #include "Ntupliser/DiMuons/interface/KinematicFitMuonCorrections.h"
+#include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 // Classes or json handling
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
@@ -23,7 +24,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons );
+		    const GenMuonInfos _genMuonInfos );
 
 pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons,
 				 const reco::Vertex primaryVertex, const std::string _muon_ID,

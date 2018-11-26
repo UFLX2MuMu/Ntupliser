@@ -84,6 +84,7 @@ void MuonInfo::init() {
 
     GEN_pt = -999;
     GEN_dR = -999;
+    GEN_idx = -99;
 
 } // End void MuonInfo::init()
 

@@ -1,5 +1,6 @@
 
 #include "Ntupliser/DiMuons/interface/MuonHelper.h"
+#include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
@@ -12,7 +13,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons ) {
+		    const GenMuonInfos _genMuonInfos ) {
   
   double const MASS_MUON = 0.105658367; // GeV/c^2
 
@@ -185,26 +186,26 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
       int iMatch = -99;
       if (not _isData) {
-	for (unsigned int i = 0; i < genPartons->size(); i++) {
-	  const reco::Candidate& GEN_mu = genPartons->at(i);
-	  if ( abs(GEN_mu.pdgId()) != 13 ) continue;
-	  if ( GEN_mu.status() != 1 ) continue;
-	  if ( GEN_mu.charge() != _muonInfo.charge ) continue;
+	for (unsigned int i = 0; i < _genMuonInfos.size(); i++) {
+	  const GenMuonInfo GEN_mu = _genMuonInfos.at(i);
+	  if ( GEN_mu.status != 1 ) continue; // TODO: understand status
+	  if ( GEN_mu.charge != _muonInfo.charge ) continue;
 	
-	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt(), GEN_mu.eta(), GEN_mu.phi(), GEN_mu.mass() );
+	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt, GEN_mu.eta, GEN_mu.phi, GEN_mu.mass );
 	  if (GEN_vec.DeltaR(mu_vec_Roch) > 0.005) continue;
 	  if (iMatch > 0) {
 	    std::cout << "\nBizzare situation: two muons match!" << std::endl;
 	    std::cout << "RECO pT = " << mu_vec_Roch.Pt() << ", eta = " << mu_vec_Roch.Eta() 
 		      << ", phi = " << mu_vec_Roch.Phi() << ", charge = " << _muonInfo.charge << std::endl;
-	    std::cout << "GEN1 pT = " << genPartons->at(i).pt()<< ", eta = " << genPartons->at(i).eta() 
-		      << ", phi = " << genPartons->at(i).phi() << std::endl;
+	    std::cout << "GEN1 pT = " << _genMuonInfos.at(i).pt << ", eta = " << _genMuonInfos.at(i).eta 
+		      << ", phi = " << _genMuonInfos.at(i).phi << std::endl;
 	    std::cout << "GEN2 pT = " << GEN_vec.Pt()<< ", eta = " << GEN_vec.Eta() << ", phi = " << GEN_vec.Phi() << std::endl;
 	  }
 	  
 	  iMatch = i;
 	  _muonInfo.GEN_pt = GEN_vec.Pt();
 	  _muonInfo.GEN_dR = GEN_vec.DeltaR(mu_vec_Roch);
+          _muonInfo.GEN_idx = iMatch;
 	}
       } // End conditional: if (not _isData)
 
