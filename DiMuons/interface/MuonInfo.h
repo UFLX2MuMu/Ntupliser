@@ -89,6 +89,8 @@ struct MuonInfo {
 
   Float_t GEN_pt;
   Float_t GEN_dR;
+  // Index of the matched genMuon in the genMuonInfo collections
+  Int_t GEN_idx;
 
   void init();
 
