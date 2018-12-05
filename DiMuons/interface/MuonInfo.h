@@ -67,6 +67,7 @@ struct MuonInfo {
   // PF information
   Bool_t isPF;
 
+  Double_t pt_kinfit;
   Double_t pt_PF   ;
   Double_t ptErr_PF;
   Double_t eta_PF  ;

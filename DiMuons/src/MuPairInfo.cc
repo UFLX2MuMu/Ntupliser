@@ -22,6 +22,10 @@ void MuPairInfo::init() {
   massErr_PF = -999;
   pt_PF      = -999;
   
+  mass_kinfit    = -999;
+  massErr_kinfit = -999;
+  pt_kinfit      = -999;
+
   mass_trk    = -999;
   massErr_trk = -999;
   pt_trk      = -999;

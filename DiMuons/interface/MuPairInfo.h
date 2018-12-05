@@ -26,6 +26,10 @@ struct MuPairInfo {
   Double_t massErr_PF;
   Double_t pt_PF;
 
+  Double_t mass_kinfit;
+  Double_t massErr_kinfit;
+  Double_t pt_kinfit;
+
   Double_t mass_trk;
   Double_t massErr_trk;
   Double_t pt_trk;

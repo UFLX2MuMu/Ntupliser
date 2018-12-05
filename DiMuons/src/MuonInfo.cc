@@ -63,6 +63,7 @@ void MuonInfo::init() {
     
     isPF = -999;
     
+    pt_kinfit = -999;
     pt_PF     = -999;
     ptErr_PF  = -999;
     eta_PF    = -999;
