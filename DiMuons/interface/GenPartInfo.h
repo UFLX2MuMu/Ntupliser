@@ -7,15 +7,13 @@
 
 struct GenPartInfo {
 
-  Float_t charge;
-  Float_t mass;
-  Float_t pt;
-  Float_t ptErr;
-  Float_t eta;  // pseudo rapidity
-  Float_t y;    // rapidity
-  Float_t phi;  // phi
-
-  void init();
+  Float_t charge = -999;
+  Float_t mass   = -999;
+  Float_t pt     = -999;
+  Float_t ptErr  = -999;
+  Float_t eta    = -999;  // pseudo rapidity
+  Float_t y      = -999;  // rapidity
+  Float_t phi    = -999;  // phi
 
 };
 

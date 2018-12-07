@@ -7,76 +7,76 @@
 
 struct SlimJetInfo {
 
-  Float_t pt      ;
-  Float_t eta     ;
-  Float_t phi     ;
-  Float_t mass    ;
-  Int_t   partonID;
+  Float_t pt       = -999;
+  Float_t eta      = -999;
+  Float_t phi      = -999;
+  Float_t mass     = -999;
+  Int_t   partonID = -999;
 
-  Float_t jecFactor;
-  Float_t jecUnc   ;
+  Float_t jecFactor = -999;
+  Float_t jecUnc    = -999;
 
-  Float_t CSV ;
-  Float_t puID;
+  Float_t CSV     = -999;
+  Float_t deepCSV = -999;
+  Float_t puID    = -999;
 
 };
 
 struct JetInfo {
 
-  Float_t px      ;
-  Float_t py      ;
-  Float_t pz      ;
-  Float_t pt      ;
-  Float_t eta     ;
-  Float_t phi     ;
-  Float_t mass    ;
-  Float_t charge  ;
-  Int_t   partonID;
+  Float_t px       = -999;
+  Float_t py       = -999;
+  Float_t pz       = -999;
+  Float_t pt       = -999;
+  Float_t eta      = -999;
+  Float_t phi      = -999;
+  Float_t mass     = -999;
+  Float_t charge   = -999;
+  Int_t   partonID = -999;
 
   /////// Energy Fractions //////
-  Float_t chf ;  // Charged Hadron
-  Float_t nhf ;  // NeutralHadron
-  Float_t cef ;  // Charged EM
-  Float_t nef ;  // Neutral EM
-  Float_t muf ;  // Mu
-  Float_t hfhf;  // HF Hadron Fraction
-  Float_t hfef;  // HF EM Fraction
+  Float_t chf  = -999;  // Charged Hadron
+  Float_t nhf  = -999;  // NeutralHadron
+  Float_t cef  = -999;  // Charged EM
+  Float_t nef  = -999;  // Neutral EM
+  Float_t muf  = -999;  // Mu
+  Float_t hfhf = -999;  // HF Hadron Fraction
+  Float_t hfef = -999;  // HF EM Fraction
 
   /////// Multiplicities //////
-  Int_t cm  ;  // Total Charged Mult
-  Int_t chm ;  // Charged Hadron Mult
-  Int_t nhm ;  // NeutralHadron Mult
-  Int_t cem ;  // Charged EM Mult
-  Int_t nem ;  // Neutral EM Mult
-  Int_t mum ;  // Mu Mult
-  Int_t hfhm;  // HF Hadron Mult
-  Int_t hfem;  // HF EM Mult
+  Int_t cm   = -999;  // Total Charged Mult
+  Int_t chm  = -999;  // Charged Hadron Mult
+  Int_t nhm  = -999;  // NeutralHadron Mult
+  Int_t cem  = -999;  // Charged EM Mult
+  Int_t nem  = -999;  // Neutral EM Mult
+  Int_t mum  = -999;  // Mu Mult
+  Int_t hfhm = -999;  // HF Hadron Mult
+  Int_t hfem = -999;  // HF EM Mult
 
   // Jet Correction Factor--Above momentum is already corrected!!
   // This factor will return momentum to uncorrected value!!
-  Float_t jecFactor;
-  Float_t jecUnc   ;  // Jet Energy Correction Uncertainty
+  Float_t jecFactor = -999;
+  Float_t jecUnc    = -999;  // Jet Energy Correction Uncertainty
 
   // Gen Jet Values
-  Bool_t  genMatched;
-  Float_t genPx     ;
-  Float_t genPy     ;
-  Float_t genPz     ;
-  Float_t genPt     ;
-  Float_t genEta    ;
-  Float_t genPhi    ;
-  Float_t genMass   ;
+  Bool_t  genMatched = -999;
+  Float_t genPx      = -999;
+  Float_t genPy      = -999;
+  Float_t genPz      = -999;
+  Float_t genPt      = -999;
+  Float_t genEta     = -999;
+  Float_t genPhi     = -999;
+  Float_t genMass    = -999;
 
   ///// Gen Jet Energy Fractions ///////
-  Float_t genEMF ;  // EM Fraction
-  Float_t genHadF;  // Had Fraction
-  Float_t genInvF;  // Invisible Fraction
-  Float_t genAuxF;  // Auxiliary Fraction (Undecayed Sigmas, etc.)
+  Float_t genEMF  = -999;  // EM Fraction
+  Float_t genHadF = -999;  // Had Fraction
+  Float_t genInvF = -999;  // Invisible Fraction
+  Float_t genAuxF = -999;  // Auxiliary Fraction (Undecayed Sigmas, etc.)
 
-  Float_t CSV ;  // Btag deepCSV
-  Float_t puID;  // PUID
-
-  void init();
+  Float_t CSV     = -999;  // Btag CSV_v2
+  Float_t deepCSV = -999;  // DeepFlavor tagger, sum of p(b) + p(bb)
+  Float_t puID    = -999;  // PUID
 
 };
 

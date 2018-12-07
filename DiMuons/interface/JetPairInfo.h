@@ -7,18 +7,16 @@
 
 struct JetPairInfo {
 
-  Int_t iJet1;
-  Int_t iJet2;
+  Int_t iJet1 = -999;
+  Int_t iJet2 = -999;
 
-  Float_t mass;
-  Float_t pt;
-  Float_t eta;
-  Float_t phi;
-  Float_t dR;
-  Float_t dEta;
-  Float_t dPhi;
-
-  void init();
+  Float_t mass = -999;
+  Float_t pt   = -999;
+  Float_t eta  = -999;
+  Float_t phi  = -999;
+  Float_t dR   = -999;
+  Float_t dEta = -999;
+  Float_t dPhi = -999;
 
 };
 
