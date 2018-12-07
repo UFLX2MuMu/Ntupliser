@@ -34,7 +34,6 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
   for (int i = 0; i < int(isOS.size()); i++) {
     
     MuPairInfo _pairInfo;
-    _pairInfo.init();
     
     int iMu1 = isOS.at(i).second.first;
     int iMu2 = isOS.at(i).second.second;

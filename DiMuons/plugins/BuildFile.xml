@@ -2,7 +2,7 @@
 <!-- Structure from https://github.com/jiafulow/L1TriggerSep2016/blob/master/L1TMuonEndCap/plugins/BuildFile.xml -->
 <!-- Ask Jia Fu what different things mean - AWB 10.11.16 -->
 
-<library file="*.cc" name="UfHMuMuCodeUFDiMuonsAnalyzerPlugins">
+<library file="*.cc" name="NtupliserDiMuonsPlugins">
   <use name="Ntupliser/DiMuons"/>
   <flags EDM_PLUGIN="1"/>
 </library>

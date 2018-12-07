@@ -16,6 +16,7 @@ void FillSlimJetInfos( SlimJetInfos& _slimJetInfos, const JetInfos _jetInfos ) {
     s.jecFactor = j.jecFactor;
     s.jecUnc    = j.jecUnc;
     s.CSV       = j.CSV;
+    s.deepCSV   = j.deepCSV;
     s.puID      = j.puID;
     _slimJetInfos.push_back(s);
   }
@@ -39,7 +40,6 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     pat::Jet jet = jetsSelected.at(i);
     JetInfo _jetInfo;
-    _jetInfo.init();
 
     _jetInfo.px       = jet.px();
     _jetInfo.py       = jet.py();
@@ -70,14 +70,13 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     _jetInfo.jecUnc    = -1.0;
     _jetInfo.jecFactor = jet.jecFactor("Uncorrected");
-   
-    //with deepCSV need to sum two disriminators: probb and probbb
-    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X 
-    _jetInfo.CSV  = jet.bDiscriminator(_btagName+":probb") + jet.bDiscriminator(_btagName+":probbb");
+    
+    _jetInfo.CSV     = jet.bDiscriminator(_btagName);
     if (_jetInfo.CSV < 0.) _jetInfo.CSV = -0.4;
     if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
-    _jetInfo.puID = jet.userFloat("pileupJetId:fullDiscriminant");
-    
+    _jetInfo.deepCSV = jet.bDiscriminator("pfDeepCSVJetTags:probb") + jet.bDiscriminator("pfDeepCSVJetTags:probbb");
+    _jetInfo.puID    = jet.userFloat("pileupJetId:fullDiscriminant");
+
     const reco::GenJet* genJet = jet.genJet();
     if (genJet != NULL) {
       _jetInfo.genMatched = true;
@@ -112,12 +111,12 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     if ( fabs( jet.eta() ) < 2.4 ) nJetsCent += 1;
     else                           _nJetsFwd += 1;
     // https://twiki.cern.ch/twiki/bin/view/CMS/BtagPOG
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.06.01 (PB)
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.12.05 (AWB)
     // https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
     if ( fabs( jet.eta() ) < 2.4 ) {
-      if ( _jetInfo.CSV > 0.1522 )   _nBLoose  += 1;
-      if ( _jetInfo.CSV > 0.4941 )   _nBMed    += 1;
-      if ( _jetInfo.CSV > 0.8001 )   _nBTight  += 1;
+      if ( _jetInfo.deepCSV > 0.1522 )   _nBLoose  += 1;
+      if ( _jetInfo.deepCSV > 0.4941 )   _nBMed    += 1;
+      if ( _jetInfo.deepCSV > 0.8001 )   _nBTight  += 1;
     }
     _jetInfos.push_back( _jetInfo );
 
@@ -140,7 +139,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
   
   // Following https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
   //       and https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
-  // Last check that cuts were up-to-date: March 10, 2017 (AWB)
+  // Last check that cuts were up-to-date: 23.10.2018 (AWB)
   // Modeled after "isGoodJet" in https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc
   // VBF H-->bb analysis: http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=HIG-16-003
   // Is PU jet ID used at some point in the sequence? (http://cds.cern.ch/record/1581583) Or just charged hadron subtraction (CHS)?
@@ -217,6 +216,7 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
     // Use 15 GeV jets with < 90% EM energy and not overlapping a muon to correct MET
     // Modeled after https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#Type_I_Correction_Propagation_of
     //  - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+    //  - Quite close to https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
     bool use_for_MET_corr = true;
     if ( pre_vec.Pt() < 15 || corr_jet.chargedEmEnergyFraction() + corr_jet.neutralEmEnergyFraction() > 0.9 )
       use_for_MET_corr = false;

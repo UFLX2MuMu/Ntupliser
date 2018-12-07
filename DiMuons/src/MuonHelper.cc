@@ -4,7 +4,7 @@
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
 		    const reco::Vertex primaryVertex, const int _nPV,
-		    const edm::Handle<reco::BeamSpot>& beamSpotHandle,  
+		    const edm::Handle<reco::BeamSpot>& beamSpotHandle,
 		    const edm::Event& iEvent, const edm::EventSetup& iSetup,
 		    const edm::Handle<pat::TriggerObjectStandAloneCollection>& _trigObjsHandle,
 		    const edm::Handle<edm::TriggerResults>& _trigResultsHandle,
@@ -12,8 +12,14 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons ) {
-  
+		    const edm::Handle < reco::GenParticleCollection >& genPartons,
+		    LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
+		    const double _rho, const edm::Handle<pat::JetCollection>& jets,
+		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
+		    EffectiveAreas muEffArea ) {
+
+  // std::cout << "\nInside FillMuonInfos" << std::endl;
+
   double const MASS_MUON = 0.105658367; // GeV/c^2
 
   _muonInfos.clear();
@@ -23,7 +29,6 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
     pat::Muon muon = muonsSelected.at(i);
     MuonInfo _muonInfo;
-    _muonInfo.init();
 
     reco::Track track;
     // Do we want to use the inner tracker track by default for the Kalman corrections? - AWB 12.11.16
@@ -50,9 +55,15 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     
     // Basic isolation
     if ( _muon_use_pfIso )
-      _muonInfo.relIso = MuonCalcRelIsoPF ( muon, _muon_iso_dR );
+      _muonInfo.relIso = MuonCalcRelIsoPF ( muon, _muon_iso_dR, _rho, muEffArea, "DeltaBeta" );
     else
       _muonInfo.relIso = MuonCalcRelIsoTrk( muon, _muon_iso_dR );
+
+    // Uses effective area calculation
+    _muonInfo.relIsoEA03     = MuonCalcRelIsoPF ( muon, 0.3, _rho, muEffArea, "EffArea" );
+    _muonInfo.relIsoEA04     = MuonCalcRelIsoPF ( muon, 0.4, _rho, muEffArea, "EffArea" );
+    _muonInfo.miniIso        = MuonCalcMiniIso  ( muon, pfCands, _rho, muEffArea, false );
+    _muonInfo.miniIsoCharged = MuonCalcMiniIso  ( muon, pfCands, _rho, muEffArea, true );
     
     // Basic vertexing? - AWB 12.11.16
 
@@ -165,16 +176,20 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     _muonInfo.isPF         = muon.isPFMuon();
     
     // Standard vertexing
-    _muonInfo.d0_BS= muon.innerTrack()->dxy( beamSpotHandle->position() );
-    _muonInfo.dz_BS= muon.innerTrack()->dz ( beamSpotHandle->position() );
+    _muonInfo.d0_BS  = muon.innerTrack()->dxy( beamSpotHandle->position() );
+    _muonInfo.dz_BS  = muon.innerTrack()->dz ( beamSpotHandle->position() );
+    _muonInfo.d0_PV  = track.dxy( primaryVertex.position() );
+    _muonInfo.dz_PV  = track.dz ( primaryVertex.position() );
+    _muonInfo.IP_3D  = muon.dB(pat::Muon::PV3D);
+    _muonInfo.SIP_3D = fabs( muon.dB(pat::Muon::PV3D) / muon.edB(pat::Muon::PV3D) );
     
-    _muonInfo.d0_PV = track.dxy( primaryVertex.position() );
-    _muonInfo.dz_PV = track.dz ( primaryVertex.position() );
-
     // Standard isolation
     _muonInfo.trackIsoSumPt     = muon.isolationR03().sumPt;
     _muonInfo.trackIsoSumPtCorr = muon.isolationR03().sumPt; // no correction with only 1 muon (??? - AWB 08.11.16)
     
+    // Compatibility with outer muon detector segments
+    _muonInfo.segCompat = muon::segmentCompatibility( muon );
+
     // Correct Iso calculation? - AWB 08.11.16
     double isovar = muon.isolationR03().sumPt;
     isovar += muon.isolationR03().hadEt; // tracker + HCAL
@@ -217,6 +232,21 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.sumPUPtR04              = muon.pfIsolationR04().sumPUPt             ;
     }
 
+    // Fill lepMVA input variables
+    // https://github.com/wverbeke/ewkino/blob/tZq/src/skimmer.cc#L128
+    FillLepMVAVars( _lepVars_mu, _muonInfo, jets, primaryVertex );
+    // Evaluate the lepMVA
+    _muonInfo.lepMVA = _lepMVA_mu->EvaluateMVA("BDTG method");
+    // Fill the remaining lepMVA input variables
+    _muonInfo.jet_trkMult = _lepVars_mu.trackMultClosestJet;
+    _muonInfo.jet_ptRel   = _lepVars_mu.ptRel;
+    _muonInfo.jet_ptRatio = _lepVars_mu.ptRatio;
+    _muonInfo.jet_deepCSV = _lepVars_mu.deepCsvClosestJet;
+
+    // std::cout << "LepMVA input variables for muon:" << std::endl;
+    // _lepVars_mu.print();
+    // std::cout << "LepMVA output value = " << _muonInfo.lepMVA << std::endl;
+
     _muonInfos.push_back( _muonInfo );
   } // End loop: for (unsigned int i = 0; i < nMuons; i++)
 
@@ -226,7 +256,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons, 
 				 const reco::Vertex primaryVertex, const std::string _muon_ID,
 				 const double _muon_pT_min, const double _muon_eta_max, const double _muon_trig_dR, 
-				 const bool _muon_use_pfIso, const double _muon_iso_dR, const double _muon_iso_max ) {
+				 const bool _muon_use_pfIso, const double _muon_iso_dR, const double _muon_iso_max,
+				 const double _rho, EffectiveAreas muEffArea ) {
   
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Identification
   
@@ -248,7 +279,7 @@ pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons,
     if ( _muon_ID.find("tight")  != std::string::npos && !MuonIsTight ( (*muon), primaryVertex ) ) continue;
 
     if ( _muon_use_pfIso ) {
-      if ( MuonCalcRelIsoPF ( (*muon), _muon_iso_dR ) > _muon_iso_max ) continue;
+      if ( MuonCalcRelIsoPF ( (*muon), _muon_iso_dR, _rho, muEffArea , "DeltaBeta" ) > _muon_iso_max ) continue;
     } else {
       if ( MuonCalcRelIsoTrk( (*muon), _muon_iso_dR ) > _muon_iso_max ) continue;
     }
@@ -297,23 +328,32 @@ bool MuonIsTight( const pat::Muon muon, const reco::Vertex primaryVertex ) {
   return _isTight;
 }
 
-double MuonCalcRelIsoPF( const pat::Muon muon, const double _muon_iso_dR ) {
-  // Following https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Isolation
-  double iso = -999.;
+double MuonCalcRelIsoPF( const pat::Muon muon, const double _muon_iso_dR, const double rho,
+			 EffectiveAreas muEffArea, const std::string type ) {
+  // Following https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Isolation and
+  // https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/src/LeptonAnalyzerIso.cc#L23
+  assert(_muon_iso_dR == 0.3 || _muon_iso_dR == 0.4);
+  assert(type == "DeltaBeta" || type == "EffArea");
+
+  double iso = -999;
+  float  PU  = -999;
+
   if ( _muon_iso_dR == 0.4 ) {
+    if      (type == "DeltaBeta") PU = 0.5 * muon.pfIsolationR04().sumPUPt;
+    else if (type == "EffArea")   PU = rho * muEffArea.getEffectiveArea( muon.eta() ) * pow(0.4/0.3, 2);
     iso  = muon.pfIsolationR04().sumChargedHadronPt;
-    iso += std::max( 0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5*muon.pfIsolationR04().sumPUPt );
+    iso += std::fmax( 0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - PU );
   } 
   else if ( _muon_iso_dR == 0.3 ) {
+    if      (type == "DeltaBeta") PU = 0.5 * muon.pfIsolationR03().sumPUPt;
+    else if (type == "EffArea")   PU = rho * muEffArea.getEffectiveArea( muon.eta() );
+    PU   = 0.5 * muon.pfIsolationR03().sumPUPt;
     iso  = muon.pfIsolationR03().sumChargedHadronPt;
-    iso += std::max( 0., muon.pfIsolationR03().sumNeutralHadronEt + muon.pfIsolationR03().sumPhotonEt - 0.5*muon.pfIsolationR03().sumPUPt );
+    iso += std::fmax( 0., muon.pfIsolationR03().sumNeutralHadronEt + muon.pfIsolationR03().sumPhotonEt - PU );
   }
-  else {
-    std::cout << "Muon isolation dR = " << _muon_iso_dR << ", not 0.3 or 0.4.  Cannot compute, setting to -999." << std::endl;
-    return iso;
-  }
+
   return (iso / muon.pt() );
-}
+} // End function: MuonCalcRelIsoPF()
 
 double MuonCalcRelIsoTrk( const pat::Muon muon, const double _muon_iso_dR ) {
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Isolation
@@ -327,6 +367,45 @@ double MuonCalcRelIsoTrk( const pat::Muon muon, const double _muon_iso_dR ) {
     return iso;
   }
   return (iso / muon.pt() );
+}
+
+double MuonCalcMiniIso( const pat::Muon muon, const edm::Handle<pat::PackedCandidateCollection> pfCands,
+			const double rho, EffectiveAreas muEffArea, const bool charged ) {
+  // Following https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/src/LeptonAnalyzerIso.cc#L79
+  //       and https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/src/LeptonAnalyzerIso.cc#L36
+
+  // Variable cone size based on muon pT: from 0.2 at low pT (<= 5 GeV) up to 0.05 (>= 200 GeV)
+  double max_pt   = 10.0 / 0.05;  // kT scale (GeV) / dR_min
+  double min_pt   = 10.0 / 0.20;  // kT scale (GeV) / dR_max
+  double coneSize = 10.0 / std::fmax(std::min(muon.pt(), max_pt), min_pt);
+
+  double dR_nh(0.01), dR_ch(0.0001), dR_ph(0.01), dR_pu(0.01);  // Candidates not considered if they're too close to the muon
+  double iso_nh(0.0), iso_ch(0.0), iso_ph(0.0), iso_pu(0.0);    // Separate isolation quantities by PF candidate type
+  double minPt = 0.5;
+
+  for (const pat::PackedCandidate & pfc : *pfCands) {
+
+    if (fabs(pfc.pdgId()) < 7) continue;  // What does this do? - AWB 15.10.2018
+
+    double dR = deltaR(pfc, muon);
+    if (dR > coneSize) continue;
+
+    if (pfc.charge() == 0) { // Neutral
+      if (pfc.pt() > minPt) {
+	if      (fabs(pfc.pdgId()) ==  22 and dR > dR_ph) iso_ph += pfc.pt(); // Photons
+	else if (fabs(pfc.pdgId()) == 130 and dR > dR_nh) iso_nh += pfc.pt(); // Neutral hadrons
+      }
+    } else if (pfc.fromPV() > 1) {
+      if (fabs(pfc.pdgId()) == 211 and dR > dR_ch) iso_ch += pfc.pt(); // Charged from PV
+    } else if (pfc.pt()    > minPt and dR > dR_pu) iso_pu += pfc.pt(); // Charged from PU
+  }
+
+  double puCorr = rho * muEffArea.getEffectiveArea( muon.eta() );
+
+  double iso  = iso_ch;
+  if (!charged) iso += std::fmax(0., iso_ph + iso_nh - puCorr * pow(coneSize / 0.3, 2));
+
+  return ( iso / muon.pt() );
 }
 
 double MuonCalcTrigEff( const pat::Muon muon, const int _nPV, const std::string _trigName ) {
@@ -527,7 +606,7 @@ float CalcDPhi( const float phi1, const float phi2 ) {
 
   float abs_dPhi  = acos( cos(phi2 - phi1) );
   float sign_dPhi = sin(phi2 - phi1) / fabs( sin(phi2 - phi1) );
-  std::cout << "phi1 = " << phi1 << ", phi2 = " << phi2 << ", dPhi = " << abs_dPhi*sign_dPhi << " (sign = " << sign_dPhi << ")" << std::endl;
+  // std::cout << "phi1 = " << phi1 << ", phi2 = " << phi2 << ", dPhi = " << abs_dPhi*sign_dPhi << " (sign = " << sign_dPhi << ")" << std::endl;
   return abs_dPhi*sign_dPhi;
 }
 
@@ -583,7 +662,7 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
    if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
-      std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+     // std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }
@@ -640,14 +719,14 @@ void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
     float mu_eta = std::min( fabs(_muonInfos.at(iMu).eta),
 			     _ID_hist->GetXaxis()->GetBinLowEdge( _ID_hist->GetNbinsX() ) +
 			     _ID_hist->GetXaxis()->GetBinWidth(   _ID_hist->GetNbinsX() ) - 0.01 );
-    mu_pt = std::max( mu_pt*1.0, _ID_hist->GetYaxis()->GetBinLowEdge(1) + 0.01 );
+    mu_pt = std::fmax( mu_pt*1.0, _ID_hist->GetYaxis()->GetBinLowEdge(1) + 0.01 );
     bool found_mu = false;
 
     for (int iPt = 1; iPt <= _ID_hist->GetNbinsY(); iPt++) {
       if ( found_mu ) continue;
       if ( mu_pt < _ID_hist->GetYaxis()->GetBinLowEdge(iPt) ) continue;
       if ( mu_pt > _ID_hist->GetYaxis()->GetBinLowEdge(iPt) + _ID_hist->GetYaxis()->GetBinWidth(iPt) ) continue;
-      
+
       for (int iEta = 1; iEta <= _ID_hist->GetNbinsX(); iEta++) {
 	if ( found_mu ) continue;
 	if ( mu_eta < _ID_hist->GetXaxis()->GetBinLowEdge(iEta) ) continue;
@@ -673,14 +752,14 @@ void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
     float mu_eta = std::min( fabs(_muonInfos.at(iMu).eta),
 			     _Iso_hist->GetXaxis()->GetBinLowEdge( _Iso_hist->GetNbinsX() ) +
 			     _Iso_hist->GetXaxis()->GetBinWidth(   _Iso_hist->GetNbinsX() ) - 0.01 );
-    mu_pt = std::max( mu_pt*1.0, _Iso_hist->GetYaxis()->GetBinLowEdge(1) + 0.01 );
+    mu_pt = std::fmax( mu_pt*1.0, _Iso_hist->GetYaxis()->GetBinLowEdge(1) + 0.01 );
     bool found_mu = false;
 
     for (int iPt = 1; iPt <= _Iso_hist->GetNbinsY(); iPt++) {
       if ( found_mu ) continue;
       if ( mu_pt < _Iso_hist->GetYaxis()->GetBinLowEdge(iPt) ) continue;
       if ( mu_pt > _Iso_hist->GetYaxis()->GetBinLowEdge(iPt) + _Iso_hist->GetYaxis()->GetBinWidth(iPt) ) continue;
-      
+
       for (int iEta = 1; iEta <= _Iso_hist->GetNbinsX(); iEta++) {
 	if ( found_mu ) continue;
 	if ( mu_eta < _Iso_hist->GetXaxis()->GetBinLowEdge(iEta) ) continue;

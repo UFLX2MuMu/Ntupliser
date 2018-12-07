@@ -37,7 +37,6 @@ void FillJetPairInfos( JetPairInfos& _pairInfos, const JetInfos _jetInfos ) {
     if (i > 14) continue;
 
     JetPairInfo _pairInfo;
-    _pairInfo.init();
     
     int iJet1 = pairs_by_mass.at(i).second.first;
     int iJet2 = pairs_by_mass.at(i).second.second;

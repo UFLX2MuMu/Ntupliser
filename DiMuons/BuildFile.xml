@@ -35,5 +35,6 @@
 
 <use name="PhysicsTools/UtilAlgos"/>
 
+<use name="RecoEgamma/EgammaTools"/>
+
 <use name="Ntupliser/RochCor"/>
-<!-- <use name="RochCor/Calibration"/> -->
