@@ -7,13 +7,11 @@
 
 struct EventInfo {
   
-  Int_t    run;
-  Int_t    lumi;
-  Long64_t event;
-  Long64_t bx;
-  Long64_t orbit;
-
-  void init();
+  Int_t    run   = -999;
+  Int_t    lumi  = -999;
+  Long64_t event = -999;
+  Long64_t bx    = -999;
+  Long64_t orbit = -999;
 
 };
 
