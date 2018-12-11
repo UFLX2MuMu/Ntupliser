@@ -48,9 +48,9 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples import Zd150 as samp
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
-#from python.Samples import H2Mu_gg as samp
-#from python.Samples import SingleMu_2017F as samp
-from python.Samples import tt as samp
+from python.Samples import H2Mu_gg as samp
+#from python.Samples import SingleMu_2017B as samp
+#from python.Samples import tt as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -118,8 +118,8 @@ readFiles.extend(samp.files);
 
 # readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.source = cms.Source("PoolSource",fileNames = readFiles)
 #process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
@@ -138,14 +138,13 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017F_output_test.root") )
-
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_test.root") )
-process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
 
 
 # /////////////////////////////////////////////////////////////
@@ -190,7 +189,7 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 
 ## First need to run: git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
 ## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff']
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff']
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 

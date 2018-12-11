@@ -1,5 +1,6 @@
 
 #include "Ntupliser/DiMuons/interface/MuonHelper.h"
+#include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
@@ -11,8 +12,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR, 
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
-		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons,
+		    const RoccoR _Roch_calib, const bool _doSys_Roch, const GenMuonInfos _genMuonInfos,
 		    LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
 		    const double _rho, const edm::Handle<pat::JetCollection>& jets,
 		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -24,6 +24,79 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
   _muonInfos.clear();
   int nMuons = muonsSelected.size();
+
+
+  // Testing Kinematic fit : Needs to be integrated in the Ntupliser data format - PB 10.09.2018
+
+  TLorentzVector mu1_tlv;
+  TLorentzVector mu2_tlv;
+
+  Double_t mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
+  Double_t mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
+  
+  RefCountedKinematicVertex dimu_vertex;
+  
+  // TODO: Handle higher order effecrs when the events has more than 2 selected muons. For the moment the kinematic fit is run on all possible muons in the collections selectedMuons. 
+  // The result is store for the first fit and for the first two muons. For ggH and VBF this should be enough, but ttH or VH might need to cover higher order effects.
+  // Ideally we should run it only for opposite signed couple of muons and store the pt_kinfit as a vector/array per each muons with an index to the pair related to it.
+  if( nMuons > 1){
+    //Instatiate KinematicVertexFitter object
+    KinematicVertexFitter kinfit;
+    //Fit and retrieve the tree
+    RefCountedKinematicTree kinfittree = kinfit.Fit(muonsSelected); 
+ 
+    if(kinfittree->isEmpty() == 1 || kinfittree->isConsistent() == 0)
+       std::cout << "Kinematic Fit unsuccesfull" << std::endl;
+    else{
+      //accessing the tree components 
+      kinfittree->movePointerToTheTop();
+      //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
+      RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
+      
+      //getting the dimuon decay vertex
+      //RefCountedKinematicVertex 
+      dimu_vertex = kinfittree->currentDecayVertex();
+   
+      //Now navigating down the tree 
+      bool child = kinfittree->movePointerToTheFirstChild();
+      //TLorentzVector mu1_tlv;
+    
+      if (child){
+        RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
+        AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
+        AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
+        mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
+        mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
+//        std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
+//        std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
+//        std::cout << "Covariant matrix" << std::endl;
+//        std::cout << mu1_kinfit_cov(3,3) << std::endl;
+//        std::cout << " - " << mu1_kinfit_cov(4,4) << std::endl;
+//        std::cout << " -      -    " << mu1_kinfit_cov(5,5) << std::endl;
+//        std::cout << "Muon pt uncertainty = " << sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)) << std::endl;
+      }
+     
+    
+      //Now navigating down the tree 
+      bool nextchild = kinfittree->movePointerToTheNextChild();
+   
+      if (nextchild){
+        RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
+        AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
+        AlgebraicSymMatrix77 mu2_kinfit_cov = mu2_kinfit->currentState().kinematicParametersError().matrix(); 
+        mu2_ptErr_kinfit = sqrt(mu2_kinfit_cov(3,3) + mu2_kinfit_cov(4,4)); 
+        mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
+      }
+
+    } // end else - isEmpty()
+
+    //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
+    //std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
+    //std::cout << "Kin fit mass from kinfit: " << higgs_tlv.M()  << " - Kin fit mass from tlv: " << (mu1_tlv+mu2_tlv).M()<< std::endl; 
+ 
+  } //if nMuons>1
+
+
 
   for (int i = 0; i < nMuons; i++) {
 
@@ -123,26 +196,26 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
       int iMatch = -99;
       if (not _isData) {
-	for (unsigned int i = 0; i < genPartons->size(); i++) {
-	  const reco::Candidate& GEN_mu = genPartons->at(i);
-	  if ( abs(GEN_mu.pdgId()) != 13 ) continue;
-	  if ( GEN_mu.status() != 1 ) continue;
-	  if ( GEN_mu.charge() != _muonInfo.charge ) continue;
+	for (unsigned int i = 0; i < _genMuonInfos.size(); i++) {
+	  const GenMuonInfo GEN_mu = _genMuonInfos.at(i);
+	  if ( GEN_mu.status != 1 ) continue; // TODO: understand status
+	  if ( GEN_mu.charge != _muonInfo.charge ) continue;
 	
-	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt(), GEN_mu.eta(), GEN_mu.phi(), GEN_mu.mass() );
+	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt, GEN_mu.eta, GEN_mu.phi, GEN_mu.mass );
 	  if (GEN_vec.DeltaR(mu_vec_Roch) > 0.005) continue;
 	  if (iMatch > 0) {
 	    std::cout << "\nBizzare situation: two muons match!" << std::endl;
 	    std::cout << "RECO pT = " << mu_vec_Roch.Pt() << ", eta = " << mu_vec_Roch.Eta() 
 		      << ", phi = " << mu_vec_Roch.Phi() << ", charge = " << _muonInfo.charge << std::endl;
-	    std::cout << "GEN1 pT = " << genPartons->at(i).pt()<< ", eta = " << genPartons->at(i).eta() 
-		      << ", phi = " << genPartons->at(i).phi() << std::endl;
+	    std::cout << "GEN1 pT = " << _genMuonInfos.at(i).pt << ", eta = " << _genMuonInfos.at(i).eta 
+		      << ", phi = " << _genMuonInfos.at(i).phi << std::endl;
 	    std::cout << "GEN2 pT = " << GEN_vec.Pt()<< ", eta = " << GEN_vec.Eta() << ", phi = " << GEN_vec.Phi() << std::endl;
 	  }
 	  
 	  iMatch = i;
 	  _muonInfo.GEN_pt = GEN_vec.Pt();
 	  _muonInfo.GEN_dR = GEN_vec.DeltaR(mu_vec_Roch);
+          _muonInfo.GEN_idx = iMatch;
 	}
       } // End conditional: if (not _isData)
 
@@ -156,7 +229,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.ptErr_Roch        = ptErr_Roch;
       _muonInfo.pt_Roch_sys_up    = pt_Roch_sys_up;
       _muonInfo.pt_Roch_sys_down  = pt_Roch_sys_down;
-      
+
+    // DEBUG: Rochester pt
+    // std::cout << "Rochester pt and uncert = " << pt_Roch << " +- " << ptErr_Roch << std::endl;
+     
     } // End if (muon.isTrackerMuon())
 
     // Particle flow kinematics
@@ -183,6 +259,45 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     _muonInfo.IP_3D  = muon.dB(pat::Muon::PV3D);
     _muonInfo.SIP_3D = fabs( muon.dB(pat::Muon::PV3D) / muon.edB(pat::Muon::PV3D) );
     
+    _muonInfo.d0_PV = track.dxy( primaryVertex.position() );
+    _muonInfo.dz_PV = track.dz ( primaryVertex.position() );
+ 
+
+    // Kinematic Fit corrections and vertex
+    if( dimu_vertex != NULL ){
+      GlobalVector IPVec(dimu_vertex->position().x()-primaryVertex.position().x(),dimu_vertex->position().y()-primaryVertex.position().y(),dimu_vertex->position().z()-primaryVertex.position().z());
+      _muonInfo.d0_PV_kinfit = sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) );
+      _muonInfo.dz_PV_kinfit = fabs(dimu_vertex->position().z()-primaryVertex.position().z());
+      _muonInfo.chi2_kinfit = dimu_vertex->chiSquared();
+      _muonInfo.ndf_kinfit =  dimu_vertex->degreesOfFreedom(); 
+      if(i==0){ //first muon
+        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz()); 
+        float prod = IPVec.dot(direction);
+        int sign = (prod>=0) ? 1. : -1.;
+        _muonInfo.d0_PV_kinfit *= sign;
+        _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.pt_kinfit  = mu1_tlv.Pt();
+        _muonInfo.ptErr_kinfit = mu1_ptErr_kinfit;
+      }
+      if(i==1){ //second muon
+        GlobalVector direction(mu2_tlv.Px(),mu2_tlv.Py(),mu2_tlv.Pz()); 
+        float prod = IPVec.dot(direction);
+        int sign = (prod>=0) ? 1. : -1.;
+        _muonInfo.d0_PV_kinfit *= sign;
+        _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.pt_kinfit  = mu2_tlv.Pt();
+        _muonInfo.ptErr_kinfit = mu2_ptErr_kinfit;
+     }
+    } 
+    else{ // if the kinfit was not succesful for this muon use the muonBestTrack 
+        _muonInfo.pt_kinfit = muon.muonBestTrack()->pt();
+        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError(); 
+    }
+
+    //DEBUG: Checking dO
+    //if(dimu_vertex != NULL )
+    //  std::cout << "d0_PV track = " << track.dxy( primaryVertex.position() ) << ", d0_PV muons " << muon.muonBestTrack()->dxy(primaryVertex.position()) << ", kinfit d0_PV = " << sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) ) << std::endl;
+
     // Standard isolation
     _muonInfo.trackIsoSumPt     = muon.isolationR03().sumPt;
     _muonInfo.trackIsoSumPtCorr = muon.isolationR03().sumPt; // no correction with only 1 muon (??? - AWB 08.11.16)
@@ -662,7 +777,7 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
       _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
     } // loop pt bin 
    if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
-     // std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      //std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
       _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
       continue;
     }

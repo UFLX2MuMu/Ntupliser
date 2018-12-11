@@ -6,7 +6,7 @@
 #include "TMath.h"
 
 struct MuPairInfo {
-
+  
   Int_t iMu1 = -999;
   Int_t iMu2 = -999;
 
@@ -17,6 +17,7 @@ struct MuPairInfo {
   Double_t rapid    = -999;
   Double_t phi      = -999;
   Int_t    charge   = -999;
+  
   Double_t dR       = -999;
   Double_t dEta     = -999;
   Double_t dPhi     = -999;

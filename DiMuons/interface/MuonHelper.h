@@ -6,13 +6,14 @@
 #include "Ntupliser/DiMuons/interface/MuonInfo.h"
 #include "Ntupliser/DiMuons/interface/PtCorrKalman.h"
 #include "Ntupliser/DiMuons/interface/PtCorrRoch.h"
+#include "Ntupliser/DiMuons/interface/KinematicFitMuonCorrections.h"
+#include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 #include "Ntupliser/DiMuons/interface/LepMVA.h"
 
 // Classes for json handling
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
 #include <iomanip> // setprecision
-
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
@@ -25,8 +26,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons,
-		    LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
+        const GenMuonInfos _genMuonInfos,
+        LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
 		    const double _rho, const edm::Handle<pat::JetCollection>& jets,
 		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
 		    EffectiveAreas muEffArea );

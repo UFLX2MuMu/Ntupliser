@@ -162,25 +162,24 @@ bool ElePassKinematics( const pat::Electron ele, const reco::Vertex primaryVerte
     dZ  = fabs( ele.gsfTrack()->dz ( primaryVertex.position() ) );
   }
   
-  // From https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Electron_ID_Working_Points_WP_de
-  // Different than https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L890
+  // For 2017: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Offline_selection_criteria_for_V
+  // Different than https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L895
   bool passDXY = dXY != -999 && ( isBarrel ? (dXY < 0.05) : (dXY < 0.10 ) );
   bool passDZ  = dZ  != -999 && ( isBarrel ? (dZ  < 0.10) : (dZ  < 0.20 ) );
 
   return (passDXY && passDZ );  // Is this really all we need? - AWB 16.01.17
-  // // What about passMVAId53x? no_exp_inner_trkr_hits? myTrigPresel? - AWB 15.11.16
+  // // What about !inCrack? passMVAId53x? no_exp_inner_trkr_hits? myTrigPresel? - AWB 15.11.16
+  // // https://github.com/cms-ttH/MiniAOD/blob/master/MiniAODHelper/src/MiniAODHelper.cc#L900
   // return (passDXY && passDZ && ele.passConversionVeto() && !inCrack);
   // // Does ele->passConversionVeto() return the same thing as ConversionTools::hasMatchedConversion? - AWB 15.11.16
   // // https://github.com/ikrav/EgammaWork/blob/ntupler_and_VID_demos_8.0.3/ElectronNtupler/plugins/ElectronNtuplerVIDDemo.cc#L358
 }  
   
-
 double EleCalcRelIsoPF( const pat::Electron ele, const double rho,
                          EffectiveAreas eleEffArea, const std::string type ) {
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2 and
   // https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/src/LeptonAnalyzerIso.cc#L29
-  // Last check that cuts were up-to-date: 18.10.2018 - AWB
-  
+  // Last check that cuts were up-to-date: 18.10.2018 - AWB  
   // Electron isolation cone radius is always 0.3
    assert(type == "DeltaBeta" || type == "EffArea");
 
