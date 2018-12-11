@@ -7,26 +7,24 @@
 
 struct GenMuonInfo {
 
-  Int_t status;
-  Int_t nMothers;
-  Int_t postFSR;
+  Int_t status   = -999;
+  Int_t nMothers = -999;
+  Int_t postFSR  = -999;
 
-  Float_t pt;
-  Float_t eta;
-  Float_t phi;
-  Float_t mass;
-  Int_t charge;
+  Float_t pt   = -999;
+  Float_t eta  = -999;
+  Float_t phi  = -999;
+  Float_t mass = -999;
+  Int_t charge = -999;
 
-  Float_t FSR_pt;
-  Float_t FSR_eta;
-  Float_t FSR_phi;
-  Float_t FSR_mass;
+  Float_t FSR_pt   = -999;
+  Float_t FSR_eta  = -999;
+  Float_t FSR_phi  = -999;
+  Float_t FSR_mass = -999;
 
-  Int_t mother_ID;
-  Int_t mother_status;
-  Int_t mother_idx;
-
-  void init();
+  Int_t mother_ID     = -999;
+  Int_t mother_status = -999;
+  Int_t mother_idx    = -999;
 
 };
 

@@ -4,8 +4,6 @@
 void FillGenPartInfo( GenPartInfo& _genPartInfo,
                       const reco::Candidate& genPart ) {
 
-  _genPartInfo.init();
-
   _genPartInfo.charge = genPart.charge();
   _genPartInfo.mass   = genPart.mass();
   _genPartInfo.pt     = genPart.pt();
@@ -47,12 +45,6 @@ void FillBosonAndMuDaughters( const reco::Candidate& boson,
   GenPartInfo mu2preFSR;
   GenPartInfo mu2postFSR;
   
-  bosonInfo.init();
-  mu1preFSR.init();
-  mu1postFSR.init();
-  mu2preFSR.init();
-  mu2postFSR.init();
-
   FillGenPartInfo( bosonInfo, boson );
 
   TLorentzVector l1, l2, mother;
@@ -176,7 +168,12 @@ void FillBosonAndMuDaughters( const reco::Candidate& boson,
       }
     }
     else {
-      bosonInfo.init();
+      bosonInfo.mass   = -999;
+      bosonInfo.pt     = -999;
+      bosonInfo.eta    = -999;
+      bosonInfo.y      = -999;
+      bosonInfo.phi    = -999;
+      bosonInfo.charge = -999;
     }
 
     _genGpreFSR = bosonInfo;

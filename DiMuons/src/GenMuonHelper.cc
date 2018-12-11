@@ -37,7 +37,6 @@ void FillGenMuonInfos( GenMuonInfos& _genMuonInfos, GenParentInfos& _genParentIn
     if (not preFSR && not postFSR) continue;
     
     GenMuonInfo _genMuonInfo;
-    _genMuonInfo.init();
     
     _genMuonInfo.status     = muon.status();
     _genMuonInfo.nMothers   = muon.numberOfMothers();
@@ -116,7 +115,6 @@ void FillGenMuonInfos( GenMuonInfos& _genMuonInfos, GenParentInfos& _genParentIn
       }
 
       GenParentInfo _genParentInfo;
-      _genParentInfo.init();
       
       _genParentInfo.ID         = 22;
       _genParentInfo.status     = 21;

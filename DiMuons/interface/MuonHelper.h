@@ -8,7 +8,9 @@
 #include "Ntupliser/DiMuons/interface/PtCorrRoch.h"
 #include "Ntupliser/DiMuons/interface/KinematicFitMuonCorrections.h"
 #include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
-// Classes or json handling
+#include "Ntupliser/DiMuons/interface/LepMVA.h"
+
+// Classes for json handling
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
 #include <iomanip> // setprecision
@@ -24,19 +26,27 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
 		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const GenMuonInfos _genMuonInfos );
+        const GenMuonInfos _genMuonInfos,
+        LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
+		    const double _rho, const edm::Handle<pat::JetCollection>& jets,
+		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
+		    EffectiveAreas muEffArea );
 
 pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons,
 				 const reco::Vertex primaryVertex, const std::string _muon_ID,
 				 const double _muon_pT_min, const double _muon_eta_max, const double _muon_trig_dR,
-				 const bool _muon_use_pfIso, const double _muon_iso_dR, const double _muon_iso_max );
+				 const bool _muon_use_pfIso, const double _muon_iso_dR, const double _muon_iso_max,
+				 const double _rho, EffectiveAreas muEffArea );
 
 bool MuonIsLoose ( const pat::Muon muon );
 bool MuonIsMedium( const pat::Muon muon );
 bool MuonIsTight ( const pat::Muon muon, const reco::Vertex primaryVertex );
 
-double MuonCalcRelIsoPF ( const pat::Muon muon, const double _muon_iso_dR );
+double MuonCalcRelIsoPF ( const pat::Muon muon, const double _muon_iso_dR, const double rho,
+			  EffectiveAreas muEffArea, const std::string type );
 double MuonCalcRelIsoTrk( const pat::Muon muon, const double _muon_iso_dR );
+double MuonCalcMiniIso  ( const pat::Muon muon, const edm::Handle<pat::PackedCandidateCollection> pfCands,
+			  const double rho, EffectiveAreas muEffArea, const bool charged );
 double MuonCalcTrigEff  ( const pat::Muon muon, const int _nPV, const std::string _trigName );
 
 bool IsHltMatched( const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,

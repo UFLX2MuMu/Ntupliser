@@ -13,7 +13,6 @@ void FillVertexInfos( VertexInfos& _vertexInfos, int& _nVertices,
 
     reco::Vertex vertex = verticesSelected.at(i);
     VertexInfo _vertexInfo;
-    _vertexInfo.init();
     
     _vertexInfo.isValid  = vertex.isValid();
     _vertexInfo.x        = vertex.position().X();
