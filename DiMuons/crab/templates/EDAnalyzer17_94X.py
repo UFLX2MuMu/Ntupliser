@@ -25,10 +25,6 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-# from python.Samples_2017_94X_v2 import SingleMu_2017C as samp
-# from python.Samples_2017_94X_v2 import H2Mu_gg_125_NLO as samp
-from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
-
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
 else:
@@ -58,22 +54,18 @@ process.source = cms.Source('PoolSource',fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
 
-# use a JSON file when locally executing cmsRun
-if samp.isData:
-    import FWCore.PythonUtilities.LumiList as LumiList
-    process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
-    # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
+# # use a JSON file when locally executing cmsRun
+# if samp.isData:
+#     import FWCore.PythonUtilities.LumiList as LumiList
+#     process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
+#     # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
 
 
 # /////////////////////////////////////////////////////////////
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C_1k.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_NLO.root') )
-process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HToMuMu_M125_1k.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf.root') )
+process.TFileService = cms.Service('TFileService', fileName = cms.string('tuple.root') )
 
 
 # /////////////////////////////////////////////////////////////
@@ -98,14 +90,6 @@ if samp.isData:
   process.load('Ntupliser.DiMuons.Analyzer_2017_94X_cff')
 else:
   process.load('Ntupliser.DiMuons.Analyzer_2017_94X_MC_cff')
-
-# process.dimuons.isVerbose  = cms.untracked.bool(False)
-# process.dimuons.doSys      = cms.bool(True)
-# process.dimuons.doSys_KaMu = cms.bool(False)
-# process.dimuons.doSys_Roch = cms.bool(True)
-# process.dimuons.slimOut    = cms.bool(True)
-
-# process.dimuons.jetsTag    = cms.InputTag('slimmedJets')
 
 
 # # /////////////////////////////////////////////////////////////

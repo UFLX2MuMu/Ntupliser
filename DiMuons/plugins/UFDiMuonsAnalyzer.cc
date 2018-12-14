@@ -24,8 +24,9 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _slimOut       = iConfig.getParameter         <bool>("slimOut");
   
   // Event selection from config file
-  _skim_nMuons = iConfig.getParameter<int>  ("skim_nMuons");
-  _skim_trig   = iConfig.getParameter<bool> ("skim_trig");
+  _skim_nMuons   = iConfig.getParameter<int>  ("skim_nMuons");
+  _skim_nLeptons = iConfig.getParameter<int>  ("skim_nLeptons");
+  _skim_trig     = iConfig.getParameter<bool> ("skim_trig");
 
   // Trigger info
   _processName  = iConfig.getParameter            <std::string> ("processName");
@@ -487,13 +488,13 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // Sort the selected electrons by pT
   sort(elesSelected.begin(), elesSelected.end(), sortElesByPt);
   
+  // Throw away event if there are too few leptons
+  if ( ( muonsSelected.size() + elesSelected.size() ) < (unsigned int) _skim_nLeptons )
+    return;
+
   FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass, ele_mva_val,
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
-
-  // // Throw away event if there are less than 3 leptons
-  // if ( muonsSelected.size() + elesSelected.size() < 3 )
-  //   return;
 
 
   // // ----

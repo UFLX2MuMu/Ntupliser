@@ -9,17 +9,18 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
-                         skim_nMuons = cms.int32(2),
-                         skim_trig   = cms.bool(True),
-                         
-                         ## HLT trigger info
-                         ## Unprescaled triggers for all of 2017
-                         ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         skim_nMuons   = cms.int32(1),
+                         skim_nLeptons = cms.int32(2),
+                         skim_trig     = cms.bool(True),
                          
                          processName  = cms.string("HLT"),
-                         trigNames = cms.vstring("HLT_IsoMu27", "HLT_IsoTkMu27",
-                                                 "HLT_Mu50", "HLT_TkMu100"),
-
+                         ## Triggers which were unprescaled in 2016, 2017, or 2018
+                         ## 2016 : https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
+                         ## 2017 : https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         trigNames = cms.vstring("HLT_IsoMu22_eta2p1", "HLT_IsoTkMu22_eta2p1",
+                                                 "HLT_IsoMu24", "HLT_IsoTkMu24",
+                                                 "HLT_IsoMu27", "HLT_IsoTkMu27",
+                                                 "HLT_Mu50", "HLT_TkMu50", "HLT_TkMu100"),
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
@@ -34,25 +35,27 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
                          doSys_Roch = cms.bool(True),
-                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
+                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight"),
-                         eleIdMva    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
-                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
+                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
+                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
+                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
+                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
+                         eleIdMva    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
+                         ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt'),
 
                          ## Jets
                          ## Not clear which jet tag below should be used - AWB 21.10.2018
-                         # jetsTag  = cms.InputTag('slimmedJets'),
-                         jetsTag  = cms.InputTag('updatedPatJetsUpdatedJEC'),
+                         jetsTag  = cms.InputTag('slimmedJets'),
+                         # jetsTag  = cms.InputTag('updatedPatJetsUpdatedJEC'),
                          # jetsTag  = cms.InputTag('updatedPatJetsTransientCorrectedUpdatedJEC'),
                          jetType  = cms.string("AK4PFchs"),
-                         btagName = cms.string("pfDeepCSVJetTags"),
+                         btagName = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+                         # btagName = cms.string("pfDeepCSVJetTags"),
                          rhoTag   = cms.InputTag("fixedGridRhoFastjetAll"), ## No idea if this is right, matches TOP-18-008 - AWB 15.10.2018
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L144
 
@@ -72,13 +75,13 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          vertex_rho_max  = cms.double( 2.0),
                          vertex_z_max    = cms.double(24.0),
 
-                         muon_ID        = cms.string("medium"),
+                         muon_ID        = cms.string("loose"),
                          muon_pT_min    = cms.double(10.0),
                          muon_eta_max   = cms.double( 2.4),
                          muon_trig_dR   = cms.double( 0.1),
-                         muon_use_pfIso = cms.bool(True),
+                         muon_use_pfIso = cms.bool  (True),
                          muon_iso_dR    = cms.double( 0.4),
-                         muon_iso_max   = cms.double(0.25),
+                         muon_iso_max   = cms.double( 0.4),
 
                          muon_id_sf_wp_num = cms.string("MediumID"),
                          muon_id_sf_wp_den = cms.string("genTracks"),
@@ -94,10 +97,13 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
-                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
+                         MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
+                         MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
+                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
+                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

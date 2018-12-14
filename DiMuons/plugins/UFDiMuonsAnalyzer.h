@@ -411,6 +411,7 @@ private:
   bool _slimOut;
 
   int  _skim_nMuons;
+  int  _skim_nLeptons;
   bool _skim_trig;
 
   double _vertex_ndof_min;
