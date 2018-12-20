@@ -158,7 +158,6 @@ else:
 
 
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
-process.dimuons = process.dimuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")
 process.dimuons.isVerbose  = cms.untracked.bool(False)
 process.dimuons.doSys      = cms.bool(True)
