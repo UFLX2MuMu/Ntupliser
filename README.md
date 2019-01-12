@@ -40,5 +40,5 @@ git cms-merge-topic cms-egamma:EgammaPostRecoTools_940  # Just adds an extra fil
 scram b -j 6
 
 cd Ntupliser
-git checkout -b master_2017_94X
+git checkout master_2017_94X
 scram b -j 6
