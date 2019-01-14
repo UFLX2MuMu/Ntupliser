@@ -483,7 +483,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   double ele_mva_val;
   pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_id_veto, ele_id_loose,
 						     ele_id_medium, ele_id_tight, ele_id_mva, _ele_ID,
-						     _ele_pT_min, _ele_eta_max, ele_ID_pass, ele_mva_val );
+						     _ele_pT_min, _ele_eta_max, ele_ID_pass );
   
   // Sort the selected electrons by pT
   sort(elesSelected.begin(), elesSelected.end(), sortElesByPt);
@@ -492,7 +492,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if ( ( muonsSelected.size() + elesSelected.size() ) < (unsigned int) _skim_nLeptons )
     return;
 
-  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass, ele_mva_val,
+  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass,
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
 

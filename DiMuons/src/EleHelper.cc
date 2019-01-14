@@ -4,7 +4,7 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::vector<std::array<bool, 4>> ele_ID_pass, const double ele_mva_val,
+		   const std::vector<std::array<bool, 4>> ele_ID_pass,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -32,7 +32,7 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.isTightID  = ele_ID_pass.at(i)[3];
 
     // EGamma POG MVA quality
-    _eleInfo.mvaID = ele_mva_val;
+    _eleInfo.mvaID = ele.userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values");
 
     // Basic isolation
     _eleInfo.relIso         = EleCalcRelIsoPF( ele, _rho, eleEffArea, "DeltaBeta" );
@@ -95,7 +95,7 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
 				    const edm::Handle< edm::ValueMap<bool> >& ele_id_medium, const edm::Handle< edm::ValueMap<bool> >& ele_id_tight,
 				    const edm::Handle< edm::ValueMap<float> >& ele_id_mva, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max,
-				    std::vector<std::array<bool, 4>>& ele_ID_pass, double & ele_mva_val ) {
+				    std::vector<std::array<bool, 4>>& ele_ID_pass ) {
   
   // Main Egamma POG page: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPOG
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2
@@ -127,11 +127,10 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
 
-    bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
-    ele_mva_val    = (*ele_id_mva   )[ele];
+    bool _isVeto   = ele->electronID("cutBasedElectronID-Fall17-94X-V2-veto");
+    bool _isLoose  = ele->electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    bool _isMedium = ele->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
+    bool _isTight  = ele->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
 
     if (_ele_ID.find("veto")   != std::string::npos && !_isVeto)   continue;
     if (_ele_ID.find("loose")  != std::string::npos && !_isLoose)  continue;
