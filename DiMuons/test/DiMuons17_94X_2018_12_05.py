@@ -52,8 +52,8 @@ readFiles = cms.untracked.vstring();
 readFiles.extend(samp.files);
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.source = cms.Source('PoolSource',fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
@@ -84,7 +84,7 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 
 setupEgammaPostRecoSeq( process,
-                        runVID       = False,  ## Not needed for 2017 MiniAOD v2
+                        runVID       = True,  ## Needed to get V2 electron IDs
                         era          = '2017-Nov17ReReco' )
                         # eleIDModules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
                         #                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ] )

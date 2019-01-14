@@ -110,15 +110,15 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     std::cout << "No valid electron collection" << std::endl;
     return elesSelected;
   }
-  if ( !ele_id_veto.isValid() || !ele_id_loose.isValid() || !ele_id_medium.isValid() || !ele_id_tight.isValid() ) {
-    std::cout << "No valid electron ID" << std::endl;
-    return elesSelected;
-  }
+  // if ( !ele_id_veto.isValid() || !ele_id_loose.isValid() || !ele_id_medium.isValid() || !ele_id_tight.isValid() ) {
+  //   std::cout << "No valid electron ID" << std::endl;
+  //   return elesSelected;
+  // }
 
-  if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
-       _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos )
-    std::cout << "Ele ID is neither tight, medium, loose, nor tight: " << _ele_ID
-              << "\nWill not be used, no electron ID cuts applied" << std::endl;
+  // if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
+  //      _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos )
+  //   std::cout << "Ele ID is neither tight, medium, loose, nor tight: " << _ele_ID
+  //             << "\nWill not be used, no electron ID cuts applied" << std::endl;
 
   for (size_t i = 0; i < eles->size(); ++i) {
     
@@ -127,17 +127,22 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
     
-    std::cout << "\nFor electron #" << i+1 << ", about to fill IDs" << std::endl;
-    bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
-    std::cout << "  * _isVeto = " << _isVeto << std::endl;
-    bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
-    std::cout << "  * _isLoose = " << _isLoose << std::endl;
-    bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
-    std::cout << "  * _isMedium = " << _isMedium << std::endl;
-    bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
-    std::cout << "  * _isTight = " << _isTight << std::endl;
-    ele_mva_val    = (*ele_id_mva   )[ele];
-    std::cout << "  * Filled ele_mva_val = " << ele_mva_val << std::endl;
+    // std::cout << "\nFor electron #" << i+1 << ", about to fill IDs" << std::endl;
+    // bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
+    bool _isVeto   = ele->electronID("cutBasedElectronID-Fall17-94X-V2-veto");
+    // std::cout << "  * _isVeto = " << _isVeto << std::endl;
+    // bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
+    bool _isLoose   = ele->electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    // std::cout << "  * _isLoose = " << _isLoose << std::endl;
+    // bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
+    bool _isMedium   = ele->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
+    // std::cout << "  * _isMedium = " << _isMedium << std::endl;
+    // bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
+    bool _isTight   = ele->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+    // std::cout << "  * _isTight = " << _isTight << std::endl;
+    // ele_mva_val    = (*ele_id_mva   )[ele];
+    ele_mva_val    = ele->electronID("mvaEleID-Fall17-noIso-V2-wpLoose");
+    // std::cout << "  * Filled ele_mva_val = " << ele_mva_val << std::endl;
     
     if (_ele_ID.find("veto")   != std::string::npos && !_isVeto)   continue;
     if (_ele_ID.find("loose")  != std::string::npos && !_isLoose)  continue;
