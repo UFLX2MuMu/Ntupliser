@@ -52,8 +52,8 @@ readFiles = cms.untracked.vstring();
 readFiles.extend(samp.files);
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.source = cms.Source('PoolSource',fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
@@ -71,7 +71,7 @@ if samp.isData:
 
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C_1k.root') )
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_NLO.root') )
-process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HToMuMu_M125_1k.root') )
+process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HToMuMu_M125_1k_mod.root') )
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC.root') )
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf.root') )
 
@@ -80,15 +80,39 @@ process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HT
 # Load electron IDs
 # /////////////////////////////////////////////////////////////
 
-## Modeled after https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/egmSequence_cff.py
-## Have to merge V2 electron IDs using this recipe: https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
-           'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff' ]
-for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
 
+setupEgammaPostRecoSeq( process,
+                        runVID       = False,  ## Not needed for 2017 MiniAOD v2
+                        era          = '2017-Nov17ReReco' )
+                        # eleIDModules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+                        #                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ] )
+
+# setupEgammaPostRecoSeq( process,
+#                         applyEnergyCorrections    = False,  ## Default
+#                         applyVIDOnCorrectedEgamma = False,  ## Default
+#                         isMiniAOD                 = True,   ## Default
+#                         era                       = "2017-Nov17ReReco",
+#                         eleIDModules              = [ ## egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2
+#                                                       'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+#                                                       ## electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values
+#                                                       'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ],
+#                         phoIDModules              = [],     ## Photons not used
+#                         runVID                    = False,  ## Default for 2017 MiniAOD v2
+#                         runEnergyCorrections      = True,   ## Default
+#                         applyEPCombBug            = False,  ## Default
+#                         autoAdjustParams          = True )  ## Default
+
+# ## Modeled after https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/egmSequence_cff.py
+# ## Have to merge V2 electron IDs using this recipe: https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
+# from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+# process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+# switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
+# eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+#            'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ]
+
+# for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
 
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
@@ -108,18 +132,18 @@ else:
 # process.dimuons.jetsTag    = cms.InputTag('slimmedJets')
 
 
-# # /////////////////////////////////////////////////////////////
-# # Save output tree
-# # /////////////////////////////////////////////////////////////
+# /////////////////////////////////////////////////////////////
+# Save output tree
+# /////////////////////////////////////////////////////////////
 
-# outCommands = cms.untracked.vstring('keep *')
+outCommands = cms.untracked.vstring('keep *')
 
-# process.treeOut = cms.OutputModule('PoolOutputModule',
-#                                    fileName = cms.untracked.string('tree.root'),
-#                                    outputCommands = outCommands
-#                                    )
+process.treeOut = cms.OutputModule('PoolOutputModule',
+                                   fileName = cms.untracked.string('tree.root'),
+                                   outputCommands = outCommands
+                                   )
 
-# process.treeOut_step = cms.EndPath(process.treeOut) ## Keep output tree
+process.treeOut_step = cms.EndPath(process.treeOut) ## Keep output tree
 
 
 # /////////////////////////////////////////////////////////////
@@ -136,7 +160,8 @@ print 'About to run the process path'
 ## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeJetTools_cff.py#L47
 ## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeEGM_cff.py#L67
 
-process.egamma_step = cms.Path( process.egmGsfElectronIDSequence )  ## See eleIDs above
-process.ntuple_step = cms.Path( process.dimuons )
+process.egamma_step   = cms.Path( process.egammaPostRecoSeq )
+# process.egammaID_step = cms.Path( process.egmGsfElectronIDSequence )  ## See eleIDs above
+process.ntuple_step   = cms.Path( process.dimuons )
 
-process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )
+process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step, process.treeOut_step )

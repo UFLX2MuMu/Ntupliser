@@ -38,7 +38,8 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
 
                          ## Electrons
-                         eleColl     = cms.InputTag("slimmedElectrons"),
+                         # eleColl     = cms.InputTag("slimmedElectrons"),  ## Duplicate collection with electron IDs added
+                         eleColl     = cms.InputTag("slimmedElectrons", "", "dimuons"),  ## Duplicate collection with electron IDs added
                          eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto"),
                          eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose"),
                          eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium"),

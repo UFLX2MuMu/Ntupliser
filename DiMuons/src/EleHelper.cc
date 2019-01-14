@@ -126,20 +126,27 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
 
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
-
+    
+    std::cout << "\nFor electron #" << i+1 << ", about to fill IDs" << std::endl;
     bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
+    std::cout << "  * _isVeto = " << _isVeto << std::endl;
     bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
+    std::cout << "  * _isLoose = " << _isLoose << std::endl;
     bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
+    std::cout << "  * _isMedium = " << _isMedium << std::endl;
     bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
+    std::cout << "  * _isTight = " << _isTight << std::endl;
     ele_mva_val    = (*ele_id_mva   )[ele];
-
+    std::cout << "  * Filled ele_mva_val = " << ele_mva_val << std::endl;
+    
     if (_ele_ID.find("veto")   != std::string::npos && !_isVeto)   continue;
     if (_ele_ID.find("loose")  != std::string::npos && !_isLoose)  continue;
     if (_ele_ID.find("medium") != std::string::npos && !_isMedium) continue;
     if (_ele_ID.find("tight")  != std::string::npos && !_isTight)  continue;
-
+    
     elesSelected.push_back(*ele);
     ele_ID_pass.push_back( {{_isVeto, _isLoose, _isMedium, _isTight}} );
+    // ele_ID_pass.push_back( {{false, false, false, false}} );
 
   }
   
