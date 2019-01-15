@@ -366,11 +366,11 @@ private:
 
   // Electrons
   edm::EDGetTokenT<edm::View<pat::Electron>> _eleCollToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdVetoToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdLooseToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdMediumToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdTightToken;
-  edm::EDGetTokenT< edm::ValueMap<float> >   _eleIdMvaToken;
+ std::string _eleIdVetoName;
+ std::string _eleIdLooseName;
+ std::string _eleIdMediumName;
+ std::string _eleIdTightName;
+ std::string _eleIdMvaName;
 
   // Taus
   edm::EDGetTokenT<pat::TauCollection> _tauCollToken;

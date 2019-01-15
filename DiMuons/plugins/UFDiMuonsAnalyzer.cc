@@ -47,12 +47,12 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muonCollToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonColl"));
 
   // Electrons
-  _eleCollToken     = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
-  _eleIdVetoToken   = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdVeto"));
-  _eleIdLooseToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdLoose"));
-  _eleIdMediumToken = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdMedium"));
-  _eleIdTightToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdTight"));
-  _eleIdMvaToken    = consumes< edm::ValueMap<float> >   (iConfig.getParameter<edm::InputTag>("eleIdMva"));
+  _eleCollToken    = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
+  _eleIdVetoName   = iConfig.getParameter<std::string>("eleIdVeto");
+  _eleIdLooseName  = iConfig.getParameter<std::string>("eleIdLoose");
+  _eleIdMediumName = iConfig.getParameter<std::string>("eleIdMedium");
+  _eleIdTightName  = iConfig.getParameter<std::string>("eleIdTight");
+  _eleIdMvaName    = iConfig.getParameter<std::string>("eleIdMva");
 
   // // Taus
   // _tauCollToken = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauColl"));
@@ -466,24 +466,12 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // ---------
   if (_isVerbose) std::cout << "\nFilling EleInfo" << std::endl;
   edm::Handle<edm::View<pat::Electron>>  eles;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_veto;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_loose;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_medium;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_tight;
-  edm::Handle<edm::ValueMap<float>>      ele_id_mva;
+  iEvent.getByToken(_eleCollToken, eles);
 
-  iEvent.getByToken(_eleCollToken,     eles);
-  iEvent.getByToken(_eleIdVetoToken,   ele_id_veto); 
-  iEvent.getByToken(_eleIdLooseToken,  ele_id_loose); 
-  iEvent.getByToken(_eleIdMediumToken, ele_id_medium); 
-  iEvent.getByToken(_eleIdTightToken,  ele_id_tight); 
-  iEvent.getByToken(_eleIdMvaToken,    ele_id_mva);
+  std::array<std::string, 5> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaName}};
 
-  std::vector<std::array<bool, 4>> ele_ID_pass;
-  double ele_mva_val;
-  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_id_veto, ele_id_loose,
-						     ele_id_medium, ele_id_tight, ele_id_mva, _ele_ID,
-						     _ele_pT_min, _ele_eta_max, ele_ID_pass );
+  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_ID_names,
+						     _ele_ID, _ele_pT_min, _ele_eta_max );
   
   // Sort the selected electrons by pT
   sort(elesSelected.begin(), elesSelected.end(), sortElesByPt);
@@ -492,7 +480,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if ( ( muonsSelected.size() + elesSelected.size() ) < (unsigned int) _skim_nLeptons )
     return;
 
-  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass,
+  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_names,
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
 

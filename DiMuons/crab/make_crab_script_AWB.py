@@ -102,6 +102,9 @@ for samp in samps:
             else:
                 line = line.replace('= NUM', '= 5')
 
+        if 'outLFNDirBase' in line:
+            line = line.replace('STR', '%s%s' % (time.strftime('%Y_%m_%d'), test_str))
+
         # if 'inputDBS' in line:
         #     line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
 
