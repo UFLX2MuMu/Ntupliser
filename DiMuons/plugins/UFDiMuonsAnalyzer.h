@@ -105,6 +105,10 @@ public:
   EleInfos  _eleInfos;
   int _nEles;
 
+  // vector of photons
+  PhotInfos _photInfos;
+  int _nPhots;
+
   // vector of taus
   TauInfos  _tauInfos;
   int _nTaus;
@@ -320,10 +324,11 @@ private:
   
   void displaySelection();
 
-  static bool sortMuonsByPt (pat::Muon i,     pat::Muon j    );
-  static bool sortElesByPt  (pat::Electron i, pat::Electron j);
-  static bool sortTausByPt  (pat::Tau i,      pat::Tau j     );
-  static bool sortJetsByPt  (pat::Jet i,      pat::Jet j     );
+  static bool sortMuonsByPt (pat::Muon i,         pat::Muon j        );
+  static bool sortElesByPt  (pat::Electron i,     pat::Electron j    );
+  static bool sortPhotsByPt (reco::PFCandidate i, reco::PFCandidate j);
+  static bool sortTausByPt  (pat::Tau i,          pat::Tau j         );
+  static bool sortJetsByPt  (pat::Jet i,          pat::Jet j         );
 
   KalmanMuonCalibrator _KaMu_calib;
   bool _doSys_KaMu;
@@ -366,11 +371,11 @@ private:
 
   // Electrons
   edm::EDGetTokenT<edm::View<pat::Electron>> _eleCollToken;
- std::string _eleIdVetoName;
- std::string _eleIdLooseName;
- std::string _eleIdMediumName;
- std::string _eleIdTightName;
- std::string _eleIdMvaName;
+  std::string _eleIdVetoName;
+  std::string _eleIdLooseName;
+  std::string _eleIdMediumName;
+  std::string _eleIdTightName;
+  std::string _eleIdMvaName;
 
   // Taus
   edm::EDGetTokenT<pat::TauCollection> _tauCollToken;

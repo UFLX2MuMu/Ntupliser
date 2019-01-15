@@ -11,6 +11,7 @@
 #include "Ntupliser/DiMuons/interface/JetPairHelper.h"  
 #include "Ntupliser/DiMuons/interface/MuonHelper.h"  
 #include "Ntupliser/DiMuons/interface/MuPairHelper.h"  
+#include "Ntupliser/DiMuons/interface/PhotHelper.h"
 #include "Ntupliser/DiMuons/interface/TauHelper.h"
 #include "Ntupliser/DiMuons/interface/EventHelper.h"     
 #include "Ntupliser/DiMuons/interface/GenPartHelper.h"  
