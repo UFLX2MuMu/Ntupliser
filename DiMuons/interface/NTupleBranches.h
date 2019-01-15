@@ -11,6 +11,7 @@
 #include "Ntupliser/DiMuons/interface/JetPairInfo.h"  
 #include "Ntupliser/DiMuons/interface/MuonInfo.h"  
 #include "Ntupliser/DiMuons/interface/MuPairInfo.h"  
+#include "Ntupliser/DiMuons/interface/PhotInfo.h"
 #include "Ntupliser/DiMuons/interface/TauInfo.h"
 #include "Ntupliser/DiMuons/interface/EventInfo.h"     
 #include "Ntupliser/DiMuons/interface/GenPartInfo.h"  

@@ -41,6 +41,10 @@
   <class name="MuPairInfos"/> 
   <class name="edm::Wrapper<MuPairInfos>"/>
   
+  <class name="PhotInfo"/>
+  <class name="PhotInfos"/>
+  <class name="edm::Wrapper<PhotInfos>"/>
+
   <class name="TauInfo"/> 
   <class name="TauInfos"/>
   <class name="edm::Wrapper<TauInfos>"/>
