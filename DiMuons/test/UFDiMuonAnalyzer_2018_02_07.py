@@ -118,8 +118,8 @@ readFiles.extend(samp.files);
 
 # readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.source = cms.Source("PoolSource",fileNames = readFiles)
 #process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
@@ -152,13 +152,12 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.Analyzer_2017_94X_cff")
 else:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.Analyzer_2017_94X_MC_cff")
 
 
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
-process.dimuons = process.DiMuons.clone()
 # process.dimuons.jetsTag    = cms.InputTag("cleanJets")
 process.dimuons.isVerbose  = cms.untracked.bool(False)
 process.dimuons.doSys      = cms.bool(True)
