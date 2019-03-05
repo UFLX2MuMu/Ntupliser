@@ -70,23 +70,14 @@ void FillGenMuonInfos( GenMuonInfos& _genMuonInfos, GenParentInfos& _genParentIn
       if (_genMuonInfos.at(j).postFSR != 1) continue;
       if (_genMuonInfos.at(i).charge != _genMuonInfos.at(j).charge) continue;
 
-      if ( fabs(_genMuonInfos.at(i).pt  - _genMuonInfos.at(j).pt ) > 0.001 ||
-	   fabs(_genMuonInfos.at(i).phi - _genMuonInfos.at(j).phi) > 0.001 ||
-	   fabs(_genMuonInfos.at(i).eta - _genMuonInfos.at(j).eta) > 0.001 ) {
-	preFSR_vec .SetPtEtaPhiM(_genMuonInfos.at(i).pt, _genMuonInfos.at(i).eta, _genMuonInfos.at(i).phi, _genMuonInfos.at(i).mass);
-	postFSR_vec.SetPtEtaPhiM(_genMuonInfos.at(j).pt, _genMuonInfos.at(j).eta, _genMuonInfos.at(j).phi, _genMuonInfos.at(j).mass);
-	FSR_vec = preFSR_vec - postFSR_vec;
+      preFSR_vec .SetPtEtaPhiM(_genMuonInfos.at(i).pt, _genMuonInfos.at(i).eta, _genMuonInfos.at(i).phi, _genMuonInfos.at(i).mass);
+      postFSR_vec.SetPtEtaPhiM(_genMuonInfos.at(j).pt, _genMuonInfos.at(j).eta, _genMuonInfos.at(j).phi, _genMuonInfos.at(j).mass);
+      FSR_vec = preFSR_vec - postFSR_vec;
 	
-	_genMuonInfos.at(j).FSR_pt   = FSR_vec.Pt();
-	_genMuonInfos.at(j).FSR_eta  = FSR_vec.Eta();
-	_genMuonInfos.at(j).FSR_phi  = FSR_vec.Phi();
-	_genMuonInfos.at(j).FSR_mass = FSR_vec.M();
-      } else { 
-	_genMuonInfos.at(j).FSR_pt   = 0;
-	_genMuonInfos.at(j).FSR_eta  = preFSR_vec.Eta();
-	_genMuonInfos.at(j).FSR_phi  = preFSR_vec.Phi();
-	_genMuonInfos.at(j).FSR_mass = 0;
-      }
+      _genMuonInfos.at(j).FSR_pt   = FSR_vec.Pt();
+      _genMuonInfos.at(j).FSR_eta  = FSR_vec.Eta();
+      _genMuonInfos.at(j).FSR_phi  = FSR_vec.Phi();
+      _genMuonInfos.at(j).FSR_mass = FSR_vec.M();
 
     }
   }
