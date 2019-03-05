@@ -27,7 +27,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 ## Correct geometry to use?  What about GeometryExtended2016_cff or GeometryExtended2016Reco_cff? - AWB 16.01.17
 ## https://github.com/cms-sw/cmssw/tree/CMSSW_8_0_X/Configuration/Geometry/python
-process.load("Configuration.Geometry.GeometryIdeal_cff")  
+#process.load("Configuration.Geometry.GeometryIdeal_cff")  
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 # ## Geometry according to Tim Cox, used by Jia Fu Low
@@ -48,8 +48,9 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples import Zd150 as samp
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
-from python.Samples import H2Mu_gg as samp
 #from python.Samples import SingleMu_2017B as samp
+from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
+#from python.Samples_2017 import H2Mu_gg as samp
 #from python.Samples import tt as samp
 
 if samp.isData:
@@ -118,8 +119,8 @@ readFiles.extend(samp.files);
 
 # readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.source = cms.Source("PoolSource",fileNames = readFiles)
 #process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
@@ -142,8 +143,9 @@ if samp.isData:
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
-process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("ttH_HToMuMu_M125_GEN_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
 
 
@@ -158,13 +160,13 @@ else:
 
 
 # Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
-# process.dimuons.jetsTag    = cms.InputTag("cleanJets")
-process.dimuons.isVerbose  = cms.untracked.bool(False)
-process.dimuons.doSys      = cms.bool(True)
-process.dimuons.doSys_KaMu = cms.bool(False)
-process.dimuons.doSys_Roch = cms.bool(True)
-process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
-process.dimuons.skim_nMuons = cms.int32(0)
+## process.dimuons.jetsTag    = cms.InputTag("cleanJets")
+#process.dimuons.isVerbose  = cms.untracked.bool(False)
+#process.dimuons.doSys      = cms.bool(True)
+#process.dimuons.doSys_KaMu = cms.bool(False)
+#process.dimuons.doSys_Roch = cms.bool(True)
+#process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+#process.dimuons.skim_nMuons = cms.int32(0)
 
 # # /////////////////////////////////////////////////////////////
 # # Bad event flags
@@ -178,20 +180,20 @@ process.dimuons.skim_nMuons = cms.int32(0)
 # process.BadPFMuonFilter.taggingMode = cms.bool(True) ## Accept all events, will just flag
 
 # /////////////////////////////////////////////////////////////
-# Electron Cut Based IDs
+# Electron IDs
 # /////////////////////////////////////////////////////////////
 
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
+## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
 
-dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 
-## First need to run: git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
-## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff']
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
+setupEgammaPostRecoSeq( process,
+                        runVID = True ,  ## Needed for 2017 V2 IDs
+                        era    = '2017-Nov17ReReco' )
+ 
 # /////////////////////////////////////////////////////////////
 # Updated Jet Energy Scale corrections
 # /////////////////////////////////////////////////////////////
@@ -253,7 +255,8 @@ runMetCorAndUncFromMiniAOD(process, isData=samp.isData)
 print 'About to run the process path'
 
 process.p = cms.Path( # process.BadPFMuonFilter *
-                      process.egmGsfElectronIDSequence * 
+                      # process.egmGsfElectronIDSequence * 
+                      process.egammaPostRecoSeq *
                       process.jecSequence *
                       process.fullPatMetSequence *
                       process.dimuons )
