@@ -80,14 +80,17 @@ process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HT
 # Load electron IDs
 # /////////////////////////////////////////////////////////////
 
-## Modeled after https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/egmSequence_cff.py
-## Have to merge V2 electron IDs using this recipe: https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
+## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
-           'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff' ]
-for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
+
+setupEgammaPostRecoSeq( process,
+                        runVID = True ,  ## Needed for 2017 V2 IDs
+                        era    = '2017-Nov17ReReco' )
+                        # eleIDModules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+                        #                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ] )
 
 
 # /////////////////////////////////////////////////////////////
@@ -136,7 +139,7 @@ print 'About to run the process path'
 ## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeJetTools_cff.py#L47
 ## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeEGM_cff.py#L67
 
-process.egamma_step = cms.Path( process.egmGsfElectronIDSequence )  ## See eleIDs above
+process.egamma_step = cms.Path( process.egammaPostRecoSeq )  ## See setupEgammaPostRecoSeq above
 process.ntuple_step = cms.Path( process.dimuons )
 
 process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )

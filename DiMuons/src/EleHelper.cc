@@ -4,7 +4,7 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::vector<std::array<bool, 4>> ele_ID_pass, const double ele_mva_val,
+		   const std::array<std::string, 5> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -26,13 +26,13 @@ void FillEleInfos( EleInfos& _eleInfos,
 
     // Basic quality
     _eleInfo.isPF       = ele.isPF();
-    _eleInfo.isVetoID   = ele_ID_pass.at(i)[0];
-    _eleInfo.isLooseID  = ele_ID_pass.at(i)[1];
-    _eleInfo.isMediumID = ele_ID_pass.at(i)[2];
-    _eleInfo.isTightID  = ele_ID_pass.at(i)[3];
+    _eleInfo.isVetoID   = ele.electronID(ele_ID_names[0]);
+    _eleInfo.isLooseID  = ele.electronID(ele_ID_names[1]);
+    _eleInfo.isMediumID = ele.electronID(ele_ID_names[2]);
+    _eleInfo.isTightID  = ele.electronID(ele_ID_names[3]);
 
     // EGamma POG MVA quality
-    _eleInfo.mvaID = ele_mva_val;
+    _eleInfo.mvaID = ele.userFloat(ele_ID_names[4]);
 
     // Basic isolation
     _eleInfo.relIso         = EleCalcRelIsoPF( ele, _rho, eleEffArea, "DeltaBeta" );
@@ -91,11 +91,8 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const edm::Handle< edm::ValueMap<bool> >& ele_id_veto, const edm::Handle< edm::ValueMap<bool> >& ele_id_loose,
-				    const edm::Handle< edm::ValueMap<bool> >& ele_id_medium, const edm::Handle< edm::ValueMap<bool> >& ele_id_tight,
-				    const edm::Handle< edm::ValueMap<float> >& ele_id_mva, const std::string _ele_ID,
-				    const double _ele_pT_min, const double _ele_eta_max,
-				    std::vector<std::array<bool, 4>>& ele_ID_pass, double & ele_mva_val ) {
+				    const std::array<std::string, 5> ele_ID_names, const std::string _ele_ID,
+				    const double _ele_pT_min, const double _ele_eta_max ) {
   
   // Main Egamma POG page: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPOG
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2
@@ -104,14 +101,9 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
   
   pat::ElectronCollection elesSelected;
   elesSelected.clear();
-  ele_ID_pass.clear();
 
   if ( !eles.isValid() ) {
     std::cout << "No valid electron collection" << std::endl;
-    return elesSelected;
-  }
-  if ( !ele_id_veto.isValid() || !ele_id_loose.isValid() || !ele_id_medium.isValid() || !ele_id_tight.isValid() ) {
-    std::cout << "No valid electron ID" << std::endl;
     return elesSelected;
   }
 
@@ -127,19 +119,12 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
 
-    bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
-    ele_mva_val    = (*ele_id_mva   )[ele];
-
-    if (_ele_ID.find("veto")   != std::string::npos && !_isVeto)   continue;
-    if (_ele_ID.find("loose")  != std::string::npos && !_isLoose)  continue;
-    if (_ele_ID.find("medium") != std::string::npos && !_isMedium) continue;
-    if (_ele_ID.find("tight")  != std::string::npos && !_isTight)  continue;
+    if (_ele_ID.find("veto")   != std::string::npos && !ele->electronID(ele_ID_names[0]) ) continue;
+    if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
+    if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
+    if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
 
     elesSelected.push_back(*ele);
-    ele_ID_pass.push_back( {{_isVeto, _isLoose, _isMedium, _isTight}} );
 
   }
   
