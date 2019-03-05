@@ -15,11 +15,7 @@ Nevertheless common ntuples production are regularly ran.
 Contact us before running your nutples: we might have just produced it, or about to do so.
 
 
-## PPD Analysis Guidelines
-https://docs.google.com/presentation/d/1F1ZsQqljdR4IqIJ5za2TAIVFF0eqHquopzN_jgVTdKE/edit#slide=id.g43837f3ea1_0_46
-
-
-## master_2017_94X
+## 2017
 
 ### CMSSW_9_4_13
 
@@ -96,6 +92,10 @@ scram b -j 6
 ```
 
 ## Misc
+
+### PPD Analysis Guidelines
+https://docs.google.com/presentation/d/1F1ZsQqljdR4IqIJ5za2TAIVFF0eqHquopzN_jgVTdKE/edit#slide=id.g43837f3ea1_0_46
+
 ### Electron ID
 Get most recent electron IDs, following:
 - https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
