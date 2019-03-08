@@ -15,17 +15,17 @@ Nevertheless common ntuples production are regularly ran.
 Contact us before running your nutples: we might have just produced it, or about to do so.
 
 
-## 2017
+## 2018
 
-### CMSSW_9_4_13
+### CMSSW_10_2_11_patch1
 
-Instruction for checking out code to run on master_2017_94X in CMSSW_9_4_13
+Instruction for checking out code to run on master_2018_102X in CMSSW_10_2_11_patch1
 ```
-scram project -n x2mm_9413
-cd x2mmm_9413/src
+scram project -n x2mm18_10211p1 CMSSW CMSSW_10_2_11_patch1
+cd x2mmm18_10211p1/src
 cmsenv
 git cms-init
-git cms-merge-topic cms-egamma:EgammaPostRecoTools # cms-egamma:EgammaID_949 is already merged in 9_4_13
+git cms-merge-topic cms-egamma:EgammaPostRecoTools 
 scram b -j 9
 git clone git@github.com:UFLX2MuMu/Ntupliser.git Ntupliser
 git clone -o Analysis https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa # these corrections are only for 2016
@@ -40,56 +40,16 @@ Add the following lines to KaMuCa/Calibration/interface/KalmanMuonCalibrator.h
 #endif
 ```
 
-and finally checkout the *master_2017_94X* branch, recompile and test.
+and finally checkout the *master_2018_102X* branch, recompile and test.
 
 ```
 cd Ntupliser
-git checkout master_2017_94X
+git checkout master_2018_102X
 scram b -j 6
 cd DiMuons
-cmsRun test/UFDiMuonAnalyzer_2018_02_07.py
+cmsRun test/test_ntupliser_mc.py
 ```
 
-
-### CMSSW_9_4_10
-
-
-```
-setenv SCRAM_ARCH slc6_amd64_gcc630
-cmsrel CMSSW_9_4_10  ## Need a release >= 9_4_10 to merge cms-egamma code (below)
-cd CMSSW_9_4_10/src
-cmsenv
-git cms-init
-git remote add cms-sw git@github.com:cms-sw/cmssw.git
-git fetch cms-sw
-
-git remote add your_username git@github.com:your_username/cmssw.git
-git remote add Ntupliser git@github.com:UFLX2MuMu/Ntupliser.git
-
-git clone https://github.com/UFLX2MuMu/Ntupliser.git
-
-## Twiki not updated recently (as of 18.10.2018)
-## https://twiki.cern.ch/twiki/bin/view/CMS/MuonScaleResolKalman
-git clone https://github.com/bachtis/Analysis.git -b KaMuCa_V4 KaMuCa
-
-```
-
-Add following lines to the beginning of KaMuCa/Calibration/interface/KalmanMuonCalibrator.h
-```
-#ifndef KalmanMuonCalibrator_h
-#define KalmanMuonCalibrator_h
-## and the following line to the end:
-#endif // #define KalmanMuonCalibrator_h
-```
-
-Checkout a more recent electron ID compared to the release and recompile:
-```
-git cms-merge-topic cms-egamma:EgammaID_949             # If you want the V2 IDs, otherwise skip
-git cms-merge-topic cms-egamma:EgammaPostRecoTools_940  # Just adds an extra file for an easier setup function
-cd Ntupliser
-git checkout master_2017_94X
-scram b -j 6
-```
 
 ## Misc
 
