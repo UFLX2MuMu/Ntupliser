@@ -84,6 +84,23 @@ setupEgammaPostRecoSeq( process,
                         # eleIDModules = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
                         #                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff' ] )
 
+# /////////////////////////////////////////////////////////////
+# Correct MET from EE noise
+# /////////////////////////////////////////////////////////////
+# More info on https://indico.cern.ch/event/759372/contributions/3149378/attachments/1721436/2802416/metreport.pdf
+
+from PhysicsTools.PatUtils.tolls.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+
+runMetCorAndUncFromMiniAOD (
+  process,
+  isData = samp.isData,
+  fixEE2017 = True,
+  fixEE2017Params = {'userawPt':True,'ptThreshold':50.0,'minEtaThreshold':2.65,'maxEtaThreshold':3.139}
+  postfix = "ModifiedMET"
+  )
+
+
+
 
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
@@ -124,6 +141,8 @@ print 'About to run the process path'
 ## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeEGM_cff.py#L67
 
 process.egamma_step = cms.Path( process.egammaPostRecoSeq )  ## See setupEgammaPostRecoSeq above
+process.met_step = cms.Path( process.fullPatMetSequenceModifiedMET ) ## See runMETCorAndUncFromMiniAOD above. 
 process.ntuple_step = cms.Path( process.dimuons )
 
-process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )
+process.schedule = cms.Schedule( process.egamma_step, process.met_step,  process.ntuple_step )  ## , process.treeOut_step )
+
