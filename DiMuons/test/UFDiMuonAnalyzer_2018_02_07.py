@@ -49,8 +49,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 #from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
 #from python.Samples import ZJets_AMC as samp
 #from python.Samples import SingleMu_2017B as samp
-from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
-#from python.Samples_2017 import H2Mu_gg as samp
+#from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
+from python.Samples_2017_94X_v2 import H2Mu_gg_125_NLO as samp
 #from python.Samples import tt as samp
 
 if samp.isData:
@@ -144,8 +144,8 @@ if samp.isData:
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_test.root") )
-process.TFileService = cms.Service("TFileService", fileName = cms.string("ttH_HToMuMu_M125_GEN_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("ttH_HToMuMu_M125_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
 #process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
 
 
@@ -231,7 +231,13 @@ process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
 ## If you only want to re-correct and get the proper uncertainties
-runMetCorAndUncFromMiniAOD(process, isData=samp.isData)
+runMetCorAndUncFromMiniAOD(
+  process, 
+  isData=samp.isData,
+  fixEE2017 = True,
+  fixEE2017Params = {'userawPt' : True, 'ptThreshold' : 50.0, 'minEtaThreshold' : 2.65, 'maxEtaThreshold' : 3.139 },
+  postfix = "ModifiedMET"
+  )
 
 
 # # /////////////////////////////////////////////////////////////
@@ -258,7 +264,7 @@ process.p = cms.Path( # process.BadPFMuonFilter *
                       # process.egmGsfElectronIDSequence * 
                       process.egammaPostRecoSeq *
                       process.jecSequence *
-                      process.fullPatMetSequence *
+                      process.fullPatMetSequenceModifiedMET *
                       process.dimuons )
 # process.schedule = cms.Schedule(process.p, process.treeOut_step)
 
