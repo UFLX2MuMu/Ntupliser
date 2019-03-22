@@ -68,6 +68,10 @@ public:
   TFile* _PU_wgt_file;
   int _GEN_wgt;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
 
+  //L1 ECAL prefiring event weights and systematic uncertainty
+  float _prefiringweight; 
+  float _prefiringweightup; 
+  float _prefiringweightdown;
 
   ///////////////////////////////////////////////////////////
   // Structs  ==============================================
@@ -357,6 +361,11 @@ private:
 
   edm::EDGetTokenT<edm::TriggerResults> _trigResultsToken;
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> _trigObjsToken;
+
+  // L1 ECAL prefiring event weights and systematic variations
+  edm::EDGetTokenT< double > _prefweight_token;
+  edm::EDGetTokenT< double > _prefweightup_token;
+  edm::EDGetTokenT< double > _prefweightdown_token;
 
   // Event flags
   edm::EDGetTokenT< edm::TriggerResults > _evtFlagsToken;
