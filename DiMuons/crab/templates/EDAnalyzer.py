@@ -1,15 +1,3 @@
-# =============================================================#
-# UFDiMuonsAnalyzer                                            #
-# =============================================================#
-# Makes stage 1 trees.                                         #
-# Originally Made by Justin Hugon. Edited by Andrew Carnes and #
-# Andrew Brinkerhoff.                                          #
-################################################################
-
-# /////////////////////////////////////////////////////////////
-# Load some things
-# /////////////////////////////////////////////////////////////
-
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("UFDiMuonsAnalyzer")
@@ -19,22 +7,6 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-
-## Geometry and Detector Conditions (needed for a few patTuple production steps)
-
-## Correct geometry to use?  What about GeometryExtended2016_cff or GeometryExtended2016Reco_cff? - AWB 16.01.17
-## https://github.com/cms-sw/cmssw/tree/CMSSW_8_0_X/Configuration/Geometry/python
-process.load("Configuration.Geometry.GeometryIdeal_cff")  
-process.load("Configuration.StandardSequences.MagneticField_cff")
-
-
-# ## Geometry according to Tim Cox, used by Jia Fu Low
-# ##   https://indico.cern.ch/event/588469/contributions/2372672/subcontributions/211968/attachments/1371248/2079893/
-# ##   2016-11-14_coordinate_conversion_v1.pdf
-# from Configuration.AlCa.autoCond import autoCond
-# process.load('Configuration.StandardSequences.GeometryDB_cff')
-# process.load("Alignment.CommonAlignmentProducer.FakeAlignmentSource_cfi")
-# process.preferFakeAlign = cms.ESPrefer("FakeAlignmentSource")
 
 
 # /////////////////////////////////////////////////////////////
@@ -116,13 +88,12 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff")
+  process.load("Ntupliser.DiMuons.Analyzer_data_cff")
 else:
-  process.load("Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff")
+  process.load("Ntupliser.DiMuons.Analyzer_MC_cff")
 
-process.dimuons = process.DiMuons.clone()
-# Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
-process.dimuons = process.DiMuons.clone()
+# Overwrite the settings in the Ntupliser/DiMuons/python/Analyzers*cff analyzers
+# Parameters that in a crab production should usually be equal for data and MC
 process.dimuons.isVerbose  = cms.untracked.bool(False)
 process.dimuons.doSys      = cms.bool(True)
 process.dimuons.doSys_KaMu = cms.bool(False)
@@ -130,23 +101,20 @@ process.dimuons.doSys_Roch = cms.bool(True)
 process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
 process.dimuons.skim_nMuons = cms.int32(2)
 
-
 # /////////////////////////////////////////////////////////////
-# Electron Cut Based IDs
+# Electron IDs
 # /////////////////////////////////////////////////////////////
 
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
+## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
 
-dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 
-## First need to run: git cms-merge-topic ikrav:egm_id_80X_v1
-## https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_for_8_0
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff']
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
-
+setupEgammaPostRecoSeq( process,
+                        era    = '2018-Prompt' )
+ 
 # /////////////////////////////////////////////////////////////
 # Updated Jet Energy Scale corrections
 # /////////////////////////////////////////////////////////////
@@ -188,8 +156,8 @@ runMetCorAndUncFromMiniAOD(process, isData=samp.isData)
 # Set the order of operations
 # /////////////////////////////////////////////////////////////
     
-process.p = cms.Path( # process.BadPFMuonFilter *
-                      process.egmGsfElectronIDSequence *
+process.p = cms.Path(
+                      process.egammaPostRecoSeq *
                       process.jecSequence *
                       process.fullPatMetSequence *
                       process.dimuons )
