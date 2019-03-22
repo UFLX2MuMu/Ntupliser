@@ -1,6 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-import os
- 
+
 process = cms.Process("UFDiMuonsAnalyzer")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -9,19 +8,15 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
+
 # /////////////////////////////////////////////////////////////
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
-
-rom python.Samples import SingleMu_2018B as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
 else:
     print '\nRunning over MC sample %s' % samp.name
-    print 'Use test_ntupliser_mc.py to test mc.'
-    print 'Exiting...'
-    os._exit(0)
 print '  * From DAS: %s' % samp.DAS
 
 # /////////////////////////////////////////////////////////////
@@ -70,11 +65,11 @@ process.GlobalTag.globaltag = samp.GT
 # ------------ PoolSource -------------
 # /////////////////////////////////////////////////////////////
 readFiles = cms.untracked.vstring();
-# Get list of files from the sample we loaded
+## Get list of local files from the sample we loaded (not used in crab)
 readFiles.extend(samp.files);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.source = cms.Source("PoolSource",fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
@@ -84,11 +79,12 @@ if samp.isData:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
 
+
 # /////////////////////////////////////////////////////////////
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("ggH_HToMuMu_M125_NLO_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
 
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
@@ -127,11 +123,9 @@ setupEgammaPostRecoSeq( process,
 # /////////////////////////////////////////////////////////////
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
-##   - Last check that procedure was up-to-date: March 10, 2017 (AWB).
+##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
 ##   - checked again 21.06.2018 (PB)
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-
-print 'samp.isData = %d' % samp.isData
 
 if samp.isData:
     JEC_to_apply = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])

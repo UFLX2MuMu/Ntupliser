@@ -1,18 +1,3 @@
-# =============================================================#
-# UFDiMuonsAnalyzer                                             #
-# =============================================================#
-# Makes stage1 trees.                                          #
-# Adds a cleaner vector of jets to each event.                 #
-# Originally Made by Justin Hugon. Edited by Andrew Carnes.    #
-#                                                              #
-################################################################ 
-
-# /////////////////////////////////////////////////////////////
-# Load some things
-# /////////////////////////////////////////////////////////////
-
-#Add new comment to test push
-
 import FWCore.ParameterSet.Config as cms
 import os
  
@@ -24,35 +9,11 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
-## Geometry and Detector Conditions (needed for a few patTuple production steps)
-
-## Correct geometry to use?  What about GeometryExtended2016_cff or GeometryExtended2016Reco_cff? - AWB 16.01.17
-## https://github.com/cms-sw/cmssw/tree/CMSSW_8_0_X/Configuration/Geometry/python
-#process.load("Configuration.Geometry.GeometryIdeal_cff")  
-process.load("Configuration.StandardSequences.MagneticField_cff")
-
-# ## Geometry according to Tim Cox, used by Jia Fu Low
-# ##   https://indico.cern.ch/event/588469/contributions/2372672/subcontributions/211968/attachments/1371248/2079893/
-# ##   2016-11-14_coordinate_conversion_v1.pdf
-# from Configuration.AlCa.autoCond import autoCond
-# process.load('Configuration.StandardSequences.GeometryDB_cff')
-# process.load("Alignment.CommonAlignmentProducer.FakeAlignmentSource_cfi")
-# process.preferFakeAlign = cms.ESPrefer("FakeAlignmentSource")
-
-
 # /////////////////////////////////////////////////////////////
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-
-
-#from python.Samples import Zd150 as samp
-#from python.Samples_Moriond17 import ZdToMuMu_M20_eps0p02_eta2p6 as samp 
-#from python.Samples import ZJets_AMC as samp
-#from python.Samples import SingleMu_2017B as samp
-from python.Samples import H2Mu_gg_125_NLO as samp
-#from python.Samples_2017 import H2Mu_gg as samp
-#from python.Samples import tt as samp
+rom python.Samples import H2Mu_gg_125_NLO as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -112,46 +73,22 @@ readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
 readFiles.extend(samp.files);
 
-
-#readFiles.extend(['file:///eos/cms//store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/70000/E4FB2B00-82D8-E711-9BEB-02163E014410.root'])
-#readFiles.extend(['file:///eos/cms/store/mc/RunIIFall17MiniAODv2/WZTo3LNu_3Jets_MLL-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/00000/369C3391-F858-E811-9895-FA163EA77A9B.root'])
-
-#readFiles.extend(['/store/group/phys_higgs/cmshmm/amarini/GluGlu_HToMuMu_M125_13TeV_amcatnloFXFX_pythia8/Fall17_94X-MINIAODSIM/180120_094358/0000/step4_109.root'])
-
-#readFiles.extend(['/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/005DC030-D3F4-E711-889A-02163E01A62D.root']);
-#readFiles.extend(['/store/user/avartak/DarkPhoton/ZdToMuMu-M150-eps0p02_MINIAOD/171125_153031/0000/miniaod_1.root']);
-
-# readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
-
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
-
 process.source = cms.Source("PoolSource",fileNames = readFiles)
-#process.load('Ntupliser.DiMuons.ggH125_Fall17_fileList_cfi')
-
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
 
-# use a JSON file when locally executing cmsRun
+## Use a JSON file for local running (not used in crab)
 if samp.isData:
     import FWCore.PythonUtilities.LumiList as LumiList
     process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
-    # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
-
 
 # /////////////////////////////////////////////////////////////
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("SingleMu2017B_output_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M20_output_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("Zd2Mu_M150_output_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("DYJet_Summer17_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("ZJets_AMC_GEN_test.root") )
 process.TFileService = cms.Service("TFileService", fileName = cms.string("ggH_HToMuMu_M125_NLO_GEN_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("GluGlu_HToMuMu_M125_GEN_test.root") )
-#process.TFileService = cms.Service("TFileService", fileName = cms.string("TTJet_Fall17_test.root") )
-
 
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
@@ -162,26 +99,14 @@ if samp.isData:
 else:
   process.load("Ntupliser.DiMuons.Analyzer_MC_cff")
 
-
-# Overwrite the settings in the Ntupliser/DiMuons/python/UFDiMuonsAnalyzers*cff analyzers
-## process.dimuons.jetsTag    = cms.InputTag("cleanJets")
-#process.dimuons.isVerbose  = cms.untracked.bool(False)
-#process.dimuons.doSys      = cms.bool(True)
-#process.dimuons.doSys_KaMu = cms.bool(False)
-#process.dimuons.doSys_Roch = cms.bool(True)
-#process.dimuons.slimOut    = cms.bool(True) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
-#process.dimuons.skim_nMuons = cms.int32(0)
-
-# # /////////////////////////////////////////////////////////////
-# # Bad event flags
-# # /////////////////////////////////////////////////////////////
-
-# ## Following https://github.com/MiT-HEP/NeroProducer/blob/master/Nero/test/testNero.py
-# ## See also https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2786/2.html
-# process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-# process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-# process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-# process.BadPFMuonFilter.taggingMode = cms.bool(True) ## Accept all events, will just flag
+# Overwrite the settings in the Ntupliser/DiMuons/python/Analyzers*cff analyzers
+# Parameters that in a crab production should usually be equal for data and MC
+process.dimuons.isVerbose  = cms.untracked.bool(False)
+process.dimuons.doSys      = cms.bool(True)
+process.dimuons.doSys_KaMu = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(True)
+process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+process.dimuons.skim_nMuons = cms.int32(2)
 
 # /////////////////////////////////////////////////////////////
 # Electron IDs
@@ -202,7 +127,8 @@ setupEgammaPostRecoSeq( process,
 # /////////////////////////////////////////////////////////////
 
 ## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
-##   - Last check that procedure was up-to-date: March 10, 2017 (AWB). Revised 31.05.2018 (PB)
+##   - Last check that procedure was up-to-date: March 10, 2017 (AWB).
+##   - checked again 21.06.2018 (PB)
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 print 'samp.isData = %d' % samp.isData
@@ -236,34 +162,13 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 ## If you only want to re-correct and get the proper uncertainties
 runMetCorAndUncFromMiniAOD(process, isData=samp.isData)
 
-
-# # /////////////////////////////////////////////////////////////
-# # Save output tree
-# # /////////////////////////////////////////////////////////////
-
-# outCommands = cms.untracked.vstring('keep *')
-
-# process.treeOut = cms.OutputModule("PoolOutputModule",
-#                                    fileName = cms.untracked.string("GluGlu_HToMuMu_M125_JEC_10k_tree.root"),
-#                                    outputCommands = outCommands
-#                                    )
-
-# process.treeOut_step = cms.EndPath(process.treeOut) ## Keep output tree
-    
-
 # /////////////////////////////////////////////////////////////
 # Set the order of operations
 # /////////////////////////////////////////////////////////////
-    
-print 'About to run the process path'
 
-process.p = cms.Path( # process.BadPFMuonFilter *
-                      # process.egmGsfElectronIDSequence * 
+process.p = cms.Path( 
                       process.egammaPostRecoSeq *
                       process.jecSequence *
                       process.fullPatMetSequence *
                       process.dimuons )
-# process.schedule = cms.Schedule(process.p, process.treeOut_step)
 
-# ## Kill electrons for now - AWB 10.11.16
-# process.p = cms.Path(process.dimuons)
