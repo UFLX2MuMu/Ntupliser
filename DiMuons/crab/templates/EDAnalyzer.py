@@ -55,6 +55,18 @@ if samp.isData:
 process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
 
 # /////////////////////////////////////////////////////////////
+# L1 Prefiring maps
+# from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+# /////////////////////////////////////////////////////////////
+
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"),
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
+# /////////////////////////////////////////////////////////////
 # Load electron IDs
 # /////////////////////////////////////////////////////////////
 
@@ -114,6 +126,7 @@ setupEgammaPostRecoSeq( process,
 # /////////////////////////////////////////////////////////////
     
 process.p = cms.Path( 
+  process.prefiringweight *
   process.egammaPostRecoSeq *
   process.fullPatMetSequenceModifiedMET *
   process.dimuons )

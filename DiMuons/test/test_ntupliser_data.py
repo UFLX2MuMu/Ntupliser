@@ -16,7 +16,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-from python.Samples_2017_94X_v2 import SingleMu_2017B as samp
+from python.Samples_2017_94X_v2 import SingleMu_2017C as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -54,7 +54,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntuple_data_Run2017C.root") )
 
 # /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
@@ -128,6 +128,7 @@ setupEgammaPostRecoSeq( process,
 # /////////////////////////////////////////////////////////////
     
 process.p = cms.Path( 
+  process.prefiringweight *
   process.egammaPostRecoSeq *
   process.fullPatMetSequenceModifiedMET *
   process.dimuons )
