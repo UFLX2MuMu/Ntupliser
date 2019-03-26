@@ -83,7 +83,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_max   = cms.double( 0.4),
 
                          muon_id_sf_wp_num = cms.string("MediumID"),
-                         muon_id_sf_wp_den = cms.string("genTracks"),
+                         muon_id_sf_wp_den = cms.string("TrackerMuons"),
                          muon_iso_sf_wp_num = cms.string("LooseRelIso"),
                          muon_iso_sf_wp_den = cms.string("MediumID"),
 
@@ -97,9 +97,9 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
-                         Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
-                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         Trig_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2018_trigger/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root"),
+                         MuID_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2018/jsonfiles/RunABCD_SF_ID.json"),
+                         MuIso_eff_3_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2018/jsonfiles/RunABCD_SF_ISO.json"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),
