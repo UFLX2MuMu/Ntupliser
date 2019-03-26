@@ -119,7 +119,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017v1.txt");
+  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2017.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
 
   std::cout << "\nOpening Rochester Correction files located in:" << std::endl;
