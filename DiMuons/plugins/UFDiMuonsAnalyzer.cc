@@ -35,6 +35,11 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _trigResultsToken = consumes<edm::TriggerResults>                    (iConfig.getParameter<edm::InputTag>("trigResults"));
   _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getParameter<edm::InputTag>("trigObjs"));
 
+  // L1 ECAL prefiring event weights and systematic variations
+  _prefweight_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProb"));
+  _prefweightup_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+  _prefweightdown_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProbDown"));
+
   // Event flags
   _evtFlagsToken = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("evtFlags"));
 
@@ -206,6 +211,23 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     iEvent.getByToken(_genEvtInfoToken, genEvtInfo );
     _GEN_wgt = (genEvtInfo->weight() > 0) ? 1 : -1;  // Why don't we use the decimal weight? - AWB 08.11.16
     _sumEventWeights += _GEN_wgt;
+
+    // --------------------
+    // L1 prefiring weights
+    // --------------------
+  
+    edm::Handle< double > theprefweight;
+    iEvent.getByToken(_prefweight_token, theprefweight);
+    _prefiringweight = (*theprefweight);
+  
+    edm::Handle< double > theprefweightup;
+    iEvent.getByToken(_prefweightup_token, theprefweightup);
+    _prefiringweightup = (*theprefweightup);
+  
+    edm::Handle< double > theprefweightdown;
+    iEvent.getByToken(_prefweightdown_token, theprefweightdown);
+    _prefiringweightdown = (*theprefweightdown);  
+
 
     if (_isVerbose) std::cout << "\nAccessing LHEEventProduct info" << std::endl;
     edm::Handle<LHEEventProduct> LHE_handle;
@@ -805,7 +827,11 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("PU_wgt_up",   &_PU_wgt_up,   "PU_wgt_up/F"   );
     _outTree->Branch("PU_wgt_down", &_PU_wgt_down, "PU_wgt_down/F" );
     _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/I"     );
-    
+
+    _outTree->Branch("l1pref_wgt",     &_prefiringweight,     "l1pref_wgt/F"     );
+    _outTree->Branch("l1pref_wgt_up",     &_prefiringweightup,     "l1pref_wgt_up/F"     );
+    _outTree->Branch("l1pref_wgt_down",     &_prefiringweightdown,     "l1pref_wgt_down/F"     );
+  
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
     _outTree->Branch("nGenMuPairs", (int*) &_nGenMuPairs );

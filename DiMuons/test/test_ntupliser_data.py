@@ -16,6 +16,8 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
+from python.Samples_2017_94X_v2 import SingleMu_2017C as samp
+
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
 else:
@@ -37,8 +39,8 @@ readFiles = cms.untracked.vstring();
 ## Get list of local files from the sample we loaded (not used in crab)
 readFiles.extend(samp.files);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.source = cms.Source("PoolSource", fileNames = readFiles)
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
@@ -52,7 +54,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntuple_data_Run2017C.root") )
 
 # /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
