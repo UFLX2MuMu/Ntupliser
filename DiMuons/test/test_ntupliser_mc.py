@@ -54,7 +54,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("ggH_125_NLO_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntupliser_mc_{0}.root".format(samp.name)) )
 
 # /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
