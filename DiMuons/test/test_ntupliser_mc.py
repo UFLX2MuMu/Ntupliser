@@ -12,6 +12,9 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
+# Label your test
+test_label = ''
+
 # /////////////////////////////////////////////////////////////
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
@@ -54,7 +57,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntupliser_mc_{0}.root".format(samp.name)) )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntupliser_mc_{0}_{1}.root".format(samp.name, test_label)) )
 
 # /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
