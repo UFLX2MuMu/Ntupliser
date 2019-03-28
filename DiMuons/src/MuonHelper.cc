@@ -33,6 +33,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
   Double_t mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
   Double_t mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
+
+  // Index of the pat muon associated to the kin fitted muon
+  int mu1_kf_patmu_index = -99;
+  int mu2_kf_patmu_index = -99;
   
   RefCountedKinematicVertex dimu_vertex;
   
@@ -220,10 +224,20 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       } // End conditional: if (not _isData)
 
       float GEN_pt = (iMatch > 0) ? _muonInfo.GEN_pt : -99;
+       
+      // just before correcting for roachester use the pat muon TLV to match the kinfit muon
+      if (mu1_tlv.DeltaR(mu_vec_Roch) < 0.05 and mu1_kf_patmu_index < 0) mu1_kf_patmu_index = i;
+      else if (mu2_tlv.DeltaR(mu_vec_Roch) < 0.05 and mu2_kf_patmu_index < 0) mu2_kf_patmu_index = i;
       
       CorrectPtRoch( _Roch_calib, _doSys_Roch, mu_vec_Roch, 
       		     pt_Roch, ptErr_Roch, pt_Roch_sys_up, pt_Roch_sys_down,
       		     charge_Roch, trk_layers_Roch, GEN_pt, _isData );
+
+      //Rochester Correction for kinfit
+      //This is just a mockup - not working. need to integrate it in the muon loop, including the GEN matching.
+      //CorrectPtRoch( _Roch_calib, _doSys_Roch, mu1_tlv, 
+      //		     pt_kinfit_Roch, ptErr_kinfit_Roch, pt_kinfit_Roch_sys_up, pt_kinfit_Roch_sys_down, // this line contains the output parameters
+      //		     charge_kinfit_Roch, trk_layers_kinfit_Roch, GEN_kinfit_pt, _isData ); 
       
       _muonInfo.pt_Roch           = pt_Roch;
       _muonInfo.ptErr_Roch        = ptErr_Roch;
@@ -278,6 +292,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.dz_PV_kinfit *= sign;
         _muonInfo.pt_kinfit  = mu1_tlv.Pt();
         _muonInfo.ptErr_kinfit = mu1_ptErr_kinfit;
+        _muonInfo.patMu_idx = mu1_kf_patmu_index;
       }
       if(i==1){ //second muon
         GlobalVector direction(mu2_tlv.Px(),mu2_tlv.Py(),mu2_tlv.Pz()); 
@@ -287,6 +302,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.dz_PV_kinfit *= sign;
         _muonInfo.pt_kinfit  = mu2_tlv.Pt();
         _muonInfo.ptErr_kinfit = mu2_ptErr_kinfit;
+        _muonInfo.patMu_idx = mu2_kf_patmu_index;
      }
     } 
     else{ // if the kinfit was not succesful for this muon use the muonBestTrack 

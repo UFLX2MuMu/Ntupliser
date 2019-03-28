@@ -77,6 +77,7 @@ struct MuonInfo {
   Double_t ptErr_PF     = -999;
   Double_t eta_PF       = -999;
   Double_t phi_PF       = -999;
+  Int_t    patMu_idx    = -999;
 
   Float_t sumChargedHadronPtR03   = -999;  // sum-pt of charged Hadron
   Float_t sumChargedParticlePtR03 = -999;  // sum-pt of charged Particles(inludes e/mu)
