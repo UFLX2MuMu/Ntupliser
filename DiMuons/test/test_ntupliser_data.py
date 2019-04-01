@@ -13,7 +13,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-rom python.Samples import SingleMu_2018B as samp
+from python.Samples import SingleMu_2018A as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -88,7 +88,7 @@ if samp.isData:
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("ggH_HToMuMu_M125_NLO_GEN_test.root") )
+process.TFileService = cms.Service("TFileService", fileName = cms.string("test_ntupliser_data_{0}.root".format(samp.name)) )
 
 # /////////////////////////////////////////////////////////////
 # Load UFDiMuonsAnalyzer
