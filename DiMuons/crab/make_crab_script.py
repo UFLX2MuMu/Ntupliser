@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
-import sys
+import sys, os
 #adding the working dir path
-sys.path.append("/afs/cern.ch/user/b/bortigno/workspace/x2mm_ufl_944/src/Ntupliser/DiMuons")
+sys.path.append(os.getcwd())
 
 from python.Samples import *
 

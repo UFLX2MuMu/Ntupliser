@@ -19,9 +19,10 @@
 #include "Ntupliser/DiMuons/interface/NTupleBranches.h"
 #include "Ntupliser/DiMuons/interface/NTupleHelpers.h"
 
-// Special calibration classes
+// Special calibration and lepton ID classes
 #include "KaMuCa/Calibration/interface/KalmanMuonCalibrator.h"
 #include "Ntupliser/RochCor/interface/RoccoR.h"
+#include "Ntupliser/DiMuons/interface/LepMVA.h"
 
 // Classes or json handling
 #include "boost/property_tree/ptree.hpp"
@@ -329,6 +330,14 @@ private:
   RoccoR _Roch_calib;
   bool _doSys_Roch;
 
+  EffectiveAreas muEffArea;
+  EffectiveAreas eleEffArea;
+
+  LepMVAVars _lepVars_mu;
+  LepMVAVars _lepVars_ele;
+  std::shared_ptr<TMVA::Reader> _lepMVA_mu;
+  std::shared_ptr<TMVA::Reader> _lepMVA_ele;
+
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   // Gather info from the python config file ==============
@@ -357,10 +366,11 @@ private:
 
   // Electrons
   edm::EDGetTokenT<edm::View<pat::Electron>> _eleCollToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdVetoToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdLooseToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdMediumToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdTightToken;
+ std::string _eleIdVetoName;
+ std::string _eleIdLooseName;
+ std::string _eleIdMediumName;
+ std::string _eleIdTightName;
+ std::string _eleIdMvaName;
 
   // Taus
   edm::EDGetTokenT<pat::TauCollection> _tauCollToken;
@@ -372,6 +382,9 @@ private:
   edm::EDGetTokenT<double> _rhoToken;
   std::string _jetType;
   std::string _btagName;
+
+  // PF candidates
+  edm::EDGetTokenT<std::vector<pat::PackedCandidate>> _pfCandsToken;
 
   // Event info
   edm::EDGetTokenT<reco::BeamSpot> _beamSpotToken;		
@@ -398,6 +411,7 @@ private:
   bool _slimOut;
 
   int  _skim_nMuons;
+  int  _skim_nLeptons;
   bool _skim_trig;
 
   double _vertex_ndof_min;

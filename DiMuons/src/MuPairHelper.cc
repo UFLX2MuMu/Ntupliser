@@ -34,7 +34,6 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
   for (int i = 0; i < int(isOS.size()); i++) {
     
     MuPairInfo _pairInfo;
-    _pairInfo.init();
     
     int iMu1 = isOS.at(i).second.first;
     int iMu2 = isOS.at(i).second.second;
@@ -140,6 +139,22 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
       _pairInfo.pt_KaMu_sys_down   = pair_vec.nom.Pt();
     }
 
+
+    // Kinemtic Fit
+    if ( _muonInfos.at(iMu1).pt_kinfit > 0 && _muonInfos.at(iMu2).pt_kinfit > 0 ) {
+      FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
+		      _muonInfos.at(iMu1), _muonInfos.at(iMu2),
+		      _muonInfos.at(iMu1).pt_kinfit, _muonInfos.at(iMu2).pt_kinfit,
+		      _muonInfos.at(iMu1).ptErr_kinfit, _muonInfos.at(iMu2).ptErr_kinfit );
+      
+      _pairInfo.mass_kinfit    = pair_vec.nom.M();
+      _pairInfo.massErr_kinfit = massErr;
+      _pairInfo.pt_kinfit      = pair_vec.nom.Pt();
+    }
+
+    // TODO: Implement systematics for kinfit
+ 
+    // Rochester
     if ( _muonInfos.at(iMu1).pt_Roch > 0 && _muonInfos.at(iMu2).pt_Roch > 0 ) {
       FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
 		      _muonInfos.at(iMu1), _muonInfos.at(iMu2),

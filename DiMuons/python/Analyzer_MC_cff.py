@@ -1,30 +1,27 @@
 import FWCore.ParameterSet.Config as cms
 
 ## Assumes you are looking at miniAOD
-DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
+dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
-                         isMonteCarlo = cms.bool(False),
-                         doSys        = cms.bool(True),
+                         isMonteCarlo = cms.bool(True),
+                         doSys        = cms.bool(False),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
-                         skim_nMuons = cms.int32(2),
-                         skim_trig   = cms.bool(True),
+                         skim_nMuons   = cms.int32(1),
+                         skim_nLeptons = cms.int32(2),
+                         skim_trig     = cms.bool(True),
                          
-                         ## HLT trigger info
                          processName  = cms.string("HLT"),
-                         ## Unprescaled triggers at the end of 2017
-                         ## https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
-                         trigNames = cms.vstring("HLT_IsoMu24", "HLT_IsoTkMu24", 
+                         ## Triggers which were unprescaled in 2016, 2017, or 2018
+                         ## 2016 : https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2016/v450
+                         ## 2017 : https://cmswbm.cern.ch/cmsdb/servlet/TriggerMode?KEY=l1_hlt_collisions2017/v320
+                         trigNames = cms.vstring("HLT_IsoMu22_eta2p1", "HLT_IsoTkMu22_eta2p1",
+                                                 "HLT_IsoMu24", "HLT_IsoTkMu24",
                                                  "HLT_IsoMu27", "HLT_IsoTkMu27",
-                                                 "HLT_IsoMu30",
-                                                 "HLT_Mu50",
-                                                 "HLT_Mu55",
-                                                 "HLT_TkMu100"),
-
+                                                 "HLT_Mu50", "HLT_TkMu50", "HLT_TkMu100"),
                          trigResults = cms.InputTag("TriggerResults","","HLT"),
-                         #trigObjs    = cms.InputTag("selectedPatTrigger"),
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
@@ -37,20 +34,32 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## Muons
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
-                         doSys_Roch = cms.bool(True),
+                         doSys_Roch = cms.bool(False),
+                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
+                         eleIdVeto   = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose  = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight  = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
+                         eleIdMva    = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
 
                          ## Jets
-                         jetsTag  = cms.InputTag("updatedPatJetsUpdatedJEC"),
+                         ## Not clear which jet tag below should be used - AWB 21.10.2018
+                         jetsTag  = cms.InputTag('slimmedJets'),
+                         # jetsTag  = cms.InputTag('updatedPatJetsUpdatedJEC'),
+                         # jetsTag  = cms.InputTag('updatedPatJetsTransientCorrectedUpdatedJEC'),
                          jetType  = cms.string("AK4PFchs"),
-                         btagName = cms.string("pfDeepCSVJetTags"), #need to update it to deepCSV
-                         rhoTag   = cms.string("fixedGridRhoFastjetAll"), ## No idea if this is right - AWB 13.03.17
+                         btagName = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+                         # btagName = cms.string("pfDeepCSVJetTags"),
+                         rhoTag   = cms.InputTag("fixedGridRhoFastjetAll"), ## No idea if this is right, matches TOP-18-008 - AWB 15.10.2018
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L144
+
+                         ## PF cands
+                         pfCandsTag = cms.InputTag("packedPFCandidates"),
 
                          ## MET
                          metTag = cms.InputTag("slimmedMETs"),
@@ -65,35 +74,32 @@ DiMuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          vertex_rho_max  = cms.double( 2.0),
                          vertex_z_max    = cms.double(24.0),
 
-                         muon_ID        = cms.string("medium"),
-                         muon_pT_min    = cms.double(20.0),
+                         muon_ID        = cms.string("loose"),
+                         muon_pT_min    = cms.double(10.0),
                          muon_eta_max   = cms.double( 2.4),
                          muon_trig_dR   = cms.double( 0.1),
-                         muon_use_pfIso = cms.bool(True),
+                         muon_use_pfIso = cms.bool  (True),
                          muon_iso_dR    = cms.double( 0.4),
-                         muon_iso_max   = cms.double(0.25),
+                         muon_iso_max   = cms.double( 0.4),
 
                          muon_id_sf_wp_num = cms.string("MediumID"),
                          muon_id_sf_wp_den = cms.string("genTracks"),
                          muon_iso_sf_wp_num = cms.string("LooseRelIso"),
                          muon_iso_sf_wp_den = cms.string("MediumID"),
 
-                         ele_ID      = cms.string("medium"),
+                         ele_ID      = cms.string("loose"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
 
                          jet_ID      = cms.string("tight"),
                          jet_pT_min  = cms.double(20.0),
-                         jet_eta_max = cms.double(4.7),
+                         jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2018_Autumn18_v1.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2018_Autumn18_v0.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
                          MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
-                         #MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
                          MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
-                         #MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

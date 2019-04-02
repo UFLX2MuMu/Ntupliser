@@ -8,11 +8,11 @@
 
 struct MetInfo {
 
-  Float_t px;
-  Float_t py;
-  Float_t pt;
-  Float_t phi;
-  Float_t sumEt;
+  Float_t px    = -999;
+  Float_t py    = -999;
+  Float_t pt    = -999;
+  Float_t phi   = -999;
+  Float_t sumEt = -999;
 
   void init();
 
