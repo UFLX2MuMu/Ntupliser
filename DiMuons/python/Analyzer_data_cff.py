@@ -96,7 +96,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2018_Autumn18_v1.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2018_Autumn18_v0.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
                          MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
                          MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
