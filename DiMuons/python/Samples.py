@@ -1,7 +1,7 @@
 
 class sample:
     def __init__(self, name='', DAS='', nEvt=0, files=[], GT='102X_upgrade2018_realistic_v12',
-                 JEC='102X_upgrade2018_realistic_v12', runs=[], JSON=[], isData=False):
+                 JEC='', runs=[], JSON=[], isData=False):
         self.name   = name   ## User-assigned dataset name
         self.DAS    = DAS    ## DAS directory
         self.nEvt   = nEvt   ## Number of events in dataset
@@ -19,7 +19,10 @@ class sample:
 # The JSON file details the valid lumi sections
 ## ReReco:     https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis#Re_reco_datasets
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/Rereco/Cert_314472-325175_13TeV_EarlyReReco2018ABC_Collisions18_JSON.txt
-JSON_2017 = '/certification/Collisions18/13TeV/Rereco/Cert_314472-325175_13TeV_EarlyReReco2018ABC_Collisions18_JSON.txt'
+golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
+
+# to be removed..
+JSON_2017 = ''
 
 AWB_dir = ''
 #####################################
@@ -36,54 +39,40 @@ AWB_dir = ''
 
 ## Jet energy correction info
 ## https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-##  - Last check that data Fall17_17Nov2017_V32_94X_DATA   was up-to-date: 05.12.2018 (AWB)  
-##  - Last check that MC   JEC Fall17_17Nov2017_V32_94X_MC was up-to-date: 05.12.2018 (AWB)  
 ## https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
+## As of 26.03.2019 there are no JEC GT recommendation, but a .db file to use Autumn18_RunABCD_V8_DATA.db for data and Autumn18_V8_MC.db for MC.
 
-
-SingleMu_2017B = sample( name   = 'SingleMu_2017B',
-                         DAS    = '/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD',
-                         GT     = '94X_dataRun2_v10',
-                         JEC    = 'Fall17_17Nov2017_V32_94X_DATA',
-                         JSON   = JSON_2017,
+SingleMu_2018A = sample( name   = 'SingleMu_2018A',
+                         DAS    = '/SingleMuon/Run2018A-17Sep2018-v1/MINIAOD',
+                         files  = ['/store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/D3283DD5-050C-FD45-9CAC-1F08E11F790D.root'],
+                         GT     = '102X_dataRun2_Sep2018ABC_v2',
+                         JSON   = golden_17SepReReco,
                          isData = True)
 
-SingleMu_2017C = sample( name   = 'SingleMu_2017C',
-                         DAS    = '/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD',
-                         files = [ AWB_dir+'SingleMuon_Run2017C/31Mar2018-v1/ECB43DA6-3B37-E811-AE28-02163E013A0A.root' ],
-                         GT     = '94X_dataRun2_v10',
-                         JEC    = 'Fall17_17Nov2017_V32_94X_DATA',
-                         JSON   = JSON_2017,
+SingleMu_2018B = sample( name   = 'SingleMu_2018B',
+                         DAS    = '/SingleMuon/Run2018B-17Sep2018-v1/MINIAOD',
+                         GT     = '102X_dataRun2_Sep2018ABC_v2',
+                         JSON   = golden_17SepReReco,
                          isData = True)
 
-SingleMu_2017D = sample( name   = 'SingleMu_2017D',
+SingleMu_2018C = sample( name   = 'SingleMu_2018C',
+                         DAS    = '/SingleMuon/Run2018C-17Sep2018-v1/MINIAOD',
+                         GT     = '102X_dataRun2_Sep2018ABC_v2',
+                         JSON   = golden_17SepReReco,
+                         isData = True)
+
+SingleMu_2018D = sample( name   = 'SingleMu_2017D',
                          DAS    = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD',
-                         GT     = '94X_dataRun2_v10',
-                         JEC    = 'Fall17_17Nov2017_V32_94X_DATA',
-                         JSON   = JSON_2017,
-                         isData = True)
-
-SingleMu_2017E = sample( name   = 'SingleMu_2017E',
-                         DAS    = '/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD',
-                         GT     = '94X_dataRun2_v10',
-                         JEC    = 'Fall17_17Nov2017_V32_94X_DATA',
-                         JSON   = JSON_2017,
-                         isData = True)
-
-SingleMu_2017F = sample( name   = 'SingleMu_2017F',
-                         DAS    = '/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD',
-                         GT     = '94X_dataRun2_v10',
-                         JEC    = 'Fall17_17Nov2017_V32_94X_DATA',
-                         JSON   = JSON_2017,
+                         GT     = '102X_dataRun2_Prompt_v13',
+                         JSON   = golden_17SepReReco,
                          isData = True)
 
 SingleMu = []  ## All SingleMuon datasets
 
-SingleMu.append(SingleMu_2017B)
-SingleMu.append(SingleMu_2017C)
-SingleMu.append(SingleMu_2017D)
-SingleMu.append(SingleMu_2017E)
-SingleMu.append(SingleMu_2017F)
+SingleMu.append(SingleMu_2018A)
+SingleMu.append(SingleMu_2018B)
+SingleMu.append(SingleMu_2018C)
+SingleMu.append(SingleMu_2018D)
 
 
 DoubleMu_2017B = sample( name   = 'DoubleMu_2017B',

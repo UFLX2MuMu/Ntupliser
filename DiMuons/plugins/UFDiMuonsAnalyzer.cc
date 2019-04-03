@@ -139,12 +139,12 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
     _PU_wgt_hist_down = (TH1D*) _PU_wgt_file->Get("PU_wgt_down");
   }
 
-  edm::FileInPath path_IsoMu_eff_3("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_3_file"));
+  edm::FileInPath path_IsoMu_eff_3(iConfig.getParameter<std::string>("Trig_eff_3_file"));
   _IsoMu_eff_3_file = new TFile(path_IsoMu_eff_3.fullPath().c_str());
-  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
-  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
+  _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
+  _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_PtEtaBins/abseta_pt_ratio");
 
-  edm::FileInPath path_MuID_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
+  edm::FileInPath path_MuID_SF_3(iConfig.getParameter<std::string>("MuID_eff_3_file"));
 
   std::ifstream _MuID_SF_3_json_file(path_MuID_SF_3.fullPath().c_str(), std::ifstream::binary);
   if (!_MuID_SF_3_json_file){
@@ -159,7 +159,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   //_MuID_eff_3_vtx  = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
   //_MuID_SF_3_vtx   = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
 
-  edm::FileInPath path_MuIso_SF_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
+  edm::FileInPath path_MuIso_SF_3(iConfig.getParameter<std::string>("MuIso_eff_3_file"));
 
   std::ifstream _MuIso_SF_3_json_file(path_MuIso_SF_3.fullPath().c_str(), std::ifstream::binary);
   if (!_MuIso_SF_3_json_file) {
