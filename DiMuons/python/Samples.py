@@ -21,9 +21,13 @@ class sample:
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/Rereco/Cert_314472-325175_13TeV_EarlyReReco2018ABC_Collisions18_JSON.txt
 golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 
+processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1',
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2']
+data_tier = ['MINIAOD',
+             'MINIAODSIM']
+
 # to be removed..
 JSON_2017 = ''
-
 AWB_dir = ''
 #####################################
 ###  Global tag and dataset info  ###
@@ -130,23 +134,19 @@ DAS_era_MC_c = 'RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_real
 # ------------------------------- SIGNAL ----------------------------------------------------------------
 # =======================================================================================================
 
-## DAS location: dataset=/*HToMuMu*125*/RunIIFall17MiniAODv2*/MINIAODSIM
-H2Mu_gg_dir  = 'GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/'
-H2Mu_ttH_dir = 'ttHToMuMu_M125_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/'
-
 ## Gluon-gluon fusion, amc@NLO
 H2Mu_gg_120_NLO = sample( name = 'H2Mu_gg_120',
-                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
-                          nEvt = 1900000 ) ## 1.9 million
+                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1])),
+                          nEvt = -1 ) ## 1.9 million
 
 H2Mu_gg_125_NLO = sample( name  = 'H2Mu_gg',
-                          DAS   = '/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/'+DAS_era_MC_a+'-v2/MINIAODSIM',
-                          nEvt  = 2000000, ## 2.0 million
+                          DAS   = '/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                          nEvt  = -1, ## 2.0 million
                           files = [ '/store/mc/RunIIAutumn18MiniAOD/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/80000/F348840D-094B-ED48-B2A1-5ABD7D9C2B57.root' ] )
 
 H2Mu_gg_130_NLO = sample( name = 'H2Mu_gg_130',
-                          DAS  = '/GluGluHToMuMu_M130_13TeV_amcatnloFXFX_pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
-                          nEvt = 1700000 ) ## 1.7 million
+                          DAS  = '/GluGluHToMuMu_M130_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                          nEvt = -1 ) ## 1.7 million
 
 ## Vector boson fusion
 H2Mu_VBF_120_NLO = sample( name = 'H2Mu_VBF_120',
@@ -217,23 +217,23 @@ H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
 
 Signal = []  ## All H2Mu signal samples
 Signal.append(H2Mu_gg_125_NLO)
-Signal.append(H2Mu_VBF_125_NLO)
-Signal.append(H2Mu_WH_pos_125)
-Signal.append(H2Mu_WH_neg_125)
-Signal.append(H2Mu_ZH_125)
-Signal.append(H2Mu_ttH_125)
-
-Signal.append(H2Mu_gg_120_NLO)
-Signal.append(H2Mu_VBF_120_NLO)
-Signal.append(H2Mu_WH_pos_120)
-# Signal.append(H2Mu_WH_neg_120)
-Signal.append(H2Mu_ZH_120)
-
-Signal.append(H2Mu_gg_130_NLO)
-Signal.append(H2Mu_VBF_130_NLO)
-Signal.append(H2Mu_WH_pos_130)
-Signal.append(H2Mu_WH_neg_130)
-Signal.append(H2Mu_ZH_130)
+#Signal.append(H2Mu_VBF_125_NLO)
+#Signal.append(H2Mu_WH_pos_125)
+#Signal.append(H2Mu_WH_neg_125)
+#Signal.append(H2Mu_ZH_125)
+#Signal.append(H2Mu_ttH_125)
+#
+#Signal.append(H2Mu_gg_120_NLO)
+#Signal.append(H2Mu_VBF_120_NLO)
+#Signal.append(H2Mu_WH_pos_120)
+## Signal.append(H2Mu_WH_neg_120)
+#Signal.append(H2Mu_ZH_120)
+#
+#Signal.append(H2Mu_gg_130_NLO)
+#Signal.append(H2Mu_VBF_130_NLO)
+#Signal.append(H2Mu_WH_pos_130)
+#Signal.append(H2Mu_WH_neg_130)
+#Signal.append(H2Mu_ZH_130)
 
 
 
@@ -243,51 +243,47 @@ Signal.append(H2Mu_ZH_130)
 
 Background = []  ## All H2Mu background samples
 
-# DAS_era_bkg_2 = 'RunIISummer16MiniAODv3-PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-# DAS_AMC       = 'TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv'
-
 ###################
 ###  Drell-Yan  ###
 ###################
 
 ZJets_AMC = sample( name = 'ZJets_AMC',
-                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/'+DAS_era_MC_b+'_ext1-v1/MINIAODSIM',
-                    nEvt = 182217609)  ## 182 million
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                    nEvt = -1)  ## 1 million
 
-ZJets_MG_1 = sample( name = 'ZJets_MG_1',
-                     DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/'+DAS_era_MC_c+'-v1/MINIAODSIM',
-                     nEvt = 48675378 ) ## 49 million
+ZJets_MG = sample( name = 'ZJets_MG_1',
+                     DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                     nEvt = -1 ) ## 100 million
 
-ZJets_MG_2 = sample( name = 'ZJets_MG_2',
-                     DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/'+DAS_era_MC_c+'_ext1-v1/MINIAODSIM',
-                     nEvt = 49125561 ) ## 49 million
+ZJets_hiM_AMC = sample( name = 'ZJets_hiM_AMC',
+                        DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        nEvt = -1 )  ## 60 million
 
-# ZJets_hiM_AMC = sample( name = 'ZJets_hiM_AMC',
-#                         DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2*/MINIAODSIM',
-#                         nEvt =  )  ## 60 million
-
-# ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
-#                        DAS  = '/DYJetsToLL_M-105To160_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2*/MINIAODSIM',
-#                        nEvt =  )  ## ? million
+ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG'
+                       DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                       nEvt = -1 )  ## 60 million
 
 
 Background.append(ZJets_AMC)
-Background.append(ZJets_MG_1)
-Background.append(ZJets_MG_2)
-# Background.append(ZJets_hiM_AMC)
-# Background.append(ZJets_hiM_MG)
+Background.append(ZJets_MG)
+Background.append(ZJets_hiM_AMC)
+Background.append(ZJets_hiM_MG)
 
 ###############
 ###  ttbar  ###
 ###############
 
+tt_ll_AMC = sample( name = 'tt_ll_AMC',
+                    DAS  = '/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                    nEvt = -1 ) ## 4 million
+
 tt_ll_MG = sample( name = 'tt_ll_MG',
-                   DAS  = '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
-                   nEvt = 28380110 ) ## 28 million
+                   DAS  = '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                   nEvt = -1 ) ## 60 million
 
 tt_ll_POW = sample( name = 'tt_ll_POW',
-                    DAS  = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/'+DAS_era_MC_b+'-v2/MINIAODSIM',
-                    nEvt = 69155808 ) ## 69 million
+                    DAS  = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                    nEvt = -1 ) ## 71 million
 
 tt_ljj_POW_1 = sample ( name = 'tt_ljj_POW_1',
                         DAS  = '/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
@@ -297,10 +293,11 @@ tt_ljj_POW_2 = sample ( name = 'tt_ljj_POW_2',
                         DAS  = '/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v2/MINIAODSIM',
                         nEvt = 110085096 ) ## 110 million
 
+Background.append(tt_ll_AMC)
 Background.append(tt_ll_MG)
 Background.append(tt_ll_POW)
-Background.append(tt_ljj_POW_1)
-Background.append(tt_ljj_POW_2)
+#Background.append(tt_ljj_POW_1)
+#Background.append(tt_ljj_POW_2)
 
 ####################
 ###  Single top  ###
@@ -314,8 +311,8 @@ tW_neg = sample( name = 'tW_neg',
                  DAS  = '/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_b+'-v1/MINIAODSIM',
                  nEvt = 5635539 ) ## 5 million
 
-Background.append(tW_pos)
-Background.append(tW_neg)
+#Background.append(tW_pos)
+#Background.append(tW_neg)
 
 #################
 ###  Diboson  ###
@@ -345,12 +342,12 @@ ZZ_4l = sample( name = 'ZZ_4l',
                 DAS  = '/ZZTo4L_13TeV_powheg_pythia8/'+DAS_era_MC_a+'_ext1-v1/MINIAODSIM',
                 nEvt = 98091559 ) ## 98 million
 
-Background.append(WW_2l_1)
-Background.append(WW_2l_2)
-Background.append(WZ_2l)
-Background.append(WZ_3l)
-Background.append(ZZ_2l_2q)
-Background.append(ZZ_4l)
+#Background.append(WW_2l_1)
+#Background.append(WW_2l_2)
+#Background.append(WZ_2l)
+#Background.append(WZ_3l)
+#Background.append(ZZ_2l_2q)
+#Background.append(ZZ_4l)
 
 ################
 ###  ttbar+X  ##
@@ -376,11 +373,11 @@ ttWW = sample( name = 'ttWW',
                DAS  = '/TTWW_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM',
                nEvt = 200000 ) ## 200 k
 
-Background.append(ttW)
-Background.append(ttZ)
-Background.append(ttZ_lowM)
-Background.append(ttH)
-Background.append(ttWW)
+#Background.append(ttW)
+#Background.append(ttZ)
+#Background.append(ttZ_lowM)
+#Background.append(ttH)
+#Background.append(ttWW)
 
 # #####################
 # ###  Single top+X  ##
@@ -402,10 +399,10 @@ tHW = sample( name = 'tHW',
               DAS  = '/THW_5f_Hincl_13TeV_madgraph_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
               nEvt = 1439996 ) ## 1 million
 
-Background.append(tZq)
-# Background.append(tZW)
-Background.append(tHq)
-Background.append(tHW)
+#Background.append(tZq)
+## Background.append(tZW)
+#Background.append(tHq)
+#Background.append(tHW)
 
 #################
 ###  Triboson  ##
@@ -427,10 +424,10 @@ ZZZ = sample( name = 'ZZZ',
               DAS  = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM',
               nEvt = 250000 ) ## 250 k
 
-Background.append(WWW)
-Background.append(WWZ)
-Background.append(WZZ)
-Background.append(ZZZ)
+#Background.append(WWW)
+#Background.append(WWZ)
+#Background.append(WZZ)
+#Background.append(ZZZ)
 
 
 DataAndMC = []
