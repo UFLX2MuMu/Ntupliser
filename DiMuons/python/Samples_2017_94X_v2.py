@@ -274,20 +274,19 @@ ZJets_MG_2 = sample( name = 'ZJets_MG_2',
                      DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/'+DAS_era_MC_c+'_ext1-v1/MINIAODSIM',
                      nEvt = 49125561 ) ## 49 million
 
-# ZJets_hiM_AMC = sample( name = 'ZJets_hiM_AMC',
-#                         DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2*/MINIAODSIM',
-#                         nEvt =  )  ## 60 million
+ZJets_hiM_AMC = sample( name = 'ZJets_hiM_AMC',
+                        DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                        nEvt = 53482147 )  ## 53 million
 
-# ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
-#                        DAS  = '/DYJetsToLL_M-105To160_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2*/MINIAODSIM',
-#                        nEvt =  )  ## ? million
-
+ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
+                       DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 57690277 )  ## 58 million -- SO FAR!!! AWB 02.04.2019
 
 Background.append(ZJets_AMC)
 Background.append(ZJets_MG_1)
 Background.append(ZJets_MG_2)
-# Background.append(ZJets_hiM_AMC)
-# Background.append(ZJets_hiM_MG)
+Background.append(ZJets_hiM_AMC)
+Background.append(ZJets_hiM_MG)
 
 ###############
 ###  ttbar  ###
@@ -443,6 +442,97 @@ Background.append(WWW)
 Background.append(WWZ)
 Background.append(WZZ)
 Background.append(ZZZ)
+
+####################
+###  Other Higgs  ##
+####################
+
+HH_SM_incl_1 = sample( name = 'HH_SM_incl_1',  ## Despite name, actually inclusive Higgs decays
+                       DAS  = '/GluGluToHHTo4B_node_SM_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 300000 ) ## 300 k
+
+HH_SM_incl_2 = sample( name = 'HH_SM_incl_2',  ## Despite name, actually inclusive Higgs decays
+                       DAS  = '/GluGluToHHTo2B2Tau_node_SM_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 300000 ) ## 300 k
+
+HH_n2_incl_1 = sample( name = 'HH_n2_incl_1',
+                       DAS  = '/GluGluToHHTo4B_node_2_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 277000 ) ## 280 k
+
+HH_n2_incl_2 = sample( name = 'HH_n2_incl_2',
+                       DAS  = '/GluGluToHHTo2B2Tau_node_2_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 295000 ) ## 300 k
+
+HH_n7_incl_1 = sample( name = 'HH_n7_incl_1',
+                       DAS  = '/GluGluToHHTo4B_node_7_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 300000 ) ## 300 k
+
+HH_n7_incl_2 = sample( name = 'HH_n7_incl_2',
+                       DAS  = '/GluGluToHHTo2B2Tau_node_7_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 300000 ) ## 300 k
+
+HH_n12_incl_1 = sample( name = 'HH_n12_incl_1',
+                        DAS  = '/GluGluToHHTo4B_node_12_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                        nEvt = 300000 ) ## 300 k
+
+HH_n12_incl_2 = sample( name = 'HH_n12_incl_2',
+                        DAS  = '/GluGluToHHTo2B2Tau_node_12_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                        nEvt = 300000 ) ## 300 k
+
+H2W_WH_pos_125 = sample( name = 'H2W_WH_pos_125',
+                         DAS  = '/HWplusJ_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                         nEvt = 371096 ) ## 370 k
+
+H2W_WH_neg_125 = sample( name = 'H2W_WH_neg_125',
+                         DAS  = '/HWminusJ_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                         nEvt = 391794 ) ## 390 k
+
+H2W_ZH_125 = sample( name = 'H2W_ZH_125',
+                     DAS  = '/GluGluZH_HToWW_M125_13TeV_powheg_pythia8_TuneCP5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                     nEvt = 249999 ) ## 250 k
+
+H2Tau_WH_pos_125 = sample( name = 'H2Tau_WH_pos_125',
+                           DAS  = '/WplusHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                           nEvt = 4000000 ) ## 400 k
+
+H2Tau_WH_neg_125 = sample( name = 'H2Tau_WH_neg_125',
+                           DAS  = '/WminusHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                           nEvt = 3860872 ) ## 400 k
+
+H2Tau_ZH_125 = sample( name = 'H2Tau_ZH_125',
+                       DAS  = '/ZHToTauTau_M125_13TeV_powheg_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                       nEvt = 4940230 ) ## 5 M
+
+H2Z_WH_pos_125 = sample( name = 'H2Z_WH_pos_125',
+                         DAS  = '/WplusH_HToZZTo2L2X_M125_13TeV_powheg2-minlo-HWJ_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                         nEvt = 298971 ) ## 300 k
+
+H2Z_WH_neg_125 = sample( name = 'H2Z_WH_neg_125',
+                         DAS  = '/WminusH_HToZZTo2L2X_M125_13TeV_powheg2-minlo-HWJ_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                         nEvt = 200000 ) ## 200 k
+
+H2Z_ZH_125 = sample( name = 'H2Z_ZH_125',
+                     DAS  = '/ZH_HToZZ_2LFilter_M125_13TeV_powheg2-minlo-HZJ_JHUGenV7011_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM',
+                     nEvt = 495987 ) ## 500 k
+
+# Background.append(HH_SM_incl_1)
+# Background.append(HH_SM_incl_2)
+# Background.append(HH_n2_incl_1)
+# Background.append(HH_n2_incl_2)
+# Background.append(HH_n7_incl_1)
+# Background.append(HH_n7_incl_2)
+# Background.append(HH_n12_incl_1)
+# Background.append(HH_n12_incl_2)
+# Background.append(H2W_WH_pos_125)
+# Background.append(H2W_WH_neg_125)
+# Background.append(H2W_ZH_125)
+# Background.append(H2Tau_WH_pos_125)
+# Background.append(H2Tau_WH_neg_125)
+# Background.append(H2Tau_ZH_125)
+# Background.append(H2Z_WH_pos_125)
+# Background.append(H2Z_WH_neg_125)
+# Background.append(H2Z_ZH_125)
+
 
 
 DataAndMC = []
