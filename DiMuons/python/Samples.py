@@ -1,9 +1,10 @@
 
 class sample:
-    def __init__(self, name='', DAS='', nEvt=0, files=[], GT='102X_upgrade2018_realistic_v12',
+    def __init__(self, name='', DAS='', inputDBS='global', nEvt=0, files=[], GT='102X_upgrade2018_realistic_v12',
                  JEC='', runs=[], JSON=[], isData=False):
         self.name   = name   ## User-assigned dataset name
         self.DAS    = DAS    ## DAS directory
+        self.inputDBS = inputDBS ## to be used in crab in case of private production. config.Data.inputDBS = 'global' or 'phys03'
         self.nEvt   = nEvt   ## Number of events in dataset
         self.files  = files  ## Local files for testing
         self.GT     = GT     ## Global tag
@@ -136,7 +137,7 @@ DAS_era_MC_c = 'RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_real
 
 ## Gluon-gluon fusion, amc@NLO
 H2Mu_gg_120_NLO = sample( name = 'H2Mu_gg_120',
-                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1])),
+                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                           nEvt = -1 ) ## 1.9 million
 
 H2Mu_gg_125_NLO = sample( name  = 'H2Mu_gg',
@@ -207,8 +208,7 @@ H2Mu_ttH_120 = sample( name = 'H2Mu_ttH_120',
 
 H2Mu_ttH_125 = sample( name = 'H2Mu_ttH_125',
                        DAS  = '/ttHToMuMu_M125_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v3/MINIAODSIM',
-                       nEvt = 294000, ## 300 k
-                       files = [ AWB_dir+H2Mu_ttH_dir+'C8B266CB-3551-E811-8C8A-3417EBE6458E.root' ] )
+                       nEvt = 294000 ) ## 300 k
 
 H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
                        DAS  = '/ttHToMuMu_M130_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
@@ -259,7 +259,7 @@ ZJets_hiM_AMC = sample( name = 'ZJets_hiM_AMC',
                         DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-amcatnloFXFX-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                         nEvt = -1 )  ## 60 million
 
-ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG'
+ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
                        DAS  = '/DYJetsToLL_M-105To160_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                        nEvt = -1 )  ## 60 million
 
