@@ -35,7 +35,7 @@ samps = []
 
 ## Get the samples you want to make a crab config file for 
 test_run = False
-test_str = '_prod2017_{0}'.format(prod_version)
+test_str = '_prod2018_{0}'.format(prod_version)
  
 # samps.extend(SingleMu)
 # samps.extend(Signal)
