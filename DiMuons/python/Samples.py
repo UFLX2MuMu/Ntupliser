@@ -48,7 +48,7 @@ AWB_dir = ''
 ## As of 26.03.2019 there are no JEC GT recommendation, but a .db file to use Autumn18_RunABCD_V8_DATA.db for data and Autumn18_V8_MC.db for MC.
 
 SingleMu_2018A = sample( name   = 'SingleMu_2018A',
-                         DAS    = '/SingleMuon/Run2018A-17Sep2018-v1/MINIAOD',
+                         DAS    = '/SingleMuon/Run2018A-17Sep2018-v2/MINIAOD',
                          files  = ['/store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/D3283DD5-050C-FD45-9CAC-1F08E11F790D.root'],
                          GT     = '102X_dataRun2_Sep2018ABC_v2',
                          JSON   = golden_17SepReReco,
