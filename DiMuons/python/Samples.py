@@ -22,8 +22,10 @@ class sample:
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/Rereco/Cert_314472-325175_13TeV_EarlyReReco2018ABC_Collisions18_JSON.txt
 golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 
-processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1',
-                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2']
+processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1', #0
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2', #1
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2'] #2
+
 data_tier = ['MINIAOD',
              'MINIAODSIM']
 
@@ -274,7 +276,7 @@ Background.append(ZJets_hiM_MG)
 ###############
 
 tt_ll_AMC = sample( name = 'tt_ll_AMC',
-                    DAS  = '/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                    DAS  = '/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                     nEvt = -1 ) ## 4 million
 
 tt_ll_MG = sample( name = 'tt_ll_MG',
