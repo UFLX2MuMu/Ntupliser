@@ -137,16 +137,16 @@ DAS_era_MC_c = 'RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_real
 
 ## Gluon-gluon fusion, amc@NLO
 H2Mu_gg_120_NLO = sample( name = 'H2Mu_gg_120',
-                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                          DAS  = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                           nEvt = -1 ) ## 1.9 million
 
 H2Mu_gg_125_NLO = sample( name  = 'H2Mu_gg',
-                          DAS   = '/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                          DAS   = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                           nEvt  = -1, ## 2.0 million
                           files = [ '/store/mc/RunIIAutumn18MiniAOD/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/80000/F348840D-094B-ED48-B2A1-5ABD7D9C2B57.root' ] )
 
 H2Mu_gg_130_NLO = sample( name = 'H2Mu_gg_130',
-                          DAS  = '/GluGluHToMuMu_M130_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                          DAS  = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                           nEvt = -1 ) ## 1.7 million
 
 ## Vector boson fusion
