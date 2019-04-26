@@ -283,8 +283,8 @@ tt_ll_MG = sample( name = 'tt_ll_MG',
                    DAS  = '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                    nEvt = -1 ) ## 60 million
 
-tt_ll_POW = sample( name = 'tt_ll_POW',
-                    DAS  = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+tt_ll_POW = sample( name = 'tt_ll_POW', #
+                    DAS  = '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                     nEvt = -1 ) ## 71 million
 
 tt_ljj_POW_1 = sample ( name = 'tt_ljj_POW_1',
