@@ -37,21 +37,11 @@ samps = []
 test_run = False
 test_str = '_prod2018_{0}'.format(prod_version)
  
-# samps.extend(SingleMu)
-# samps.extend(Signal)
-# samps.extend(Background)
-samps.extend(DataAndMC)
-
-# test_run = True
-# test_str = '_v1'
-# samps.append(SingleMu_2016C)
-# samps.append(H2Mu_gg)
-# samps.append(ZJets_MG_HT_2500_inf)
-
-# samps.append(SingleMu_2017B)
-
-#samps.append(Zd2Mu_125)
-#samps.append(Zd2Mu_150)
+if (test_run):
+  samps.append(SingleMu_2018A)
+  samps.append(H2Mu_gg_125_NLO)
+else:
+  samps.extend(DataAndMC)
 
 crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
 crab_analyzers_dir = crab_prod_dir+'/analyzers'
