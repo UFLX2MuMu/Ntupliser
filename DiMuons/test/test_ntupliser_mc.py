@@ -41,29 +41,23 @@ process.GlobalTag.globaltag = samp.GT
 # ## See https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
 # ## and https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
 
-# from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
-# process.jec = cms.ESSource('PoolDBESSource',
-#     CondDBSetup,
-#     connect = cms.string('sqlite:data/JEC/Spring16_23Sep2016V2_MC.db'),
-#     toGet = cms.VPSet(
-#         # cms.PSet(
-#         #     record = cms.string('JetCorrectionsRecord'),
-#         #     tag    = cms.string('JetCorrectorParametersCollection_Fall15_V2_DATA_AK4PFchs'),
-#         #     label  = cms.untracked.string('AK4PFchs')
-#         # ),
-#         cms.PSet(
-#             record = cms.string('JetCorrectionsRecord'),
-#             # record = cms.string('JetCorrectorParametersCollection'),  ## Produces run-time error
-#             tag    = cms.string('JetCorrectorParametersCollection_Spring16_23Sep2016V2_MC_AK4PFchs'),
-#             # label  = cms.untracked.string('AK4PFchs')
-#             label  = cms.untracked.string('slimmedJets')
-#         ),
-#         # ...and so on for all jet types you need
-#     )
-# )
+from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
+process.jec = cms.ESSource('PoolDBESSource',
+    CondDBSetup,
+    connect = cms.string('sqlite:data/JEC/Autumn18_V8_MC.db'),
+    toGet = cms.VPSet(
+       # to get the tag do "conddb --db <dbfile> listTags"
+       cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Autumns18_V8_MC_AK4PFchs'),
+            label  = cms.untracked.string('slimmedJets')
+       ),
+        # ...and so on for all jet types you need
+    )
+)
 
-# # Add an ESPrefer to override JEC that might be available from the global tag
-# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+# Add an ESPrefer to override JEC that might be available from the global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
 
 # /////////////////////////////////////////////////////////////
