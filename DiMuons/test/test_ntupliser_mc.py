@@ -49,7 +49,7 @@ process.jec = cms.ESSource('PoolDBESSource',
        # to get the tag do "conddb --db <dbfile> listTags"
        cms.PSet(
             record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Autumns18_V8_MC_AK4PFchs'),
+            tag    = cms.string('JetCorrectorParametersCollection_Autumn18_V8_MC_AK4PFchs'),
             label  = cms.untracked.string('slimmedJets')
        ),
         # ...and so on for all jet types you need
