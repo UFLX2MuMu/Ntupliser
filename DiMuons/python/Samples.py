@@ -22,8 +22,10 @@ class sample:
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/Rereco/Cert_314472-325175_13TeV_EarlyReReco2018ABC_Collisions18_JSON.txt
 golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 
-processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1',
-                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2']
+processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1', #0
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2', #1
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2'] #2
+
 data_tier = ['MINIAOD',
              'MINIAODSIM']
 
@@ -48,7 +50,7 @@ AWB_dir = ''
 ## As of 26.03.2019 there are no JEC GT recommendation, but a .db file to use Autumn18_RunABCD_V8_DATA.db for data and Autumn18_V8_MC.db for MC.
 
 SingleMu_2018A = sample( name   = 'SingleMu_2018A',
-                         DAS    = '/SingleMuon/Run2018A-17Sep2018-v1/MINIAOD',
+                         DAS    = '/SingleMuon/Run2018A-17Sep2018-v2/MINIAOD',
                          files  = ['/store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/D3283DD5-050C-FD45-9CAC-1F08E11F790D.root'],
                          GT     = '102X_dataRun2_Sep2018ABC_v2',
                          JSON   = golden_17SepReReco,
@@ -137,16 +139,16 @@ DAS_era_MC_c = 'RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_real
 
 ## Gluon-gluon fusion, amc@NLO
 H2Mu_gg_120_NLO = sample( name = 'H2Mu_gg_120',
-                          DAS  = '/GluGluHToMuMu_M120_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                          DAS  = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                           nEvt = -1 ) ## 1.9 million
 
 H2Mu_gg_125_NLO = sample( name  = 'H2Mu_gg',
-                          DAS   = '/GluGluHToMuMu_M125_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                          DAS   = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                           nEvt  = -1, ## 2.0 million
                           files = [ '/store/mc/RunIIAutumn18MiniAOD/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/80000/F348840D-094B-ED48-B2A1-5ABD7D9C2B57.root' ] )
 
 H2Mu_gg_130_NLO = sample( name = 'H2Mu_gg_130',
-                          DAS  = '/GluGluHToMuMu_M130_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                          DAS  = '/GluGluHToMuMu_M125_TuneCP5_PSweights_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                           nEvt = -1 ) ## 1.7 million
 
 ## Vector boson fusion
@@ -274,15 +276,15 @@ Background.append(ZJets_hiM_MG)
 ###############
 
 tt_ll_AMC = sample( name = 'tt_ll_AMC',
-                    DAS  = '/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                    DAS  = '/TT_DiLept_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                     nEvt = -1 ) ## 4 million
 
 tt_ll_MG = sample( name = 'tt_ll_MG',
                    DAS  = '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                    nEvt = -1 ) ## 60 million
 
-tt_ll_POW = sample( name = 'tt_ll_POW',
-                    DAS  = '/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+tt_ll_POW = sample( name = 'tt_ll_POW', #
+                    DAS  = '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                     nEvt = -1 ) ## 71 million
 
 tt_ljj_POW_1 = sample ( name = 'tt_ljj_POW_1',
