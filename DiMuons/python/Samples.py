@@ -222,23 +222,25 @@ H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
 
 Signal = []  ## All H2Mu signal samples
 Signal.append(H2Mu_gg_125_NLO)
-#Signal.append(H2Mu_VBF_125_NLO)
-#Signal.append(H2Mu_WH_pos_125)
-#Signal.append(H2Mu_WH_neg_125)
-#Signal.append(H2Mu_ZH_125)
-#Signal.append(H2Mu_ttH_125)
-#
-#Signal.append(H2Mu_gg_120_NLO)
-#Signal.append(H2Mu_VBF_120_NLO)
-#Signal.append(H2Mu_WH_pos_120)
-## Signal.append(H2Mu_WH_neg_120)
-#Signal.append(H2Mu_ZH_120)
-#
-#Signal.append(H2Mu_gg_130_NLO)
-#Signal.append(H2Mu_VBF_130_NLO)
-#Signal.append(H2Mu_WH_pos_130)
-#Signal.append(H2Mu_WH_neg_130)
-#Signal.append(H2Mu_ZH_130)
+Signal.append(H2Mu_VBF_125_NLO)
+Signal.append(H2Mu_WH_pos_125)
+Signal.append(H2Mu_WH_neg_125)
+Signal.append(H2Mu_ZH_125)
+Signal.append(H2Mu_ttH_125)
+
+Signal.append(H2Mu_gg_120_NLO)
+Signal.append(H2Mu_VBF_120_NLO)
+Signal.append(H2Mu_WH_pos_120)
+Signal.append(H2Mu_WH_neg_120)
+Signal.append(H2Mu_ZH_120)
+Signal.append(H2Mu_ttH_120)
+
+Signal.append(H2Mu_gg_130_NLO)
+Signal.append(H2Mu_VBF_130_NLO)
+Signal.append(H2Mu_WH_pos_130)
+Signal.append(H2Mu_WH_neg_130)
+Signal.append(H2Mu_ZH_130)
+Signal.append(H2Mu_ttH_130)
 
 
 
@@ -291,18 +293,13 @@ tt_ll_POW = sample( name = 'tt_ll_POW', #
                     nEvt = -1 ) ## 71 million
 
 tt_ljj_POW_1 = sample ( name = 'tt_ljj_POW_1',
-                        DAS  = '/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        DAS  = '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                         nEvt = -1 ) ## 111 million
-
-tt_ljj_POW_2 = sample ( name = 'tt_ljj_POW_2',
-                        DAS  = '/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
-                        nEvt = -1 ) ## 110 million
 
 Background.append(tt_ll_AMC)
 Background.append(tt_ll_MG)
 Background.append(tt_ll_POW)
-#Background.append(tt_ljj_POW_1)
-#Background.append(tt_ljj_POW_2)
+Background.append(tt_ljj_POW_1)
 
 ####################
 ###  Single top  ###
@@ -316,8 +313,8 @@ tW_neg = sample( name = 'tW_neg',
                  DAS  = '/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                  nEvt = -1 ) ## 5 million
 
-#Background.append(tW_pos)
-#Background.append(tW_neg)
+Background.append(tW_pos)
+Background.append(tW_neg)
 
 #################
 ###  Diboson  ###
@@ -325,10 +322,6 @@ tW_neg = sample( name = 'tW_neg',
 
 WW_2l_1 = sample( name = 'WW_2l_1',
              DAS  = '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
-             nEvt = -1 ) ## 2 million
-
-WW_2l_2 = sample( name = 'WW_2l_2',
-               DAS = '/WWTo2L2Nu_NNPDF31_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[0]),
              nEvt = -1 ) ## 2 million
 
 WZ_2l = sample( name = 'WZ_2l',
@@ -347,92 +340,98 @@ ZZ_4l = sample( name = 'ZZ_4l',
                 DAS  = '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                 nEvt = -1 ) ## 98 million
 
-#Background.append(WW_2l_1)
-#Background.append(WW_2l_2)
-#Background.append(WZ_2l)
-#Background.append(WZ_3l)
-#Background.append(ZZ_2l_2q)
-#Background.append(ZZ_4l)
+Background.append(WW_2l_1)
+Background.append(WZ_2l)
+Background.append(WZ_3l)
+Background.append(ZZ_2l_2q)
+Background.append(ZZ_4l)
 
 ################
 ###  ttbar+X  ##
 ################
 
 ttW = sample( name = 'ttW',
-              DAS  = '/TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 4.9 million
 
-
 ttZ = sample( name = 'ttZ',
-              DAS  = '/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 7.5 million
 
 ttZ_lowM = sample( name = 'ttZ_lowM',
-                   DAS  = '/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+                   DAS  = '/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                    nEvt = -1 ) ## 250 k
 ttH = sample( name = 'ttH',
-              DAS  = '/ttHJetToNonbb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
               nEvt = -1 ) ## 10 million
 
 ttWW = sample( name = 'ttWW',
-               DAS  = '/TTWW_TuneCP5_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+               DAS  = '/TTWW_TuneCP5_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                nEvt = -1 ) ## 200 k
 
-#Background.append(ttW)
-#Background.append(ttZ)
-#Background.append(ttZ_lowM)
-#Background.append(ttH)
-#Background.append(ttWW)
+Background.append(ttW)
+Background.append(ttZ)
+Background.append(ttZ_lowM)
+Background.append(ttH)
+Background.append(ttWW)
 
 # #####################
 # ###  Single top+X  ##
 # #####################
 
 tZq = sample( name = 'tZq',
-              DAS  = '/tZq_ll_4f_ckm_NLO_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/tZq_ll_4f_ckm_NLO_TuneCP5_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 13 million
 
 # tZW = sample( name = 'tZW',
-#               DAS  = '/ST_tWll_5f_LO_TuneCP5_PSweights_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0])*/MINIAODSIM',
+#               DAS  = '/ST_tWll_5f_LO_TuneCP5_PSweights_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1])*/MINIAODSIM',
 #               nEvt = -1) ## 
 
 tHq = sample( name = 'tHq',
-              DAS  = '/THQ_4f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/THQ_4f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
               nEvt = -1 ) ## 3 million
 
 tHW = sample( name = 'tHW',
-              DAS  = '/THW_5f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/THW_5f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
               nEvt = -1 ) ## 1 million
 
-#Background.append(tZq)
-## Background.append(tZW)
-#Background.append(tHq)
-#Background.append(tHW)
+Background.append(tZq)
+# Background.append(tZW)
+Background.append(tHq)
+Background.append(tHW)
 
 #################
 ###  Triboson  ##
 #################
 
 WWW = sample( name = 'WWW',
-              DAS  = '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 230 k
 
+WWW_lep = sample( name = 'WWW_lep',
+              DAS  = '/WWW_4F_DiLeptonFilter_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+              nEvt = -1 ) 
+
 WWZ = sample( name = 'WWZ',
-              DAS  = '/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/WWZ_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 250 k
 
+WWZ_4f = sample( name = 'WWZ_4f',
+              DAS  = '/WWZJetsTo4L2Nu_4f_TuneCP5_13TeV_amcatnloFXFX_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+              nEvt = -1 )
+
 WZZ = sample( name = 'WZZ',
-              DAS  = '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 250 k
 
 ZZZ = sample( name = 'ZZZ',
-              DAS  = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[0]),
+              DAS  = '/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
               nEvt = -1 ) ## 250 k
 
-#Background.append(WWW)
-#Background.append(WWZ)
-#Background.append(WZZ)
-#Background.append(ZZZ)
+Background.append(WWW)
+Background.append(WWZ)
+Background.append(WZZ)
+Background.append(ZZZ)
 
 
 DataAndMC = []
