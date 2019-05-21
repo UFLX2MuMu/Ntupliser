@@ -146,6 +146,6 @@ out_file.write('\n')
 # out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
-    out_file.write('crab status -d %s/logs/crab_%s*\n' % (crab_prod_dir,samp.name))
+    out_file.write('crab status -d logs/crab_%s*\n' % (samp.name,crab_prod_dir))
 out_file.close()
 os.chmod('%s/check_all.sh' % crab_prod_dir, 0o744)
