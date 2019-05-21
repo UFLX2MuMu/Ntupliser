@@ -35,10 +35,10 @@ process.GlobalTag.globaltag = samp.GT
 
 from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
 if samp.isData:
-  jec_db_file = 'sqlite:data/JEC/Autumn18_RunABCD_V8_DATA.db'
+  jec_db_file = 'sqlite:Ntupliser/DiMuons/data/JEC/Autumn18_RunABCD_V8_DATA.db'
   jec_tag = 'JetCorrectorParametersCollection_Autumn18_RunABCD_V8_DATA_AK4PFchs'
 else: 
-  jec_db_file = 'sqlite:data/JEC/Autumn18_V8_MC.db'
+  jec_db_file = 'sqlite:Ntupliser/DiMuons/data/JEC/Autumn18_V8_MC.db'
   jec_tag = 'JetCorrectorParametersCollection_Autumn18_V8_MC_AK4PFchs'
 
 process.jec = cms.ESSource('PoolDBESSource',
