@@ -340,11 +340,41 @@ ZZ_4l = sample( name = 'ZZ_4l',
                 DAS  = '/ZZTo4L_TuneCP5_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[2],data_tier[1]),
                 nEvt = -1 ) ## 98 million
 
+ggZZ_4mu = sample ( name = 'ggZZ_4mu',
+                    DAS  = '/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                    nEvt = -1 )
+
+ggZZ_2e2mu = sample ( name = 'ggZZ_2e2mu',
+                      DAS  = '/GluGluToContinToZZTo2e2mu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                      nEvt = -1 )
+
+ggZZ_2mu2tau = sample ( name = 'ggZZ_2mu2tau',
+                        DAS  = '/GluGluToContinToZZTo2mu2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        nEvt = -1 )
+
+ggZZ_2e2tau  = sample  ( name = 'ggZZ_2e2tau',
+                        DAS  = '/GluGluToContinToZZTo2e2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        nEvt = -1 )
+
+ggZZ_2mu2nu = sample  ( name = 'ggZZ_2mu2nu',
+                        DAS  = '/GluGluToContinToZZTo2mu2nu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        nEvt = -1 )
+
+ggZZ_4tau = sample ( name = 'ggZZ_4tau',
+                    DAS  = '/GluGluToContinToZZTo4tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                    nEvt = -1 )
+
 Background.append(WW_2l_1)
 Background.append(WZ_2l)
 Background.append(WZ_3l)
 Background.append(ZZ_2l_2q)
 Background.append(ZZ_4l)
+Background.append(ggZZ_4mu)
+Background.append(ggZZ_2e2mu)
+Background.append(ggZZ_2mu2tau)
+Background.append(ggZZ_2e2tau)
+Background.append(ggZZ_2mu2nu)
+Background.append(ggZZ_4tau)
 
 ################
 ###  ttbar+X  ##
