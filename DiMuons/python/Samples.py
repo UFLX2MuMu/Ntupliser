@@ -71,8 +71,8 @@ SingleMu_2018C = sample( name   = 'SingleMu_2018C',
                          JSON   = golden_17SepReReco,
                          isData = True)
 
-SingleMu_2018D = sample( name   = 'SingleMu_2017D',
-                         DAS    = '/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD',
+SingleMu_2018D = sample( name   = 'SingleMu_2018D',
+                         DAS    = '/SingleMuon/Run2018D-PromptReco-v2/MINIAOD',
                          GT     = '102X_dataRun2_Prompt_v13',
                          JSON   = golden_17SepReReco,
                          isData = True)
