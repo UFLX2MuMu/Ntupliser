@@ -31,6 +31,9 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
+output_dir = '/store/group/phys_higgs/HiggsExo/H2Mu/UF/ntuples/2018/102X/{0}'.format(prod_version)
+print("Production output dir {0}".format(output_dir))
+
 samps = []
 
 ## Get the samples you want to make a crab config file for 
@@ -107,7 +110,7 @@ for samp in samps:
             if test_run:
                 line = line.replace('= NUM', '= 1')
             elif samp.isData:
-                line = line.replace('= NUM', '= 250')  ## 100
+                line = line.replace('= NUM', '= 100')  ## 100
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
@@ -118,6 +121,9 @@ for samp in samps:
 
         if 'outputDatasetTag' in line:
             line = line.replace("= 'STR'", "= '%s'" % samp.name)
+
+        if 'outLFNDirBase' in line:
+            line = line.replace("= 'STR'", "= '{0}/'".format(output_dir))
 
         out_file.write(line)
     
