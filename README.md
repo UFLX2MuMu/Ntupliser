@@ -15,7 +15,7 @@ Nevertheless common ntuples production are regularly ran.
 Contact us before running your nutples: we might have just produced it, or about to do so.
 
 
-## 2017
+## 2016 Legacy re-reco
 
 ### CMSSW_9_4_13
 
@@ -40,7 +40,7 @@ Add the following lines to KaMuCa/Calibration/interface/KalmanMuonCalibrator.h
 #endif
 ```
 
-and finally checkout the *master_2017_94X* branch, recompile and test.
+and finally checkout the *master_2016_94X* branch, recompile and test.
 
 ```
 cd Ntupliser
