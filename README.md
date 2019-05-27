@@ -22,7 +22,7 @@ Contact us before running your nutples: we might have just produced it, or about
 Instruction for checking out code to run on master_2017_94X in CMSSW_9_4_13
 ```
 scram project -n x2mm16_9413 CMSSW CMSSW_9_4_13 
-cd x2mmm_9413/src
+cd x2mm16_9413/src
 cmsenv
 git cms-init
 git cms-merge-topic cms-egamma:EgammaPostRecoTools # cms-egamma:EgammaID_949 is already merged in 9_4_13
