@@ -5,7 +5,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(True),
-                         doSys        = cms.bool(True),
+                         doSys        = cms.bool(False),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
@@ -25,7 +25,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults", "", "HLT"),  ## SIM, HLT, RECO, PAT? - AWB 23.10.2018
+                         evtFlags = cms.InputTag("TriggerResults", "", "RECO"),  
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -34,19 +34,19 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## Muons
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
-                         doSys_Roch = cms.bool(True),
+                         doSys_Roch = cms.bool(False),
                          muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
-                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
-                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
-                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
-                         eleIdMva    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+                         eleIdVeto   = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose  = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight  = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-tight"),
+                         eleIdMva    = cms.InputTag("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
                          ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
-                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt'),
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
 
                          ## Jets
                          ## Not clear which jet tag below should be used - AWB 21.10.2018
