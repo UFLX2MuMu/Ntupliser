@@ -5,7 +5,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(True),
-                         doSys        = cms.bool(False),
+                         doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
@@ -25,7 +25,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","RECO"),
+                         evtFlags = cms.InputTag("TriggerResults", "", "HLT"),  ## SIM, HLT, RECO, PAT? - AWB 23.10.2018
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -34,18 +34,19 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ## Muons
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
-                         doSys_Roch = cms.bool(False),
-                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
+                         doSys_Roch = cms.bool(True),
+                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
-                         eleIdLoose  = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
-                         eleIdMedium = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
-                         eleIdTight  = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
-                         eleIdMva    = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
-                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
+                         eleIdVeto   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
+                         eleIdLoose  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
+                         eleIdMedium = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
+                         eleIdTight  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
+                         eleIdMva    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
+                         ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt'),
 
                          ## Jets
                          ## Not clear which jet tag below should be used - AWB 21.10.2018
@@ -96,10 +97,13 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
+                         PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
-                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
+                         MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
+                         MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
+                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
+                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),
