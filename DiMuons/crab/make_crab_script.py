@@ -31,7 +31,7 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
-output_dir = '/store/group/phys_higgs/HiggsExo/H2Mu/UF/ntuples/2018/102X/{0}'.format(prod_version)
+output_dir = '/store/user/user/bortigno/h2mm/ntuples/2018/102X/{0}'.format(prod_version)
 print("Production output dir {0}".format(output_dir))
 
 samps = []
