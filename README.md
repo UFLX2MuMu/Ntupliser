@@ -29,6 +29,7 @@ git cms-merge-topic cms-egamma:EgammaPostRecoTools # cms-egamma:EgammaID_949 is 
 scram b -j 9
 git clone git@github.com:UFLX2MuMu/Ntupliser.git Ntupliser
 git clone -o Analysis https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa # these corrections are only for 2016
+git clone https://gitlab.cern.ch/cms-muonPOG/MuonReferenceEfficiencies.git
 ```
 
 Add the following lines to KaMuCa/Calibration/interface/KalmanMuonCalibrator.h
@@ -47,7 +48,7 @@ cd Ntupliser
 git checkout master_2016_94X
 scram b -j 6
 cd DiMuons
-cmsRun test/UFDiMuonAnalyzer_2018_02_07.py
+cmsRun test/test_ntupliser_mc.py
 ```
 
 
