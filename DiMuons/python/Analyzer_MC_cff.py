@@ -5,7 +5,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(True),
-                         doSys        = cms.bool(False),
+                         doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
@@ -39,11 +39,11 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-veto"),
-                         eleIdLoose  = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-loose"),
-                         eleIdMedium = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-medium"),
-                         eleIdTight  = cms.InputTag("cutBasedElectronID-Fall17-94X-V2-tight"),
-                         eleIdMva    = cms.InputTag("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+                         eleIdVeto   = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose  = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight  = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
+                         eleIdMva    = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
                          ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
                          eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
@@ -98,12 +98,12 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
-                         Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         Trig_eff_4_file  = cms.string("EfficienciesAndSF_Period4_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("EfficienciesAndSF_BCDEF_MuID.root"),
-                         MuID_eff_4_file  = cms.string("EfficienciesAndSF_GH_MuID.root"),
-                         MuIso_eff_3_file = cms.string("EfficienciesAndSF_BCDEF_MuIso.root"),
-                         MuIso_eff_4_file = cms.string("EfficienciesAndSF_GH_MuIso.root"),
+                         Trig_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunBtoF.root"),
+                         Trig_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunGtoH.root"),
+                         MuID_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuID_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuIso_eff_3_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
+                         MuIso_eff_4_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

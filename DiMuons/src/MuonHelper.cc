@@ -736,7 +736,9 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
   // needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
   typedef boost::property_tree::ptree::path_type path;
   //eta bins for SF
-  std::vector<float> absetabins{0.00, 0.90, 1.20, 2.10, 2.40};
+  std::vector<float> etabins{-2.40, -2.30, -2.20, -2.10, -2.00, -1.70, -1.60, -1.50, -1.40, -1.20, -0.80, -0.50, -0.30, -0.20,  0.00, 0.20, 0.30, 0.50, 0.80, 1.20, 1.40, 1.50, 1.60, 1.70, 2.00, 2.10, 2.20, 2.30, 2.40};
+  //for (auto i: etabins)
+  //  std::cout << i << ' ';
   //pt bins for SF
   std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
 
@@ -749,8 +751,8 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
 
   //getting a specific value 
   // float scale_factor = 0.;
-  // scale_factor = json_iso.get<float>(path("NUM_LooseRelIso_DEN_MediumID/abseta_pt/abseta:[1.20,2.10]/pt:[20.00,25.00]/value",'/'));
-  // std::cout << scale_factor << std::endl;
+  // scale_factor = json_id.get<float>('/',"NUM_MediumID_DEN_genTracks/pt_eta/pt:[20.00,30.00]/eta:[-1.50,-1.40]/value");
+  // std::cout << "Test scale factor = " << scale_factor << std::endl;
 
   std::string _value_string, _err_string; 
   std::ostringstream _min_eta, _max_eta, _min_pt, _max_pt;
@@ -759,11 +761,11 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
   int nMu = int(_muonInfos.size());
   // Compute muon ID efficiency or scale factor
   for (int iMu = 0; iMu < nMu; iMu++){
-    for ( int _abseta=0; _abseta<int(absetabins.size())-1; _abseta++){
-      if ( abs(_muonInfos.at(iMu).eta) < absetabins.at(_abseta)) continue; 
-      if ( abs(_muonInfos.at(iMu).eta) >= absetabins.at(_abseta+1) ) continue;
-      _min_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta);
-      _max_eta << std::fixed << std::setprecision(2) << absetabins.at(_abseta+1);
+    for ( int _eta=0; _eta<int(etabins.size())-1; _eta++){
+      if ( _muonInfos.at(iMu).eta < etabins.at(_eta)) continue; 
+      if ( _muonInfos.at(iMu).eta >= etabins.at(_eta+1) ) continue;
+      _min_eta << std::fixed << std::setprecision(2) << etabins.at(_eta);
+      _max_eta << std::fixed << std::setprecision(2) << etabins.at(_eta+1);
    }
    if(_min_eta.str().compare(_max_eta.str()) == 0) { // if compare is ==0 the two strings are equal
       std::cout << "WARNING: Something fishy in the SF assignment. Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
@@ -782,18 +784,15 @@ void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::st
       continue;
     }
     // ID
-    _value_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+    _value_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/value";
     _ID_sf = json_id.get<float>(path(_value_string.c_str(),'/'));
-    _err_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+    _err_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/error";
     _ID_sf_up = _ID_sf + json_id.get<float>(path(_err_string.c_str(),'/'));
     _ID_sf_down = _ID_sf - json_id.get<float>(path(_err_string.c_str(),'/'));
     // Iso
-    _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/value";
+    _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/value";
     _Iso_sf = json_iso.get<float>(path(_value_string.c_str(),'/'));
-//    std::cout << "Mu eta = " << abs(_muonInfos.at(iMu).eta)  << std::endl;
-//    std::cout << "Mu pt = " <<  _muonInfos.at(iMu).pt << std::endl;
-//    std::cout << "Iso_eff = " << _Iso_sf << std::endl;
-    _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/abseta_pt/abseta:["+_min_eta.str()+","+_max_eta.str()+"]/pt:["+_min_pt.str()+","+_max_pt.str()+"]/error";
+    _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/error";
     _Iso_sf_up = _Iso_sf + json_iso.get<float>(path(_err_string.c_str(),'/'));
     _Iso_sf_down = _Iso_sf - json_iso.get<float>(path(_err_string.c_str(),'/'));
     //cleaning the strings

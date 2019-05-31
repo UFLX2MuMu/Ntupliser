@@ -283,6 +283,9 @@ public:
   //json
   boost::property_tree::ptree _MuIso_SF_3_json;
   boost::property_tree::ptree _MuID_SF_3_json;
+  boost::property_tree::ptree _MuIso_SF_4_json;
+  boost::property_tree::ptree _MuID_SF_4_json;
+
 
   ///////////////////////////////////////////////////////////
   // Trees  ================================================
