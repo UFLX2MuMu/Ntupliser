@@ -18,27 +18,16 @@ samps = []
 # samps.extend(DataAndMC)
 
 test_run = True
-test_str = '_LepMVA_2l_test_v1'
-# samps.extend(SingleMu)
-# samps.append(H2Mu_gg_125_NLO)
-samps.append(H2Mu_WH_pos_120)
-samps.append(H2Mu_WH_pos_125)
-samps.append(H2Mu_WH_pos_130)
-samps.append(H2Mu_WH_neg_125)
-samps.append(H2Mu_WH_neg_130)
-samps.append(H2Mu_ZH_120)
-samps.append(H2Mu_ZH_125)
-samps.append(H2Mu_ZH_130)
-# samps.append(H2Mu_ttH_125)
-# samps.append(ZJets_AMC)
-samps.append(WZ_3l)
-samps.append(ZZ_4l)
-# samps.append(tt_ll_MG)
-# samps.append(tt_ll_POW)
-# samps.append(tt_ljj_POW_1)
-# samps.append(tt_ljj_POW_2)
-# samps.append(tW_pos)
-# samps.append(tW_neg)
+test_str = '_HH_incl_test_v1'
+samps.append(HH_SM_incl_1)
+samps.append(HH_SM_incl_2)
+samps.append(HH_n2_incl_1)
+samps.append(HH_n2_incl_2)
+samps.append(HH_n7_incl_1)
+samps.append(HH_n7_incl_2)
+samps.append(HH_n12_incl_1)
+samps.append(HH_n12_incl_2)
+
 
 for samp in samps:
     print '\nCreating analyzer and crab config for %s' % samp.name
@@ -78,6 +67,7 @@ for samp in samps:
     for line in in_file:
         if 'requestName' in line:
             line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d'), test_str) )
+            # line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, '2019_01_15', test_str) )
 
         if 'psetName' in line: 
             line = line.replace("= 'STR'", "= 'analyzers/%s.py'" % samp.name)
@@ -94,16 +84,15 @@ for samp in samps:
 
         if 'unitsPerJob' in line:
             if test_run:
-                line = line.replace('= NUM', '= 5')
+                line = line.replace('= NUM', '= 1')
             elif samp.isData:
                 line = line.replace('= NUM', '= 10')
-            # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
-            #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
                 line = line.replace('= NUM', '= 5')
 
         if 'outLFNDirBase' in line:
             line = line.replace('STR', '%s%s' % (time.strftime('%Y_%m_%d'), test_str))
+            # line = line.replace('STR', '%s%s' % ('2019_01_15', test_str))
 
         # if 'inputDBS' in line:
         #     line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
@@ -139,5 +128,6 @@ out_file.write('\n')
 out_file.write('\n')
 for samp in samps:
     out_file.write('crab status -d logs/crab_%s_%s%s\n' % (samp.name, time.strftime('%Y_%m_%d'), test_str))
+    # out_file.write('crab status -d logs/crab_%s_%s%s\n' % (samp.name, '2019_01_15', test_str))
 out_file.close()
 os.chmod('check_all.sh', 0o744)
