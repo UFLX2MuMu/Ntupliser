@@ -10,8 +10,7 @@ void FillGenParentInfos( GenParentInfos& _genParentInfos,
   for (unsigned int i = 0; i < genPartons->size(); i++) {
 
     const reco::Candidate& parent = genPartons->at(i);
-    if ( parent.status() != 62 &&  // "Final" GEN particle or photon with daughters
-	 (parent.pdgId() != 22 || parent.numberOfDaughters() != 2) ) continue;
+    if ( parent.status() != 62 && parent.pdgId() != 22 ) continue;  // "Final" GEN particle or photon
 
     bool good_ID = false;
     for (unsigned int j = 0; j < IDs.size(); j++) {
