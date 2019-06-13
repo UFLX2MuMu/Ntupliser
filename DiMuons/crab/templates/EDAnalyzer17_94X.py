@@ -94,6 +94,17 @@ if samp.isData:
 else:
   process.load('Ntupliser.DiMuons.Analyzer_2017_94X_MC_cff')
 
+# ## Option for 3-lepton skim
+# # process.dimuons.skim_nLeptons = cms.int32(3)
+
+# ## Options for inclusive NTuples with no nMuons or trigger cut
+# process.dimuons.slimOut        = cms.bool(False)
+# process.dimuons.skim_nMuons    = cms.int32(0)
+# process.dimuons.skim_nLeptons  = cms.int32(0)
+# process.dimuons.skim_trig      = cms.bool(False)
+# process.dimuons.muon_pT_min    = cms.double(1.0)
+# process.dimuons.muon_iso_max   = cms.double(999)
+
 
 # # /////////////////////////////////////////////////////////////
 # # Save output tree
