@@ -770,7 +770,7 @@ void UFDiMuonsAnalyzer::beginJob() {
   }
 
   _outTree->Branch("hltPaths",      &_trigNames);
-  _outTree->Branch("btagName",      &_btagName   );
+  _outTree->Branch("btagName",      &_btagName );
   // _outTree->Branch("tauIDNames",    &_tauIDNames  );
 
   // Weights and efficiencies
