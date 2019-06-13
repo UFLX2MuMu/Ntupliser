@@ -27,7 +27,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 # from python.Samples_2017_94X_v2 import SingleMu_2017C as samp
 # from python.Samples_2017_94X_v2 import H2Mu_gg_125_NLO as samp
-from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
+# from python.Samples_2017_94X_v2 import H2Mu_ttH_125 as samp
+from python.Samples_2017_94X_v2 import H2Mu_VBF_125_NLO_1 as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -52,7 +53,7 @@ readFiles = cms.untracked.vstring();
 readFiles.extend(samp.files);
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.source = cms.Source('PoolSource',fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
@@ -70,8 +71,9 @@ if samp.isData:
 # /////////////////////////////////////////////////////////////
 
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('SingleMu_2016C_1k.root') )
-# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_NLO.root') )
-process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HToMuMu_M125_1k.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('GluGlu_HToMuMu_M125_NLO_1k_FSR.root') )
+process.TFileService = cms.Service('TFileService', fileName = cms.string('H2Mu_VBF_125_NLO_10k_GenPhoton.root') )
+# process.TFileService = cms.Service('TFileService', fileName = cms.string('ttH_HToMuMu_M125_1k_FSR.root') )
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_AMC.root') )
 # process.TFileService = cms.Service('TFileService', fileName = cms.string('ZJets_MG_HT_2500_inf.root') )
 

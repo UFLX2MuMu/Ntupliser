@@ -25,14 +25,16 @@ namespace {
     MuonInfos dummy8a;
     MuPairInfo dummy9;
     MuPairInfos dummy9a;
-    TauInfo dummy10;
-    TauInfos dummy10a;
-    EventInfo dummy11;
-    GenPartInfo dummy12;
-    MetInfo dummy13;
-    MhtInfo dummy14;
-    VertexInfo dummy15;
-    VertexInfos dummy15a;
+    PhotInfo dummy10;
+    PhotInfos dummy10a;
+    TauInfo dummy11;
+    TauInfos dummy11a;
+    EventInfo dummy12;
+    GenPartInfo dummy13;
+    MetInfo dummy14;
+    MhtInfo dummy15;
+    VertexInfo dummy16;
+    VertexInfos dummy16a;
     
   };
 }

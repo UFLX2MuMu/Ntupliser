@@ -16,6 +16,7 @@ config.JobType.pluginName = 'Analysis'
 config.section_('Data')
 config.Data.inputDBS = 'global'
 
+config.Data.allowNonValidInputDataset = True
 config.Data.inputDataset = 'STR'
 # config.Data.lumiMask = 'STR'
 
