@@ -19,7 +19,7 @@ class sample:
 
 # The JSON file details the valid lumi sections
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/
-JSON_2017 = ['data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt']  ## 41.37 /fb
+JSON = ['data/JSON/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt']
 
 #####################################
 ###  Global tag and dataset info  ###
