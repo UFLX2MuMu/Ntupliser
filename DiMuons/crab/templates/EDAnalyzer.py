@@ -26,36 +26,36 @@ print '  * From DAS: %s' % samp.DAS
 print '\nLoading Global Tag: ' + samp.GT
 process.GlobalTag.globaltag = samp.GT
 
-# # /////////////////////////////////
-# # Additional jet energy corrections
-# # /////////////////////////////////
+# /////////////////////////////////
+# Additional jet energy corrections
+# /////////////////////////////////
 
-# ## See https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
-# ## and https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
+## See https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+## and https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
 
-# from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
-# process.jec = cms.ESSource('PoolDBESSource',
-#     CondDBSetup,
-#     connect = cms.string('sqlite:data/JEC/Spring16_23Sep2016V2_MC.db'),
-#     toGet = cms.VPSet(
-#         # cms.PSet(
-#         #     record = cms.string('JetCorrectionsRecord'),
-#         #     tag    = cms.string('JetCorrectorParametersCollection_Fall15_V2_DATA_AK4PFchs'),
-#         #     label  = cms.untracked.string('AK4PFchs')
-#         # ),
-#         cms.PSet(
-#             record = cms.string('JetCorrectionsRecord'),
-#             # record = cms.string('JetCorrectorParametersCollection'),  ## Produces run-time error
-#             tag    = cms.string('JetCorrectorParametersCollection_Spring16_23Sep2016V2_MC_AK4PFchs'),
-#             # label  = cms.untracked.string('AK4PFchs')
-#             label  = cms.untracked.string('slimmedJets')
-#         ),
-#         # ...and so on for all jet types you need
-#     )
-# )
+from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
+if samp.isData:
+  jec_db_file = 'sqlite_fip:Ntupliser/DiMuons/data/JEC/Autumn18_RunABCD_V8_DATA.db'
+  jec_tag = 'JetCorrectorParametersCollection_Autumn18_RunABCD_V8_DATA_AK4PFchs'
+else: 
+  jec_db_file = 'sqlite_fip:Ntupliser/DiMuons/data/JEC/Autumn18_V8_MC.db'
+  jec_tag = 'JetCorrectorParametersCollection_Autumn18_V8_MC_AK4PFchs'
 
-# ## Add an ESPrefer to override JEC that might be available from the global tag
-# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+process.jec = cms.ESSource('PoolDBESSource',
+    CondDBSetup,
+    connect = cms.string(jec_db_file),
+    toGet = cms.VPSet(
+       cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string(jec_tag),
+            label  = cms.untracked.string('slimmedJets')
+        ),
+        # ...and so on for all jet types you need
+    )
+)
+
+## Add an ESPrefer to override JEC that might be available from the global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
 
 # /////////////////////////////////////////////////////////////
@@ -100,6 +100,7 @@ process.dimuons.doSys_KaMu = cms.bool(False)
 process.dimuons.doSys_Roch = cms.bool(True)
 process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
 process.dimuons.skim_nMuons = cms.int32(2)
+process.dimuons.skim_nLeptons = cms.int32(3)
 
 # /////////////////////////////////////////////////////////////
 # Electron IDs

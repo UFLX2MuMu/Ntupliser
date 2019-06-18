@@ -13,6 +13,10 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
+#from python.Samples import SingleMu_2018A as samp
+from python.Samples import H2Mu_gg_125_NLO as samp
+
+
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
 else:
@@ -36,30 +40,29 @@ process.GlobalTag.globaltag = samp.GT
 # ## See https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
 # ## and https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections
 
-# from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
-# process.jec = cms.ESSource('PoolDBESSource',
-#     CondDBSetup,
-#     connect = cms.string('sqlite:data/JEC/Spring16_23Sep2016V2_MC.db'),
-#     toGet = cms.VPSet(
-#         # cms.PSet(
-#         #     record = cms.string('JetCorrectionsRecord'),
-#         #     tag    = cms.string('JetCorrectorParametersCollection_Fall15_V2_DATA_AK4PFchs'),
-#         #     label  = cms.untracked.string('AK4PFchs')
-#         # ),
-#         cms.PSet(
-#             record = cms.string('JetCorrectionsRecord'),
-#             # record = cms.string('JetCorrectorParametersCollection'),  ## Produces run-time error
-#             tag    = cms.string('JetCorrectorParametersCollection_Spring16_23Sep2016V2_MC_AK4PFchs'),
-#             # label  = cms.untracked.string('AK4PFchs')
-#             label  = cms.untracked.string('slimmedJets')
-#         ),
-#         # ...and so on for all jet types you need
-#     )
-# )
+from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
+if samp.isData:
+  jec_db_file = 'sqlite:data/JEC/Autumn18_RunABCD_V8_DATA.db'
+  jec_tag = 'JetCorrectorParametersCollection_Autumn18_RunABCD_V8_DATA_AK4PFchs'
+else: 
+  jec_db_file = 'sqlite:data/JEC/Autumn18_V8_MC.db'
+  jec_tag = 'JetCorrectorParametersCollection_Autumn18_V8_MC_AK4PFchs'
 
-# # Add an ESPrefer to override JEC that might be available from the global tag
-# process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+process.jec = cms.ESSource('PoolDBESSource',
+    CondDBSetup,
+    connect = cms.string(jec_db_file),
+    toGet = cms.VPSet(
+       cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string(jec_tag),
+            label  = cms.untracked.string('slimmedJets')
+        ),
+        # ...and so on for all jet types you need
+    )
+)
 
+## Add an ESPrefer to override JEC that might be available from the global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
 
 # /////////////////////////////////////////////////////////////
 # ------------ PoolSource -------------
@@ -68,8 +71,8 @@ readFiles = cms.untracked.vstring();
 ## Get list of local files from the sample we loaded (not used in crab)
 readFiles.extend(samp.files);
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.source = cms.Source("PoolSource",fileNames = readFiles)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()

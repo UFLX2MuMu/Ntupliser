@@ -7,7 +7,8 @@
 #    Maybe keep an eye onto
 #    https://github.com/CERN-PH-CMG/cmg-cmssw/blob/heppy_80X/PhysicsTools/Heppy/python/analyzers/objects/LeptonAnalyzer.py
 #    which mostly has up to date code
-#
+#    Valid also for 2018: MiniAODtool includes the effectiveAreaVector: https://github.com/cms-sw/cmssw/blob/07c6317816c06c771449ac447d2ad53df8af7253/PhysicsTools/PatAlgos/python/slimming/miniAOD_tools.py
+#    We could eventually also use it directly on the miniAOD: muons_iter->passed(reco::Muon::MiniIsoLoose
 # |eta| min   |eta| max   effective area
 0.0000         0.8000        0.0566
 0.8000         1.3000        0.0562
