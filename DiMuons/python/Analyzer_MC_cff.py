@@ -5,7 +5,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          
                          isVerbose    = cms.untracked.bool(False),
                          isMonteCarlo = cms.bool(True),
-                         doSys        = cms.bool(False),
+                         doSys        = cms.bool(True),
                          slimOut      = cms.bool(True),
 
                          ## Event selection cuts
@@ -25,7 +25,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          trigObjs    = cms.InputTag("slimmedPatTrigger"),
 
                          ## Event flags
-                         evtFlags = cms.InputTag("TriggerResults","","RECO"),
+                         evtFlags = cms.InputTag("TriggerResults", "", "RECO"),  
 
                          ## Vertex and Beam Spot
                          primaryVertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -35,7 +35,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muonColl   = cms.InputTag("slimmedMuons"),
                          doSys_KaMu = cms.bool(False),
                          doSys_Roch = cms.bool(False),
-                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
+                         muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
                          eleColl     = cms.InputTag("slimmedElectrons"),
@@ -44,7 +44,8 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          eleIdMedium = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
                          eleIdTight  = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
                          eleIdMva    = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
+                         ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
                          eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
 
                          ## Jets
@@ -96,10 +97,13 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          jet_eta_max = cms.double(5.0),
 
                          ## Event weights and efficiencies
-                         PU_wgt_file      = cms.string("PU_wgt_2017_Winter17_v1.root"),
-                         Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
-                         MuID_eff_3_file  = cms.string("Run2017_BCDEF_SF_ID.json"),
-                         MuIso_eff_3_file = cms.string("Run2017_BCDEF_SF_ISO.json"),
+                         PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
+                         Trig_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunBtoF.root"),
+                         Trig_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunGtoH.root"),
+                         MuID_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuID_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuIso_eff_3_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
+                         MuIso_eff_4_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),
