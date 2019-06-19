@@ -13,3 +13,11 @@ PU_data_2016_v0.root
     - 2016.09.03, from https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData?rev=26#Pileup_JSON_Files_For_Run_II
   * 75, 75
     - 2016.09.08, matching https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/SimGeneral/MixingModule/python/mix_2016_25ns_Moriond17MC_PoissonOOTPU_cfi.py#L24
+
+
+*** 2017 *** 
+
+The toal niumber of the bin 99 is taken from 
+https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/SimGeneral/MixingModule/python/mix_2017_25ns_WinterMC_PUScenarioV1_PoissonOOTPU_cfi.py
+
+pileupCalc.py -i data/JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt --inputLumi=/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PileUp/pileup_latest.txt --calcMode=true --minBiasXsec 69200 --maxPileupBin 99 data/Pileup/PU_data_2017_v0.root

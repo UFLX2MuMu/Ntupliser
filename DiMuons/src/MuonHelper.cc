@@ -1,5 +1,6 @@
 
 #include "Ntupliser/DiMuons/interface/MuonHelper.h"
+#include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 
 void FillMuonInfos( MuonInfos& _muonInfos, 
 		    const pat::MuonCollection muonsSelected,
@@ -11,8 +12,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const std::vector<std::string> _trigNames, const double _muon_trig_dR, 
 		    const bool _muon_use_pfIso, const double _muon_iso_dR, const bool _isData,
 		    KalmanMuonCalibrator& _KaMu_calib, const bool _doSys_KaMu,
-		    const RoccoR _Roch_calib, const bool _doSys_Roch,
-		    const edm::Handle < reco::GenParticleCollection >& genPartons,
+		    const RoccoR _Roch_calib, const bool _doSys_Roch, const GenMuonInfos _genMuonInfos,
 		    LepMVAVars & _lepVars_mu, std::shared_ptr<TMVA::Reader> & _lepMVA_mu,
 		    const double _rho, const edm::Handle<pat::JetCollection>& jets,
 		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -25,11 +25,83 @@ void FillMuonInfos( MuonInfos& _muonInfos,
   _muonInfos.clear();
   int nMuons = muonsSelected.size();
 
+
+  // Testing Kinematic fit : Needs to be integrated in the Ntupliser data format - PB 10.09.2018
+
+  TLorentzVector mu1_tlv;
+  TLorentzVector mu2_tlv;
+
+  Double_t mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
+  Double_t mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
+  
+  RefCountedKinematicVertex dimu_vertex;
+  
+  // TODO: Handle higher order effecrs when the events has more than 2 selected muons. For the moment the kinematic fit is run on all possible muons in the collections selectedMuons. 
+  // The result is store for the first fit and for the first two muons. For ggH and VBF this should be enough, but ttH or VH might need to cover higher order effects.
+  // Ideally we should run it only for opposite signed couple of muons and store the pt_kinfit as a vector/array per each muons with an index to the pair related to it.
+  if( nMuons > 1){
+    //Instatiate KinematicVertexFitter object
+    KinematicVertexFitter kinfit;
+    //Fit and retrieve the tree
+    RefCountedKinematicTree kinfittree = kinfit.Fit(muonsSelected); 
+ 
+    if(kinfittree->isEmpty() == 1 || kinfittree->isConsistent() == 0)
+       std::cout << "Kinematic Fit unsuccesfull" << std::endl;
+    else{
+      //accessing the tree components 
+      kinfittree->movePointerToTheTop();
+      //We are now at the top of the decay tree getting the dimuon reconstructed KinematicPartlcle
+      RefCountedKinematicParticle dimu_kinfit = kinfittree->currentParticle();
+      
+      //getting the dimuon decay vertex
+      //RefCountedKinematicVertex 
+      dimu_vertex = kinfittree->currentDecayVertex();
+   
+      //Now navigating down the tree 
+      bool child = kinfittree->movePointerToTheFirstChild();
+      //TLorentzVector mu1_tlv;
+    
+      if (child){
+        RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
+        AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
+        AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
+        mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
+        mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
+//        std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
+//        std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
+//        std::cout << "Covariant matrix" << std::endl;
+//        std::cout << mu1_kinfit_cov(3,3) << std::endl;
+//        std::cout << " - " << mu1_kinfit_cov(4,4) << std::endl;
+//        std::cout << " -      -    " << mu1_kinfit_cov(5,5) << std::endl;
+//        std::cout << "Muon pt uncertainty = " << sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)) << std::endl;
+      }
+     
+    
+      //Now navigating down the tree 
+      bool nextchild = kinfittree->movePointerToTheNextChild();
+   
+      if (nextchild){
+        RefCountedKinematicParticle mu2_kinfit = kinfittree->currentParticle();
+        AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
+        AlgebraicSymMatrix77 mu2_kinfit_cov = mu2_kinfit->currentState().kinematicParametersError().matrix(); 
+        mu2_ptErr_kinfit = sqrt(mu2_kinfit_cov(3,3) + mu2_kinfit_cov(4,4)); 
+        mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
+      }
+
+    } // end else - isEmpty()
+
+    //std::cout << "Kin Fitted muons 1 :" << mu1_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(0).pt() << std::endl;
+    //std::cout << "Kin Fitted muons 2 :" << mu2_tlv.Pt() << "  -- Pat muons : " << muonsSelected.at(1).pt() << std::endl;
+    //std::cout << "Kin fit mass from kinfit: " << higgs_tlv.M()  << " - Kin fit mass from tlv: " << (mu1_tlv+mu2_tlv).M()<< std::endl; 
+ 
+  } //if nMuons>1
+
+
+
   for (int i = 0; i < nMuons; i++) {
 
     pat::Muon muon = muonsSelected.at(i);
     MuonInfo _muonInfo;
-    _muonInfo.init();
 
     reco::Track track;
     // Do we want to use the inner tracker track by default for the Kalman corrections? - AWB 12.11.16
@@ -124,26 +196,26 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
       int iMatch = -99;
       if (not _isData) {
-	for (unsigned int i = 0; i < genPartons->size(); i++) {
-	  const reco::Candidate& GEN_mu = genPartons->at(i);
-	  if ( abs(GEN_mu.pdgId()) != 13 ) continue;
-	  if ( GEN_mu.status() != 1 ) continue;
-	  if ( GEN_mu.charge() != _muonInfo.charge ) continue;
+	for (unsigned int i = 0; i < _genMuonInfos.size(); i++) {
+	  const GenMuonInfo GEN_mu = _genMuonInfos.at(i);
+	  if ( GEN_mu.status != 1 ) continue; // TODO: understand status
+	  if ( GEN_mu.charge != _muonInfo.charge ) continue;
 	
-	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt(), GEN_mu.eta(), GEN_mu.phi(), GEN_mu.mass() );
+	  GEN_vec.SetPtEtaPhiM( GEN_mu.pt, GEN_mu.eta, GEN_mu.phi, GEN_mu.mass );
 	  if (GEN_vec.DeltaR(mu_vec_Roch) > 0.005) continue;
 	  if (iMatch > 0) {
 	    std::cout << "\nBizzare situation: two muons match!" << std::endl;
 	    std::cout << "RECO pT = " << mu_vec_Roch.Pt() << ", eta = " << mu_vec_Roch.Eta() 
 		      << ", phi = " << mu_vec_Roch.Phi() << ", charge = " << _muonInfo.charge << std::endl;
-	    std::cout << "GEN1 pT = " << genPartons->at(i).pt()<< ", eta = " << genPartons->at(i).eta() 
-		      << ", phi = " << genPartons->at(i).phi() << std::endl;
+	    std::cout << "GEN1 pT = " << _genMuonInfos.at(i).pt << ", eta = " << _genMuonInfos.at(i).eta 
+		      << ", phi = " << _genMuonInfos.at(i).phi << std::endl;
 	    std::cout << "GEN2 pT = " << GEN_vec.Pt()<< ", eta = " << GEN_vec.Eta() << ", phi = " << GEN_vec.Phi() << std::endl;
 	  }
 	  
 	  iMatch = i;
 	  _muonInfo.GEN_pt = GEN_vec.Pt();
 	  _muonInfo.GEN_dR = GEN_vec.DeltaR(mu_vec_Roch);
+          _muonInfo.GEN_idx = iMatch;
 	}
       } // End conditional: if (not _isData)
 
@@ -157,7 +229,10 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.ptErr_Roch        = ptErr_Roch;
       _muonInfo.pt_Roch_sys_up    = pt_Roch_sys_up;
       _muonInfo.pt_Roch_sys_down  = pt_Roch_sys_down;
-      
+
+    // DEBUG: Rochester pt
+    // std::cout << "Rochester pt and uncert = " << pt_Roch << " +- " << ptErr_Roch << std::endl;
+     
     } // End if (muon.isTrackerMuon())
 
     // Particle flow kinematics
@@ -184,6 +259,48 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     _muonInfo.IP_3D  = muon.dB(pat::Muon::PV3D);
     _muonInfo.SIP_3D = fabs( muon.dB(pat::Muon::PV3D) / muon.edB(pat::Muon::PV3D) );
     
+<<<<<<< HEAD
+=======
+    _muonInfo.d0_PV = track.dxy( primaryVertex.position() );
+    _muonInfo.dz_PV = track.dz ( primaryVertex.position() );
+ 
+
+    // Kinematic Fit corrections and vertex
+    if( dimu_vertex != NULL ){
+      GlobalVector IPVec(dimu_vertex->position().x()-primaryVertex.position().x(),dimu_vertex->position().y()-primaryVertex.position().y(),dimu_vertex->position().z()-primaryVertex.position().z());
+      _muonInfo.d0_PV_kinfit = sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) );
+      _muonInfo.dz_PV_kinfit = fabs(dimu_vertex->position().z()-primaryVertex.position().z());
+      _muonInfo.chi2_kinfit = dimu_vertex->chiSquared();
+      _muonInfo.ndf_kinfit =  dimu_vertex->degreesOfFreedom(); 
+      if(i==0){ //first muon
+        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz()); 
+        float prod = IPVec.dot(direction);
+        int sign = (prod>=0) ? 1. : -1.;
+        _muonInfo.d0_PV_kinfit *= sign;
+        _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.pt_kinfit  = mu1_tlv.Pt();
+        _muonInfo.ptErr_kinfit = mu1_ptErr_kinfit;
+      }
+      if(i==1){ //second muon
+        GlobalVector direction(mu2_tlv.Px(),mu2_tlv.Py(),mu2_tlv.Pz()); 
+        float prod = IPVec.dot(direction);
+        int sign = (prod>=0) ? 1. : -1.;
+        _muonInfo.d0_PV_kinfit *= sign;
+        _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.pt_kinfit  = mu2_tlv.Pt();
+        _muonInfo.ptErr_kinfit = mu2_ptErr_kinfit;
+     }
+    } 
+    else{ // if the kinfit was not succesful for this muon use the muonBestTrack 
+        _muonInfo.pt_kinfit = muon.muonBestTrack()->pt();
+        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError(); 
+    }
+
+    //DEBUG: Checking dO
+    //if(dimu_vertex != NULL )
+    //  std::cout << "d0_PV track = " << track.dxy( primaryVertex.position() ) << ", d0_PV muons " << muon.muonBestTrack()->dxy(primaryVertex.position()) << ", kinfit d0_PV = " << sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) ) << std::endl;
+
+>>>>>>> issue-73-backport-2017-18-to-2016
     // Standard isolation
     _muonInfo.trackIsoSumPt     = muon.isolationR03().sumPt;
     _muonInfo.trackIsoSumPtCorr = muon.isolationR03().sumPt; // no correction with only 1 muon (??? - AWB 08.11.16)
@@ -611,6 +728,88 @@ float CalcDPhi( const float phi1, const float phi2 ) {
   return abs_dPhi*sign_dPhi;
 }
 
+
+// Function toi calculate muon ID and Isolation scale factor from json file. - PB 30.07.2018
+// Could be used also to calculate the efficiency from json file but it would require some small adaptation. For the moment we need only SF.
+void CalcMuIDIsoEff(float& _ID_sf, float& _ID_sf_up, float& _ID_sf_down, std::string _id_wp_num, std::string _id_wp_den,
+         float& _Iso_sf, float& _Iso_sf_up, float& _Iso_sf_down, std::string _iso_wp_num, std::string _iso_wp_den,
+         const boost::property_tree::ptree json_iso, const boost::property_tree::ptree json_id, 
+         const MuonInfos _muonInfos) {
+
+  // needed to change the separator http://www.boost.org/doc/libs/1_47_0/doc/html/boost_propertytree/accessing.html
+  typedef boost::property_tree::ptree::path_type path;
+  //eta bins for SF
+  std::vector<float> etabins{-2.40, -2.30, -2.20, -2.10, -2.00, -1.70, -1.60, -1.50, -1.40, -1.20, -0.80, -0.50, -0.30, -0.20,  0.00, 0.20, 0.30, 0.50, 0.80, 1.20, 1.40, 1.50, 1.60, 1.70, 2.00, 2.10, 2.20, 2.30, 2.40};
+  //for (auto i: etabins)
+  //  std::cout << i << ' ';
+  //pt bins for SF
+  std::vector<float> ptbins{20.00, 25.00, 30.00, 40.00, 50.00, 60.00, 120.00};
+
+  _ID_sf       = 1.;
+  _ID_sf_up    = 1.;
+  _ID_sf_down  = 1.;
+  _Iso_sf      = 1.;
+  _Iso_sf_up   = 1.;
+  _Iso_sf_down = 1.;
+
+  //getting a specific value 
+  // float scale_factor = 0.;
+  // scale_factor = json_id.get<float>('/',"NUM_MediumID_DEN_genTracks/pt_eta/pt:[20.00,30.00]/eta:[-1.50,-1.40]/value");
+  // std::cout << "Test scale factor = " << scale_factor << std::endl;
+
+  std::string _value_string, _err_string; 
+  std::ostringstream _min_eta, _max_eta, _min_pt, _max_pt;
+  _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
+
+  int nMu = int(_muonInfos.size());
+  // Compute muon ID efficiency or scale factor
+  for (int iMu = 0; iMu < nMu; iMu++){
+    for ( int _eta=0; _eta<int(etabins.size())-1; _eta++){
+      if ( _muonInfos.at(iMu).eta < etabins.at(_eta)) continue; 
+      if ( _muonInfos.at(iMu).eta >= etabins.at(_eta+1) ) continue;
+      _min_eta << std::fixed << std::setprecision(2) << etabins.at(_eta);
+      _max_eta << std::fixed << std::setprecision(2) << etabins.at(_eta+1);
+   }
+   if(_min_eta.str().compare(_max_eta.str()) == 0) { // if compare is ==0 the two strings are equal
+      std::cout << "WARNING: Something fishy in the SF assignment. Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
+      continue;
+    }
+    for ( int _pt=0; _pt<int(ptbins.size())-1; _pt++){
+      if ( _muonInfos.at(iMu).pt < ptbins.at(_pt) ) continue; 
+      if ( _muonInfos.at(iMu).pt >= ptbins.at(_pt+1) ) continue; 
+      _min_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt);
+      _max_pt << std::fixed << std::setprecision(2) << ptbins.at(_pt+1);
+    } // loop pt bin 
+   if(_min_pt.str().compare(_max_pt.str()) == 0 ){ // if compare is ==0 the two strings are equal. String are equal when muon_pt is over or under the min or max bin: in that case I set the SF to 1.0.
+      //std::cout << "WARNING: Setting all SF and uncertainties to 1.0. for this muon." << std::endl;
+      _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
+      continue;
+    }
+    // ID
+    _value_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/value";
+    _ID_sf = json_id.get<float>(path(_value_string.c_str(),'/'));
+    _err_string = "NUM_"+_id_wp_num+"_DEN_"+_id_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/error";
+    _ID_sf_up = _ID_sf + json_id.get<float>(path(_err_string.c_str(),'/'));
+    _ID_sf_down = _ID_sf - json_id.get<float>(path(_err_string.c_str(),'/'));
+    // Iso
+    _value_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/value";
+    _Iso_sf = json_iso.get<float>(path(_value_string.c_str(),'/'));
+    _err_string = "NUM_"+_iso_wp_num+"_DEN_"+_iso_wp_den+"/pt_eta/pt:["+_min_pt.str()+","+_max_pt.str()+"]/eta:["+_min_eta.str()+","+_max_eta.str()+"]/error";
+    _Iso_sf_up = _Iso_sf + json_iso.get<float>(path(_err_string.c_str(),'/'));
+    _Iso_sf_down = _Iso_sf - json_iso.get<float>(path(_err_string.c_str(),'/'));
+    //cleaning the strings
+    _min_pt.str(""); _min_eta.str(""); _max_pt.str(""); _max_eta.str("");
+  } // loop muons
+
+  // for (auto& array_element : json_iso) {
+  //   std::cout << array_element.first << std::endl;
+  //   for (auto& property : array_element.second) {
+  //       std::cout << property.first << " = " << property.second.get_value<std::string>() << std::endl;
+  //   }
+  // }
+return;
+}
 
 void CalcMuIDIsoEff( float& _ID_eff, float& _ID_eff_up, float& _ID_eff_down,
 		     float& _Iso_eff, float& _Iso_eff_up, float& _Iso_eff_down, 

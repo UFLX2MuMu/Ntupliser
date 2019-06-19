@@ -24,8 +24,9 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _slimOut       = iConfig.getParameter         <bool>("slimOut");
   
   // Event selection from config file
-  _skim_nMuons = iConfig.getParameter<int>  ("skim_nMuons");
-  _skim_trig   = iConfig.getParameter<bool> ("skim_trig");
+  _skim_nMuons   = iConfig.getParameter<int>  ("skim_nMuons");
+  _skim_nLeptons = iConfig.getParameter<int>  ("skim_nLeptons");
+  _skim_trig     = iConfig.getParameter<bool> ("skim_trig");
 
   // Trigger info
   _processName  = iConfig.getParameter            <std::string> ("processName");
@@ -33,6 +34,11 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   _trigResultsToken = consumes<edm::TriggerResults>                    (iConfig.getParameter<edm::InputTag>("trigResults"));
   _trigObjsToken    = consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getParameter<edm::InputTag>("trigObjs"));
+
+  // L1 ECAL prefiring event weights and systematic variations
+  _prefweight_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProb"));
+  _prefweightup_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+  _prefweightdown_token = consumes< double > (edm::InputTag("prefiringweight:nonPrefiringProbDown")); 
 
   // Event flags
   _evtFlagsToken = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("evtFlags"));
@@ -42,16 +48,17 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _primaryVertexToken = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexTag"));
   _PupInfoToken       = consumes< std::vector<PileupSummaryInfo> >           (edm::InputTag ("slimmedAddPileupInfo"));
 
+
   // Muons
   _muonCollToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonColl"));
 
   // Electrons
-  _eleCollToken     = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
-  _eleIdVetoToken   = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdVeto"));
-  _eleIdLooseToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdLoose"));
-  _eleIdMediumToken = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdMedium"));
-  _eleIdTightToken  = consumes< edm::ValueMap<bool> >    (iConfig.getParameter<edm::InputTag>("eleIdTight"));
-  _eleIdMvaToken    = consumes< edm::ValueMap<float> >   (iConfig.getParameter<edm::InputTag>("eleIdMva"));
+  _eleCollToken    = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
+  _eleIdVetoName   = iConfig.getParameter<std::string>("eleIdVeto");
+  _eleIdLooseName  = iConfig.getParameter<std::string>("eleIdLoose");
+  _eleIdMediumName = iConfig.getParameter<std::string>("eleIdMedium");
+  _eleIdTightName  = iConfig.getParameter<std::string>("eleIdTight");
+  _eleIdMvaName    = iConfig.getParameter<std::string>("eleIdMva");
 
   // // Taus
   // _tauCollToken = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauColl"));
@@ -80,7 +87,6 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _vertex_ndof_min = iConfig.getParameter<double> ("vertex_ndof_min");
   _vertex_rho_max  = iConfig.getParameter<double> ("vertex_rho_max");
   _vertex_z_max    = iConfig.getParameter<double> ("vertex_z_max");
-
   _muon_ID        = iConfig.getParameter<std::string> ("muon_ID");
   _muon_pT_min    = iConfig.getParameter<double>      ("muon_pT_min");
   _muon_eta_max   = iConfig.getParameter<double>      ("muon_eta_max");
@@ -88,6 +94,11 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muon_use_pfIso = iConfig.getParameter<bool>        ("muon_use_pfIso");
   _muon_iso_dR    = iConfig.getParameter<double>      ("muon_iso_dR");
   _muon_iso_max   = iConfig.getParameter<double>      ("muon_iso_max");
+  // Muon scale factors working points 
+  _muon_id_wp_num     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_num");
+  _muon_id_wp_den     = iConfig.getParameter<std::string>  ("muon_id_sf_wp_den");
+  _muon_iso_wp_num    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_num");
+  _muon_iso_wp_den    = iConfig.getParameter<std::string>  ("muon_iso_sf_wp_den");
 
   _ele_ID      = iConfig.getParameter<std::string> ("ele_ID");
   _ele_pT_min  = iConfig.getParameter<double>      ("ele_pT_min");
@@ -95,20 +106,19 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   // _tau_pT_min  = iConfig.getParameter<double>       ("tau_pT_min");
   // _tau_eta_max = iConfig.getParameter<double>       ("tau_eta_max");
-
   _jet_ID      = iConfig.getParameter<std::string> ("jet_ID");
   _jet_pT_min  = iConfig.getParameter<double>      ("jet_pT_min");
   _jet_eta_max = iConfig.getParameter<double>      ("jet_eta_max");
 
   std::cout << "\nOpening Kalman Muon Calibrator files located in:" << std::endl;
-  std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"    << std::endl;
-  std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV"       << std::endl;
+  std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"   << std::endl;
+  std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV.root" << std::endl;
   if (_isMonteCarlo) _KaMu_calib = KalmanMuonCalibrator("MC_80X_13TeV");
   else               _KaMu_calib = KalmanMuonCalibrator("DATA_80X_13TeV");
   _doSys_KaMu  = iConfig.getParameter<bool>("doSys_KaMu");
 
   // Jigger path name for crab
-  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2016v1.txt");
+  edm::FileInPath cfg_RochCor("Ntupliser/RochCor/data/RoccoR2016.txt");
   std::string path_RochCor = cfg_RochCor.fullPath().c_str();
 
   std::cout << "\nOpening Rochester Correction files located in:" << std::endl;
@@ -132,41 +142,58 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
     _PU_wgt_hist_up   = (TH1D*) _PU_wgt_file->Get("PU_wgt_up");
     _PU_wgt_hist_down = (TH1D*) _PU_wgt_file->Get("PU_wgt_down");
   }
-
-  edm::FileInPath path_IsoMu_eff_3("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_3_file"));
-  edm::FileInPath path_IsoMu_eff_4("Ntupliser/DiMuons/data/MuonTrig/"+iConfig.getParameter<std::string>("Trig_eff_4_file"));
+  // RunBtoF
+  edm::FileInPath path_IsoMu_eff_3(iConfig.getParameter<std::string>("Trig_eff_3_file"));
   _IsoMu_eff_3_file = new TFile(path_IsoMu_eff_3.fullPath().c_str());
-  _IsoMu_eff_4_file = new TFile(path_IsoMu_eff_4.fullPath().c_str());
   _IsoMu_eff_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
-  _IsoMu_eff_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
   _IsoMu_SF_3_hist = (TH2F*) _IsoMu_eff_3_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
+
+  edm::FileInPath path_MuID_SF_3(iConfig.getParameter<std::string>("MuID_eff_3_file"));
+
+  std::ifstream _MuID_SF_3_json_file(path_MuID_SF_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuID_SF_3_json_file){
+    std::cerr << "Error opening file " << path_MuID_SF_3.fullPath().c_str() << std::endl;
+    return;
+  }
+  boost::property_tree::json_parser::read_json(_MuID_SF_3_json_file, _MuID_SF_3_json);
+
+  edm::FileInPath path_MuIso_SF_3(iConfig.getParameter<std::string>("MuIso_eff_3_file"));
+
+  std::ifstream _MuIso_SF_3_json_file(path_MuIso_SF_3.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuIso_SF_3_json_file) {
+    std::cerr << "Error opening file " << path_MuIso_SF_3.fullPath().c_str() << std::endl;
+    return;
+  }
+  boost::property_tree::json_parser::read_json(_MuIso_SF_3_json_file, _MuIso_SF_3_json);
+
+  // RunGtoH
+  edm::FileInPath path_IsoMu_eff_4(iConfig.getParameter<std::string>("Trig_eff_4_file"));
+  _IsoMu_eff_4_file = new TFile(path_IsoMu_eff_4.fullPath().c_str());
+  _IsoMu_eff_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
   _IsoMu_SF_4_hist = (TH2F*) _IsoMu_eff_4_file->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio");
 
-  edm::FileInPath path_MuID_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_3_file"));
-  edm::FileInPath path_MuID_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuID_eff_4_file"));
-  _MuID_eff_3_file = new TFile(path_MuID_eff_3.fullPath().c_str());
-  _MuID_eff_4_file = new TFile(path_MuID_eff_4.fullPath().c_str());
-  _MuID_eff_3_hist = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuID_eff_4_hist = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuID_SF_3_hist  = (TH2F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
-  _MuID_SF_4_hist  = (TH2F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio");
-  _MuID_eff_3_vtx  = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuID_eff_4_vtx  = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuID_SF_3_vtx   = (TH1F*) _MuID_eff_3_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
-  _MuID_SF_4_vtx   = (TH1F*) _MuID_eff_4_file->Get("MC_NUM_MediumID_DEN_genTracks_PAR_vtx/tag_nVertices_ratio_norm");
+  edm::FileInPath path_MuID_SF_4(iConfig.getParameter<std::string>("MuID_eff_4_file"));
 
-  edm::FileInPath path_MuIso_eff_3("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_3_file"));
-  edm::FileInPath path_MuIso_eff_4("Ntupliser/DiMuons/data/MuonIDIso/"+iConfig.getParameter<std::string>("MuIso_eff_4_file"));
-  _MuIso_eff_3_file = new TFile(path_MuIso_eff_3.fullPath().c_str());
-  _MuIso_eff_4_file = new TFile(path_MuIso_eff_4.fullPath().c_str());
-  _MuIso_eff_3_hist = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuIso_eff_4_hist = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/efficienciesDATA/abseta_pt_DATA");
-  _MuIso_SF_3_hist  = (TH2F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  _MuIso_SF_4_hist  = (TH2F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_pt_eta/abseta_pt_ratio");
-  _MuIso_eff_3_vtx  = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuIso_eff_4_vtx  = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/efficienciesDATA/histo_tag_nVertices_DATA_norm");
-  _MuIso_SF_3_vtx   = (TH1F*) _MuIso_eff_3_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
-  _MuIso_SF_4_vtx   = (TH1F*) _MuIso_eff_4_file->Get("LooseISO_MediumID_vtx/tag_nVertices_ratio_norm");
+  std::ifstream _MuID_SF_4_json_file(path_MuID_SF_4.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuID_SF_4_json_file){
+    std::cerr << "Error opening file " << path_MuID_SF_4.fullPath().c_str() << std::endl;
+    return;
+  }
+  boost::property_tree::json_parser::read_json(_MuID_SF_4_json_file, _MuID_SF_4_json);
+
+  edm::FileInPath path_MuIso_SF_4(iConfig.getParameter<std::string>("MuIso_eff_4_file"));
+
+  std::ifstream _MuIso_SF_4_json_file(path_MuIso_SF_4.fullPath().c_str(), std::ifstream::binary);
+  if (!_MuIso_SF_4_json_file) {
+    std::cerr << "Error opening file " << path_MuIso_SF_4.fullPath().c_str() << std::endl;
+    return;
+  }
+  boost::property_tree::json_parser::read_json(_MuIso_SF_4_json_file, _MuIso_SF_4_json);
+
+
+
+
+  std::cout << "\nFinished with UFDiMuonsAnalyzer constructor\n" << std::endl;
 
   std::cout << "\nFinished with UFDiMuonsAnalyzer constructor\n" << std::endl;
 
@@ -179,7 +206,6 @@ UFDiMuonsAnalyzer::~UFDiMuonsAnalyzer() {
     _PU_wgt_file->Close();
 
   _IsoMu_eff_3_file->Close();
-  _IsoMu_eff_4_file->Close();
 
 }
 
@@ -201,6 +227,23 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     iEvent.getByToken(_genEvtInfoToken, genEvtInfo );
     _GEN_wgt = (genEvtInfo->weight() > 0) ? 1 : -1;  // Why don't we use the decimal weight? - AWB 08.11.16
     _sumEventWeights += _GEN_wgt;
+
+    // --------------------
+    // L1 prefiring weights
+    // --------------------
+  
+    edm::Handle< double > theprefweight;
+    iEvent.getByToken(_prefweight_token, theprefweight);
+    _prefiringweight = (*theprefweight);
+  
+    edm::Handle< double > theprefweightup;
+    iEvent.getByToken(_prefweightup_token, theprefweightup);
+    _prefiringweightup = (*theprefweightup);
+  
+    edm::Handle< double > theprefweightdown;
+    iEvent.getByToken(_prefweightdown_token, theprefweightdown);
+    _prefiringweightdown = (*theprefweightdown);  
+
 
     if (_isVerbose) std::cout << "\nAccessing LHEEventProduct info" << std::endl;
     edm::Handle<LHEEventProduct> LHE_handle;
@@ -262,7 +305,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   FillEventFlags( iEvent, iSetup, evtFlagsHandle,
 		  _Flag_all, _Flag_badMu, _Flag_dupMu, _Flag_halo, 
-		  _Flag_PV, _Flag_HBHE, _Flag_HBHE_Iso, _Flag_ECAL_TP );
+		  _Flag_PV, _Flag_HBHE, _Flag_HBHE_Iso, _Flag_ECAL_TP,
+                   _Flag_BadChCand, _Flag_eeBadSc, _Flag_ecalBadCalib );
 
   // if ( !iEvent->HBHENoiseFilter()                    ) break;
   // if ( !iEvent->HBHENoiseIsoFilter()                 ) break;
@@ -304,7 +348,53 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   
   bool _onlyPV = true;  // Only fill primary vertex
   FillVertexInfos( _vertexInfos, _nVertices, verticesSelected, _onlyPV );
-  
+
+
+
+  // -------------
+  // GEN PARTICLES
+  // -------------
+
+  // Get GEN muons for Rochester corrections
+  edm::Handle<reco::GenParticleCollection> genPartons;
+
+  if (_isMonteCarlo) {
+ 
+    iEvent.getByToken(_prunedGenParticleToken, genPartons);
+
+    // Parents
+    if (_isVerbose) std::cout << "\nFilling GenParentInfo" << std::endl;
+
+    FillGenParentInfos( _genParentInfos, genPartons, 
+			std::vector<int> {6, 22, 23, 24, 25}, 
+			_isMonteCarlo );
+    _nGenParents = _genParentInfos.size();
+
+    // Muons
+    if (_isVerbose) std::cout << "\nFilling GenMuonInfo" << std::endl;
+    FillGenMuonInfos( _genMuonInfos, _genParentInfos, genPartons, _isMonteCarlo );
+    _nGenMuons = _genMuonInfos.size();
+    _nGenParents = _genParentInfos.size();
+
+    if (_isVerbose) std::cout << "\nFilling GenMuPairInfo" << std::endl;
+    FillGenMuPairInfos( _genMuPairInfos, _genMuonInfos );
+    _nGenMuPairs = _genMuPairInfos.size();
+
+    // Jets
+    if (_isVerbose) std::cout << "\nFilling GenJetInfo" << std::endl;
+    edm::Handle < reco::GenJetCollection > genJets;
+    if (!_genJetsToken.isUninitialized()) 
+      iEvent.getByToken(_genJetsToken, genJets);
+
+    FillGenJetInfos( _genJetInfos, genJets, _isMonteCarlo );
+    _nGenJets = _genJetInfos.size();
+
+  } // End conditional: if (_isMonteCarlo)
+
+
+
+
+
   // -----
   // MUONS
   // -----
@@ -332,54 +422,37 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   // Sort the selected muons by pT
   sort(muonsSelected.begin(), muonsSelected.end(), sortMuonsByPt);
-  
-  // Get GEN muons for Rochester corrections
-  edm::Handle<reco::GenParticleCollection> genPartons;
-  iEvent.getByToken(_prunedGenParticleToken, genPartons);
-
+ 
   FillMuonInfos( _muonInfos, muonsSelected, primaryVertex, verticesSelected.size(), beamSpotHandle, 
 		 iEvent, iSetup, trigObjsHandle, trigResultsHandle, _trigNames,
 		 _muon_trig_dR, _muon_use_pfIso, _muon_iso_dR, !(_isMonteCarlo), 
-		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, genPartons,
+		 _KaMu_calib, _doSys_KaMu, _Roch_calib, _doSys_Roch, _genMuonInfos,
 		 _lepVars_mu, _lepMVA_mu, _rho, jets, pfCands, muEffArea );
+
   _nMuons = _muonInfos.size();
 
-  CalcTrigEff( _IsoMu_eff_3, _IsoMu_eff_3_up, _IsoMu_eff_3_down, 
-	       _IsoMu_eff_3_hist, _muonInfos, false );
-  CalcTrigEff( _IsoMu_eff_4, _IsoMu_eff_4_up, _IsoMu_eff_4_down, 
-	       _IsoMu_eff_4_hist, _muonInfos, false );
-  CalcTrigEff( _IsoMu_eff_bug, _IsoMu_eff_bug_up, _IsoMu_eff_bug_down, 
-	       _IsoMu_eff_3_hist, _muonInfos, true );
-
-  CalcMuIDIsoEff( _MuID_eff_3, _MuID_eff_3_up, _MuID_eff_3_down,
-		  _MuIso_eff_3, _MuIso_eff_3_up, _MuIso_eff_3_down,
-		  _MuID_eff_3_hist, _MuIso_eff_3_hist,
-		  _MuID_eff_3_vtx, _MuIso_eff_3_vtx,
-		  _muonInfos, _nVertices);
-  CalcMuIDIsoEff( _MuID_eff_4, _MuID_eff_4_up, _MuID_eff_4_down,
-		  _MuIso_eff_4, _MuIso_eff_4_up, _MuIso_eff_4_down,
-		  _MuID_eff_4_hist, _MuIso_eff_4_hist,
-		  _MuID_eff_4_vtx, _MuIso_eff_4_vtx,
-		  _muonInfos, _nVertices);
-
   if (_isMonteCarlo) {
+    // RunBtoF
+    // Calculate trigger SF from ROOT file as old way as the json is not well formatted. - PB
     CalcTrigEff( _IsoMu_SF_3, _IsoMu_SF_3_up, _IsoMu_SF_3_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, false );
-    CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
-		 _IsoMu_SF_4_hist, _muonInfos, false );
+     // EMTF bug
     CalcTrigEff( _IsoMu_SF_bug, _IsoMu_SF_bug_up, _IsoMu_SF_bug_down, 
 		 _IsoMu_SF_3_hist, _muonInfos, true );
+    // Calculate scale factor using json file - PB
+    CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down, _muon_id_wp_num, _muon_id_wp_den, 
+		    _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down, _muon_iso_wp_num, _muon_iso_wp_den,
+		    _MuIso_SF_3_json, _MuID_SF_3_json, _muonInfos );
 
-    CalcMuIDIsoEff( _MuID_SF_3, _MuID_SF_3_up, _MuID_SF_3_down,
-		    _MuIso_SF_3, _MuIso_SF_3_up, _MuIso_SF_3_down,
-		    _MuID_SF_3_hist, _MuIso_SF_3_hist,
-		    _MuID_SF_3_vtx, _MuIso_SF_3_vtx,
-		    _muonInfos, _nVertices);
-    CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down,
-		    _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down,
-		    _MuID_SF_4_hist, _MuIso_SF_4_hist,
-		    _MuID_SF_4_vtx, _MuIso_SF_4_vtx,
-		    _muonInfos, _nVertices);
+    // RunGtoH
+    // Calculate trigger SF from ROOT file as old way as the json is not well formatted. - PB
+    CalcTrigEff( _IsoMu_SF_4, _IsoMu_SF_4_up, _IsoMu_SF_4_down, 
+		 _IsoMu_SF_4_hist, _muonInfos, false );
+    // Calculate scale factor using json file - PB
+    CalcMuIDIsoEff( _MuID_SF_4, _MuID_SF_4_up, _MuID_SF_4_down, _muon_id_wp_num, _muon_id_wp_den, 
+		    _MuIso_SF_4, _MuIso_SF_4_up, _MuIso_SF_4_down, _muon_iso_wp_num, _muon_iso_wp_den,
+		    _MuIso_SF_4_json, _MuID_SF_4_json, _muonInfos );
+
   }
 
 
@@ -392,7 +465,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   // Throw away events with only low-mass pairs
   if ( _skim_nMuons == 2 && _nMuPairs == 1 )
-    if ( _muPairInfos.at(0).mass < 12 )
+    if ( _muPairInfos.at(0).mass < 10 )
       return;
 
   // // Throw away events without a high-mass pair (< 100 GeV)
@@ -437,35 +510,23 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // ---------
   if (_isVerbose) std::cout << "\nFilling EleInfo" << std::endl;
   edm::Handle<edm::View<pat::Electron>>  eles;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_veto;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_loose;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_medium;
-  edm::Handle<edm::ValueMap<bool>>       ele_id_tight;
-  edm::Handle<edm::ValueMap<float>>      ele_id_mva;
+  iEvent.getByToken(_eleCollToken, eles);
 
-  iEvent.getByToken(_eleCollToken,     eles);
-  iEvent.getByToken(_eleIdVetoToken,   ele_id_veto); 
-  iEvent.getByToken(_eleIdLooseToken,  ele_id_loose); 
-  iEvent.getByToken(_eleIdMediumToken, ele_id_medium); 
-  iEvent.getByToken(_eleIdTightToken,  ele_id_tight); 
-  iEvent.getByToken(_eleIdMvaToken,    ele_id_mva);
+  std::array<std::string, 5> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaName}};
 
-  std::vector<std::array<bool, 4>> ele_ID_pass;
-  double ele_mva_val;
-  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_id_veto, ele_id_loose,
-						     ele_id_medium, ele_id_tight, ele_id_mva, _ele_ID,
-						     _ele_pT_min, _ele_eta_max, ele_ID_pass, ele_mva_val );
+  pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_ID_names,
+						     _ele_ID, _ele_pT_min, _ele_eta_max );
   
   // Sort the selected electrons by pT
   sort(elesSelected.begin(), elesSelected.end(), sortElesByPt);
   
-  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_pass, ele_mva_val,
+  // Throw away event if there are too few leptons
+  if ( ( muonsSelected.size() + elesSelected.size() ) < (unsigned int) _skim_nLeptons )
+    return;
+
+  FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_names,
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
-
-  // Throw away event if there are less than 3 leptons
-  if ( muonsSelected.size() + elesSelected.size() < 3 )
-    return;
 
 
   // // ----
@@ -615,40 +676,6 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     // FillMhtInfo( _mhtInfo_JER_down, _muonInfos, _eleInfos, _jetInfos_JER_down ); 
   }
 
-  // -------------
-  // GEN PARTICLES
-  // -------------
-  if (_isMonteCarlo) {
-    // Parents
-    if (_isVerbose) std::cout << "\nFilling GenParentInfo" << std::endl;
-
-    FillGenParentInfos( _genParentInfos, genPartons, 
-			std::vector<int> {6, 22, 23, 24, 25}, 
-			_isMonteCarlo );
-    _nGenParents = _genParentInfos.size();
-
-    // Muons
-    if (_isVerbose) std::cout << "\nFilling GenMuonInfo" << std::endl;
-    FillGenMuonInfos( _genMuonInfos, _genParentInfos, genPartons, _isMonteCarlo );
-    _nGenMuons = _genMuonInfos.size();
-    _nGenParents = _genParentInfos.size();
-
-    if (_isVerbose) std::cout << "\nFilling GenMuPairInfo" << std::endl;
-    FillGenMuPairInfos( _genMuPairInfos, _genMuonInfos );
-    _nGenMuPairs = _genMuPairInfos.size();
-
-    // Jets
-    if (_isVerbose) std::cout << "\nFilling GenJetInfo" << std::endl;
-    edm::Handle < reco::GenJetCollection > genJets;
-    if (!_genJetsToken.isUninitialized()) 
-      iEvent.getByToken(_genJetsToken, genJets);
-
-    FillGenJetInfos( _genJetInfos, genJets, _isMonteCarlo );
-    _nGenJets = _genJetInfos.size();
-
-  } // End conditional: if (_isMonteCarlo)
-
-
   // ============================
   // Store everything in an NTuple
   // ============================
@@ -782,56 +809,65 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("Flag_PV",       &_Flag_PV,       "Flag_PV/I"       );
   _outTree->Branch("Flag_HBHE",     &_Flag_HBHE,     "Flag_HBHE/I"     );
   _outTree->Branch("Flag_HBHE_Iso", &_Flag_HBHE_Iso, "Flag_HBHE_Iso/I" );
-  _outTree->Branch("Flag_ECAL_TP",  &_Flag_ECAL_TP,  "Flag_ECAL_TP/I"  );
-
-  _outTree->Branch("IsoMu_eff_3",        &_IsoMu_eff_3,        "IsoMu_eff_3/F"        );
-  _outTree->Branch("IsoMu_eff_3_up",     &_IsoMu_eff_3_up,     "IsoMu_eff_3_up/F"     );
-  _outTree->Branch("IsoMu_eff_3_down",   &_IsoMu_eff_3_down,   "IsoMu_eff_3_down/F"   );
-  _outTree->Branch("IsoMu_eff_4",        &_IsoMu_eff_4,        "IsoMu_eff_4/F"        );
-  _outTree->Branch("IsoMu_eff_4_up",     &_IsoMu_eff_4_up,     "IsoMu_eff_4_up/F"     );
-  _outTree->Branch("IsoMu_eff_4_down",   &_IsoMu_eff_4_down,   "IsoMu_eff_4_down/F"   );
-  _outTree->Branch("IsoMu_eff_bug",      &_IsoMu_eff_bug,      "IsoMu_eff_bug/F"      );
-  _outTree->Branch("IsoMu_eff_bug_up",   &_IsoMu_eff_bug_up,   "IsoMu_eff_bug_up/F"   );
-  _outTree->Branch("IsoMu_eff_bug_down", &_IsoMu_eff_bug_down, "IsoMu_eff_bug_down/F" );
-
-  _outTree->Branch("MuID_eff_3",        &_MuID_eff_3,        "MuID_eff_3/F"        );
-  _outTree->Branch("MuID_eff_3_up",     &_MuID_eff_3_up,     "MuID_eff_3_up/F"     );
-  _outTree->Branch("MuID_eff_3_down",   &_MuID_eff_3_down,   "MuID_eff_3_down/F"   );
-  _outTree->Branch("MuID_eff_4",        &_MuID_eff_4,        "MuID_eff_4/F"        );
-  _outTree->Branch("MuID_eff_4_up",     &_MuID_eff_4_up,     "MuID_eff_4_up/F"     );
-  _outTree->Branch("MuID_eff_4_down",   &_MuID_eff_4_down,   "MuID_eff_4_down/F"   );
-
-  _outTree->Branch("MuIso_eff_3",        &_MuIso_eff_3,        "MuIso_eff_3/F"        );
-  _outTree->Branch("MuIso_eff_3_up",     &_MuIso_eff_3_up,     "MuIso_eff_3_up/F"     );
-  _outTree->Branch("MuIso_eff_3_down",   &_MuIso_eff_3_down,   "MuIso_eff_3_down/F"   );
-  _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
-  _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
-  _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
-
+  _outTree->Branch("Flag_ECAL_TP",  &_Flag_ECAL_TP,  "Flag_ECAL_TP/I"  ); 
+  _outTree->Branch("Flag_BadChCand",    &_Flag_BadChCand,    "Flag_BadChCand/I"     );
+  _outTree->Branch("Flag_eeBadSc",      &_Flag_eeBadSc,      "Flag_eeBadSc/I"       );
+  _outTree->Branch("Flag_ecalBadCalib", &_Flag_ecalBadCalib, "Flag_ecalBadCalib/I"  );
+ 
   if (_isMonteCarlo) {
-      _outTree->Branch("IsoMu_SF_3",        &_IsoMu_SF_3,        "IsoMu_SF_3/F"        );
+
+    // RunBtoF
+    _outTree->Branch("IsoMu_eff_3",        &_IsoMu_eff_3,        "IsoMu_eff_3/F"        );
+    _outTree->Branch("IsoMu_eff_3_up",     &_IsoMu_eff_3_up,     "IsoMu_eff_3_up/F"     );
+    _outTree->Branch("IsoMu_eff_3_down",   &_IsoMu_eff_3_down,   "IsoMu_eff_3_down/F"   );
+    
+    _outTree->Branch("MuID_eff_3",        &_MuID_eff_3,        "MuID_eff_3/F"        );
+    _outTree->Branch("MuID_eff_3_up",     &_MuID_eff_3_up,     "MuID_eff_3_up/F"     );
+    _outTree->Branch("MuID_eff_3_down",   &_MuID_eff_3_down,   "MuID_eff_3_down/F"   );
+    
+    _outTree->Branch("MuIso_eff_3",        &_MuIso_eff_3,        "MuIso_eff_3/F"        );
+    _outTree->Branch("MuIso_eff_3_up",     &_MuIso_eff_3_up,     "MuIso_eff_3_up/F"     );
+    _outTree->Branch("MuIso_eff_3_down",   &_MuIso_eff_3_down,   "MuIso_eff_3_down/F"   );
+
+    _outTree->Branch("IsoMu_SF_3",        &_IsoMu_SF_3,        "IsoMu_SF_3/F"        );
     _outTree->Branch("IsoMu_SF_3_up",     &_IsoMu_SF_3_up,     "IsoMu_SF_3_up/F"     );
     _outTree->Branch("IsoMu_SF_3_down",   &_IsoMu_SF_3_down,   "IsoMu_SF_3_down/F"   );
-    _outTree->Branch("IsoMu_SF_4",        &_IsoMu_SF_4,        "IsoMu_SF_4/F"        );
-    _outTree->Branch("IsoMu_SF_4_up",     &_IsoMu_SF_4_up,     "IsoMu_SF_4_up/F"     );
-    _outTree->Branch("IsoMu_SF_4_down",   &_IsoMu_SF_4_down,   "IsoMu_SF_4_down/F"   );
-    _outTree->Branch("IsoMu_SF_bug",      &_IsoMu_SF_bug,      "IsoMu_SF_bug/F"      );
-    _outTree->Branch("IsoMu_SF_bug_up",   &_IsoMu_SF_bug_up,   "IsoMu_SF_bug_up/F"   );
-    _outTree->Branch("IsoMu_SF_bug_down", &_IsoMu_SF_bug_down, "IsoMu_SF_bug_down/F" );
     
     _outTree->Branch("MuID_SF_3",        &_MuID_SF_3,        "MuID_SF_3/F"        );
     _outTree->Branch("MuID_SF_3_up",     &_MuID_SF_3_up,     "MuID_SF_3_up/F"     );
     _outTree->Branch("MuID_SF_3_down",   &_MuID_SF_3_down,   "MuID_SF_3_down/F"   );
-    _outTree->Branch("MuID_SF_4",        &_MuID_SF_4,        "MuID_SF_4/F"        );
-    _outTree->Branch("MuID_SF_4_up",     &_MuID_SF_4_up,     "MuID_SF_4_up/F"     );
-    _outTree->Branch("MuID_SF_4_down",   &_MuID_SF_4_down,   "MuID_SF_4_down/F"   );
     
     _outTree->Branch("MuIso_SF_3",        &_MuIso_SF_3,        "MuIso_SF_3/F"        );
     _outTree->Branch("MuIso_SF_3_up",     &_MuIso_SF_3_up,     "MuIso_SF_3_up/F"     );
     _outTree->Branch("MuIso_SF_3_down",   &_MuIso_SF_3_down,   "MuIso_SF_3_down/F"   );
+
+
+    // RunGtoH
+    _outTree->Branch("IsoMu_eff_4",        &_IsoMu_eff_4,        "IsoMu_eff_4/F"        );
+    _outTree->Branch("IsoMu_eff_4_up",     &_IsoMu_eff_4_up,     "IsoMu_eff_4_up/F"     );
+    _outTree->Branch("IsoMu_eff_4_down",   &_IsoMu_eff_4_down,   "IsoMu_eff_4_down/F"   );
+    
+    _outTree->Branch("MuID_eff_4",        &_MuID_eff_4,        "MuID_eff_4/F"        );
+    _outTree->Branch("MuID_eff_4_up",     &_MuID_eff_4_up,     "MuID_eff_4_up/F"     );
+    _outTree->Branch("MuID_eff_4_down",   &_MuID_eff_4_down,   "MuID_eff_4_down/F"   );
+    
+    _outTree->Branch("MuIso_eff_4",        &_MuIso_eff_4,        "MuIso_eff_4/F"        );
+    _outTree->Branch("MuIso_eff_4_up",     &_MuIso_eff_4_up,     "MuIso_eff_4_up/F"     );
+    _outTree->Branch("MuIso_eff_4_down",   &_MuIso_eff_4_down,   "MuIso_eff_4_down/F"   );
+
+    _outTree->Branch("IsoMu_SF_4",        &_IsoMu_SF_4,        "IsoMu_SF_4/F"        );
+    _outTree->Branch("IsoMu_SF_4_up",     &_IsoMu_SF_4_up,     "IsoMu_SF_4_up/F"     );
+    _outTree->Branch("IsoMu_SF_4_down",   &_IsoMu_SF_4_down,   "IsoMu_SF_4_down/F"   );
+    
+    _outTree->Branch("MuID_SF_4",        &_MuID_SF_4,        "MuID_SF_4/F"        );
+    _outTree->Branch("MuID_SF_4_up",     &_MuID_SF_4_up,     "MuID_SF_4_up/F"     );
+    _outTree->Branch("MuID_SF_4_down",   &_MuID_SF_4_down,   "MuID_SF_4_down/F"   );
+    
     _outTree->Branch("MuIso_SF_4",        &_MuIso_SF_4,        "MuIso_SF_4/F"        );
     _outTree->Branch("MuIso_SF_4_up",     &_MuIso_SF_4_up,     "MuIso_SF_4_up/F"     );
     _outTree->Branch("MuIso_SF_4_down",   &_MuIso_SF_4_down,   "MuIso_SF_4_down/F"   );
+ 
+
   }
 
   // MC information
@@ -843,7 +879,11 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("PU_wgt_up",   &_PU_wgt_up,   "PU_wgt_up/F"   );
     _outTree->Branch("PU_wgt_down", &_PU_wgt_down, "PU_wgt_down/F" );
     _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/I"     );
-    
+
+    _outTree->Branch("l1pref_wgt",     &_prefiringweight,     "l1pref_wgt/F"     );
+    _outTree->Branch("l1pref_wgt_up",     &_prefiringweightup,     "l1pref_wgt_up/F"     );
+    _outTree->Branch("l1pref_wgt_down",     &_prefiringweightdown,     "l1pref_wgt_down/F"     );
+  
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
     _outTree->Branch("nGenMuPairs", (int*) &_nGenMuPairs );
@@ -921,7 +961,7 @@ bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSe
     for(std::vector<std::string>::const_iterator desiredTrigName=desiredTrigNames.begin();
             desiredTrigName!=desiredTrigNames.end();desiredTrigName++)
     {
-      if (*desiredTrigName == trigNameStripped && trigResultsHandle->accept(iTrig))
+     if (*desiredTrigName == trigNameStripped && trigResultsHandle->accept(iTrig))
       {
         stringstream debugString;
         debugString << "isHltPassed:" <<endl;
@@ -944,7 +984,8 @@ bool UFDiMuonsAnalyzer::isHltPassed(const edm::Event& iEvent, const edm::EventSe
 void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::EventSetup& iSetup,
 				       const edm::Handle<edm::TriggerResults>& evtFlagsHandle,
 				       int& _Flag_all, int& _Flag_badMu, int& _Flag_dupMu, int& _Flag_halo, 
-				       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP ) {
+				       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP,
+                                       int& _Flag_BadChCand, int& _Flag_eeBadSc, int& _Flag_ecalBadCalib  ) {
   using namespace std;
   using namespace edm;
   using namespace reco;
@@ -958,19 +999,24 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
   _Flag_HBHE     = -99;
   _Flag_HBHE_Iso = -99;
   _Flag_ECAL_TP  = -99;
+  _Flag_BadChCand = -99;
+  _Flag_eeBadSc   = -99;
+  _Flag_ecalBadCalib = -99;
 
   const TriggerNames &flagNames = iEvent.triggerNames(*evtFlagsHandle);
   const unsigned nFlags = evtFlagsHandle->size();
   for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag) {
     const string flagName = flagNames.triggerName(iFlag);
     const int flagResult = evtFlagsHandle->accept(iFlag);
-    
+   
+    // Updating the flag for 2017 data and Fall17 MC - PB 2018.07.31 - AWB 2018.08.10 
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2018
     // std::cout << "  * " << flagName << " = " << flagResult << std::endl;
-    if (flagName == "Flag_badMuons")
-      _Flag_badMu = abs(flagResult - 1); // Reversed, for some reason
+    if (flagName == "Flag_BadPFMuonFilter")
+      _Flag_badMu = flagResult;
     if (flagName == "Flag_duplicateMuons")
-      _Flag_dupMu = abs(flagResult - 1); // Reversed, for some reason
-    if (flagName == "Flag_CSCTightHaloFilter")
+      _Flag_dupMu = 1;
+    if (flagName == "Flag_globalSuperTightHalo2016Filter")
       _Flag_halo = flagResult;
     if (flagName == "Flag_goodVertices")
       _Flag_PV = flagResult;
@@ -980,15 +1026,19 @@ void UFDiMuonsAnalyzer::FillEventFlags(const edm::Event& iEvent, const edm::Even
       _Flag_HBHE_Iso = flagResult;
     if (flagName == "Flag_EcalDeadCellTriggerPrimitiveFilter")
       _Flag_ECAL_TP = flagResult;
+
+    if (flagName == "Flag_BadChargedCandidateFilter")
+      _Flag_BadChCand = flagResult;
+    if (flagName == "Flag_eeBadScFilter") // suggested only in data
+      _Flag_eeBadSc = flagResult;
+    if (flagName == "Flag_ecalBadCalibFilter")
+      _Flag_ecalBadCalib = flagResult;
+
   } // End loop: for (unsigned iFlag = 0; iFlag < nFlags; ++iFlag)
 
-  if ( _Flag_badMu == 0 || _Flag_dupMu == 0 || _Flag_halo == 0 ||
-       _Flag_PV == 0 || _Flag_HBHE == 0 || _Flag_ECAL_TP == 0 )
-    _Flag_all = 0;
-  if ( _Flag_badMu == 1 && _Flag_dupMu == 1 && _Flag_halo == 1 &&
-       _Flag_PV == 1 && _Flag_HBHE == 1 && _Flag_ECAL_TP == 1 )
-    _Flag_all = 1;
-  
+  _Flag_all = ( _Flag_PV && _Flag_halo && _Flag_HBHE && _Flag_HBHE_Iso && _Flag_ECAL_TP &&
+                _Flag_BadChCand && (_Flag_eeBadSc || _isMonteCarlo) && _Flag_ecalBadCalib );
+
 } // End function: void UFDiMuonsAnalyzer::FillEventFlags()
 
 ////////////////////////////////////////////////////////////////////////////

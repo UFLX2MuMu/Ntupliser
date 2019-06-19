@@ -12,7 +12,6 @@ void FillTauInfos( TauInfos& _tauInfos,
 
     pat::Tau tau = tausSelected.at(i);
     TauInfo _tauInfo;
-    _tauInfo.init();
 
     // Basic kinematics
     _tauInfo.charge  = tau.charge();
