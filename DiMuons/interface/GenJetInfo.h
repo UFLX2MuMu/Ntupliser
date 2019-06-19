@@ -7,16 +7,14 @@
 
 struct GenJetInfo {
 
-  Float_t px    ;
-  Float_t py    ;
-  Float_t pz    ;
-  Float_t pt    ;
-  Float_t eta   ;
-  Float_t phi   ;
-  Float_t mass  ;
-  Float_t charge;
-
-  void init();
+  Float_t px     = -999;
+  Float_t py     = -999;
+  Float_t pz     = -999;
+  Float_t pt     = -999;
+  Float_t eta    = -999;
+  Float_t phi    = -999;
+  Float_t mass   = -999;
+  Float_t charge = -999;
 
 };
 
