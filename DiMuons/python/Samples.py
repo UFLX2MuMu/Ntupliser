@@ -28,7 +28,9 @@ processed_dataset = ['RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v
                      'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v2', #3
                      'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v2', #4
                      'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v3', #5
-                     'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1' #6
+                     'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1', #6
+                     'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext2-v1', #7
+                     'RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3_ext3-v1' #8
                      ]
 
 
@@ -322,6 +324,7 @@ ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
 
 Background.append(ZJets_AMC)
 Background.append(ZJets_MG)
+Background.append(ZJets_MG_2)
 Background.append(ZJets_hiM_AMC)
 Background.append(ZJets_hiM_MG)
 
@@ -355,11 +358,11 @@ Background.append(tt_ljj_POW_1)
 ####################
 
 tW_pos = sample( name = 'tW_pos',
-                 DAS  = '/ST_tW_top_5f_NoFullyHadronicDecays_TuneCUETP8M1_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                 DAS  = '/ST_tW_top_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                  nEvt = -1 ) ## 5 million
 
 tW_neg = sample( name = 'tW_neg',
-                 DAS  = '/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCUETP8M1_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                 DAS  = '/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                  nEvt = -1 ) ## 5 million
 
 Background.append(tW_pos)
@@ -370,11 +373,11 @@ Background.append(tW_neg)
 #################
 
 WW_2l_1 = sample( name = 'WW_2l_1',
-             DAS  = '/WWTo2L2Nu-powheg/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+             DAS  = '/WWTo2L2Nu_13TeV-powheg/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
              nEvt = -1 ) ## 2 million
 
 WW_2l_2 = sample( name = 'WW_2l_2',
-             DAS  = '/WWTo2L2Nu-powheg-herwigpp/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+             DAS  = '/WWTo2L2Nu_13TeV-powheg-herwigpp/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
              nEvt = -1 ) ## 2 million
 
 
@@ -391,7 +394,7 @@ ZZ_2l_2q = sample( name = 'ZZ_2l_2q',
                    nEvt = -1 ) ## 28 million
 
 ZZ_4l = sample( name = 'ZZ_4l',
-                DAS  = '/ZZTo4L_powheg_pythia8_ext1/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                DAS  = '/ZZTo4L_13TeV_powheg_pythia8_ext1/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
                 nEvt = -1 ) ## 98 million
 
 ZZ_4l_amc = sample( name = 'ZZ_4l_amc',
@@ -445,22 +448,34 @@ ttW = sample( name = 'ttW',
 
 ttZ = sample( name = 'ttZ',
               DAS  = '/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[3],data_tier[1]),
-              nEvt = -1 ) ## 7.5 million
+              nEvt = -1 ) ## 2 million
 
-ttZ_lowM = sample( name = 'ttZ_lowM',
-                   DAS  = '/TTZToLL_M-1to10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
-                   nEvt = -1 ) ## 250 k
+ttZ_1 = sample( name = 'ttZ_1',
+              DAS  = '/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[7],data_tier[1]),
+              nEvt = -1 ) ## 5 million
+
+ttZ_2 = sample( name = 'ttZ_2',
+              DAS  = '/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[8],data_tier[1]),
+              nEvt = -1 ) ## 5 million
+
+#not present in MINIAODv3 2016
+#ttZ_lowM = sample( name = 'ttZ_lowM',
+#                   DAS  = '/TTZToLL_M-1to10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+#                   nEvt = -1 ) ## 250 k
+
 ttH = sample( name = 'ttH',
               DAS  = '/ttHToNonbb_M125_TuneCP5_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
               nEvt = -1 ) ## 10 million
 
 ttWW = sample( name = 'ttWW',
-               DAS  = '/TTWW_TuneCP5_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+               DAS  = '/TTWW_TuneCUETP8M2T4_13TeV-madgraph-pythia8/{0}/{1}'.format(processed_dataset[6],data_tier[1]),
                nEvt = -1 ) ## 200 k
 
 Background.append(ttW)
 Background.append(ttZ)
-Background.append(ttZ_lowM)
+Background.append(ttZ_1)
+Background.append(ttZ_2)
+#Background.append(ttZ_lowM)
 Background.append(ttH)
 Background.append(ttWW)
 
@@ -482,11 +497,11 @@ tZq_herwig = sample( name = 'tZq+herwig',
 #               nEvt = -1) ## 
 
 tHq = sample( name = 'tHq',
-              DAS  = '/THQ_4f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+              DAS  = '/THQ_Hincl_13TeV-madgraph-pythia8_TuneCUETP8M1/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
               nEvt = -1 ) ## 3 million
 
 tHW = sample( name = 'tHW',
-              DAS  = '/THW_5f_Hincl_13TeV_madgraph_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+              DAS  = '/THW_Hincl_13TeV-madgraph-pythia8_TuneCUETP8M1/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
               nEvt = -1 ) ## 1 million
 
 Background.append(tZq)
@@ -524,6 +539,7 @@ ZZZ = sample( name = 'ZZZ',
               nEvt = -1 ) ## 250 k
 
 Background.append(WWW)
+Background.append(WWW_lep)
 Background.append(WWZ)
 Background.append(WZZ)
 Background.append(ZZZ)
