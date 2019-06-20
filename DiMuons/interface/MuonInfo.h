@@ -40,15 +40,6 @@ struct MuonInfo {
   Double_t pt_Roch_sys_up    = -999;
   Double_t pt_Roch_sys_down  = -999;
 
-<<<<<<< HEAD
-  Float_t d0_BS     = -999;
-  Float_t dz_BS     = -999;
-  Float_t d0_PV     = -999;
-  Float_t dz_PV     = -999;
-  Float_t IP_3D     = -999;
-  Float_t SIP_3D    = -999;
-  Float_t segCompat = -999;
-=======
   Float_t d0_BS        = -999;
   Float_t dz_BS        = -999;
   Float_t d0_PV        = -999;
@@ -60,7 +51,6 @@ struct MuonInfo {
   Float_t IP_3D        = -999;
   Float_t SIP_3D       = -999;
   Float_t segCompat    = -999;
->>>>>>> issue-73-backport-2017-18-to-2016
 
   Float_t relIso            = -999;
   Float_t relCombIso        = -999;

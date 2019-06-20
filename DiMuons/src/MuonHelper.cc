@@ -259,8 +259,6 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     _muonInfo.IP_3D  = muon.dB(pat::Muon::PV3D);
     _muonInfo.SIP_3D = fabs( muon.dB(pat::Muon::PV3D) / muon.edB(pat::Muon::PV3D) );
     
-<<<<<<< HEAD
-=======
     _muonInfo.d0_PV = track.dxy( primaryVertex.position() );
     _muonInfo.dz_PV = track.dz ( primaryVertex.position() );
  
@@ -300,7 +298,6 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     //if(dimu_vertex != NULL )
     //  std::cout << "d0_PV track = " << track.dxy( primaryVertex.position() ) << ", d0_PV muons " << muon.muonBestTrack()->dxy(primaryVertex.position()) << ", kinfit d0_PV = " << sqrt( pow(dimu_vertex->position().x()-primaryVertex.position().x(),2) + pow(dimu_vertex->position().y()-primaryVertex.position().y(),2) ) << std::endl;
 
->>>>>>> issue-73-backport-2017-18-to-2016
     // Standard isolation
     _muonInfo.trackIsoSumPt     = muon.isolationR03().sumPt;
     _muonInfo.trackIsoSumPtCorr = muon.isolationR03().sumPt; // no correction with only 1 muon (??? - AWB 08.11.16)

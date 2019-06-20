@@ -34,9 +34,6 @@ void FillEleInfos( EleInfos& _eleInfos,
     // EGamma POG MVA quality
     _eleInfo.mvaID = ele.userFloat(ele_ID_names[4]);
 
-    // EGamma POG MVA quality
-    _eleInfo.mvaID = ele_mva_val;
-
     // Basic isolation
     _eleInfo.relIso         = EleCalcRelIsoPF( ele, _rho, eleEffArea, "DeltaBeta" );
     _eleInfo.relIsoEA       = EleCalcRelIsoPF( ele, _rho, eleEffArea, "EffArea" );
@@ -94,16 +91,8 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-<<<<<<< HEAD
-				    const edm::Handle< edm::ValueMap<bool> >& ele_id_veto, const edm::Handle< edm::ValueMap<bool> >& ele_id_loose,
-				    const edm::Handle< edm::ValueMap<bool> >& ele_id_medium, const edm::Handle< edm::ValueMap<bool> >& ele_id_tight,
-				    const edm::Handle< edm::ValueMap<float> >& ele_id_mva, const std::string _ele_ID,
-				    const double _ele_pT_min, const double _ele_eta_max,
-				    std::vector<std::array<bool, 4>>& ele_ID_pass, double & ele_mva_val ) {
-=======
 				    const std::array<std::string, 5> ele_ID_names, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max ) {
->>>>>>> issue-73-backport-2017-18-to-2016
   
   // Main Egamma POG page: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPOG
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2
@@ -130,23 +119,10 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
 
-<<<<<<< HEAD
-    bool _isVeto   = (*ele_id_veto  )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isLoose  = (*ele_id_loose )[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isMedium = (*ele_id_medium)[ele] && ElePassKinematics(*ele, primaryVertex);
-    bool _isTight  = (*ele_id_tight )[ele] && ElePassKinematics(*ele, primaryVertex);
-    ele_mva_val    = (*ele_id_mva   )[ele];
-
-    if (_ele_ID.find("veto")   != std::string::npos && !_isVeto)   continue;
-    if (_ele_ID.find("loose")  != std::string::npos && !_isLoose)  continue;
-    if (_ele_ID.find("medium") != std::string::npos && !_isMedium) continue;
-    if (_ele_ID.find("tight")  != std::string::npos && !_isTight)  continue;
-=======
     if (_ele_ID.find("veto")   != std::string::npos && !ele->electronID(ele_ID_names[0]) ) continue;
     if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
     if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
     if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
->>>>>>> issue-73-backport-2017-18-to-2016
 
     elesSelected.push_back(*ele);
 
@@ -184,20 +160,11 @@ bool ElePassKinematics( const pat::Electron ele, const reco::Vertex primaryVerte
   // // https://github.com/ikrav/EgammaWork/blob/ntupler_and_VID_demos_8.0.3/ElectronNtupler/plugins/ElectronNtuplerVIDDemo.cc#L358
 }  
   
-<<<<<<< HEAD
-
-=======
->>>>>>> issue-73-backport-2017-18-to-2016
 double EleCalcRelIsoPF( const pat::Electron ele, const double rho,
                          EffectiveAreas eleEffArea, const std::string type ) {
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolationRun2 and
   // https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/src/LeptonAnalyzerIso.cc#L29
-<<<<<<< HEAD
-  // Last check that cuts were up-to-date: 18.10.2018 - AWB
-  
-=======
   // Last check that cuts were up-to-date: 18.10.2018 - AWB  
->>>>>>> issue-73-backport-2017-18-to-2016
   // Electron isolation cone radius is always 0.3
    assert(type == "DeltaBeta" || type == "EffArea");
 
