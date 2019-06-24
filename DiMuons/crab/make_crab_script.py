@@ -31,28 +31,20 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
+output_dir = '/store/user/bortigno/h2mm/ntuples/2016/94X_v3/{0}'.format(prod_version)
+print("Production output dir {0}".format(output_dir))
+
 samps = []
 
 ## Get the samples you want to make a crab config file for 
 test_run = False
 test_str = '_prod2016_{0}'.format(prod_version)
  
-# samps.extend(SingleMu)
-# samps.extend(Signal)
-# samps.extend(Background)
-samps.extend(DataAndMC)
-
-# test_run = True
-# test_str = '_v1'
-# samps.append(SingleMu_2016C)
-# samps.append(H2Mu_gg)
-#samps.append(ZJets_AMC)
-#samps.append(tt_ll_AMC)
-
-# samps.append(SingleMu_2017B)
-
-#samps.append(Zd2Mu_125)
-#samps.append(Zd2Mu_150)
+if (test_run):
+  samps.append(SingleMu_2016B)
+  samps.append(H2Mu_gg_125_NLO)
+else:
+  samps.extend(DataAndMC)
 
 crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
 crab_analyzers_dir = crab_prod_dir+'/analyzers'
@@ -78,8 +70,8 @@ for samp in samps:
         line = line.replace('samp.DAS', "'%s'" % samp.DAS)
         line = line.replace('samp.GT', "'%s'" % samp.GT)
         line = line.replace('samp.files', str(samp.files))
-        # line = line.replace('samp.JSON', "'%s'" % samp.JSON)
-        # line = line.replace('samp.inputDBS','%s' %samp.inputDBS)
+        line = line.replace('samp.JSON', "'%s'" % samp.JSON)
+        line = line.replace('samp.inputDBS','%s' %samp.inputDBS)
 
         out_file.write(line)
     
@@ -106,26 +98,32 @@ for samp in samps:
 
         if samp.isData and 'lumiMask' in line: 
             line = line.replace('# config.Data.lumiMask', 'config.Data.lumiMask')
-            line = line.replace("= 'STR'", "= '%s/../%s'" % (os.getcwd(), samp.JSON) )
+            line = line.replace("= 'STR'", "= '%s'" % samp.JSON)
 
         if 'splitting' in line:
-            line = line.replace("= 'STR'", "= 'FileBased'")
+            if samp.isData:
+                line = line.replace("= 'STR'", "= 'LumiBased'")
+            else:
+                line = line.replace("= 'STR'", "= 'FileBased'")
 
         if 'unitsPerJob' in line:
             if test_run:
-                line = line.replace('= NUM', '= 5')
+                line = line.replace('= NUM', '= 1')
             elif samp.isData:
-                line = line.replace('= NUM', '= 250')  ## 100
+                line = line.replace('= NUM', '= 100')  ## 100
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
-                line = line.replace('= NUM', '= 5')
+                line = line.replace('= NUM', '= 5')  ## 5
 
-        # if 'inputDBS' in line:
-        #     line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
+        if 'inputDBS' in line:
+            line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
 
         if 'outputDatasetTag' in line:
             line = line.replace("= 'STR'", "= '%s'" % samp.name)
+
+        if 'outLFNDirBase' in line:
+            line = line.replace("= 'STR'", "= '{0}/'".format(output_dir))
 
         out_file.write(line)
     
@@ -139,7 +137,7 @@ print '\nCreating submit_all.sh and check_all.sh scripts'
 out_file = open('%s/submit_all.sh' % crab_prod_dir, 'w')
 out_file.write('#!/bin/bash\n')
 out_file.write('\n')
-# out_file.write('source /cvmfs/cms.cern.ch/crab3/crab.csh\n')
+#out_file.write('source /cvmfs/cms.cern.ch/crab3/crab.csh\n')
 out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
@@ -154,6 +152,6 @@ out_file.write('\n')
 # out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
-    out_file.write('crab status -d %s/logs/crab_%s*\n' % (crab_prod_dir,samp.name))
+    out_file.write('crab status -d logs/crab_%s%s*\n' % (samp.name,crab_prod_dir))
 out_file.close()
 os.chmod('%s/check_all.sh' % crab_prod_dir, 0o744)
