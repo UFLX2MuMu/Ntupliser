@@ -124,4 +124,3 @@ process.p = cms.Path(
   process.fullPatMetSequenceModifiedMET *
   process.dimuons )
 
-process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )
