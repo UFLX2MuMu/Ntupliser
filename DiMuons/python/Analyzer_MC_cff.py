@@ -98,12 +98,12 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
-                         Trig_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunBtoF.root"),
-                         Trig_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunGtoH.root"),
-                         MuID_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
-                         MuID_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
-                         MuIso_eff_3_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
-                         MuIso_eff_4_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
+                         Trig_eff_3_file  = cms.string("Ntupliser/Dimuons/data/MuonTrig/EfficienciesAndSF_RunBtoF.root"),
+                         Trig_eff_4_file  = cms.string("Ntupliser/Dimuons/data/MuonTrig/EfficienciesAndSF_RunGtoH.root"),
+                         MuID_eff_3_file  = cms.string("Ntupliser/Dimuons/data/MuonIDIso/jsonfiles/RunBCDEF_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuID_eff_4_file  = cms.string("Ntupliser/Dimuons/data/MuonIDIso/jsonfiles/RunGH_sf_SYS_NUM_MediumID_DEN_genTracks.json"),
+                         MuIso_eff_3_file = cms.string("Ntupliser/Dimuons/data/MuonIDIso/jsonfiles/RunBCDEF_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
+                         MuIso_eff_4_file = cms.string("Ntupliser/Dimuons/data/MuonIDIso/jsonfiles/RunGH_sf_SYS_NUM_LooseRelIso_DEN_MediumID.json"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),

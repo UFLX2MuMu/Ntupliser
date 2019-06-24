@@ -98,12 +98,12 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
-                         Trig_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunBtoF.root"),
-                         Trig_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_trigger/EfficienciesAndSF_RunGtoH.root"),
-                         MuID_eff_3_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_SF_ID.json"),
-                         MuID_eff_4_file  = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_SF_ID.json"),
-                         MuIso_eff_3_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunBCDEF_SF_ISO.json"),
-                         MuIso_eff_4_file = cms.string("MuonReferenceEfficiencies/EfficienciesStudies/2016_legacy_rereco/jsonfiles/RunGH_SF_ID.json"),
+                         Trig_eff_3_file  = cms.string("Ntupliser/DiMuons/data/MuonTrig/EfficienciesAndSF_RunBtoF.root"),
+                         Trig_eff_4_file  = cms.string("Ntupliser/DiMuons/data/MuonTrig/EfficienciesAndSF_RunGtoH.root"),
+                         MuID_eff_3_file  = cms.string("Ntupliser/DiMuons/data/MuonIDIso/jsonfiles/RunBCDEF_SF_ID.json"),
+                         MuID_eff_4_file  = cms.string("Ntupliser/DiMuons/data/MuonIDIso/jsonfiles/RunGH_SF_ID.json"),
+                         MuIso_eff_3_file = cms.string("Ntupliser/DiMuons/data/MuonIDIso/jsonfiles/RunBCDEF_SF_ISO.json"),
+                         MuIso_eff_4_file = cms.string("Ntupliser/DiMuons/data/MuonIDIso/jsonfiles/RunGH_SF_ID.json"),
 
                          # ## Taus
                          # tauColl    = cms.InputTag("slimmedTaus"),
