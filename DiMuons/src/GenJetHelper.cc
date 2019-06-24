@@ -16,7 +16,6 @@ void FillGenJetInfos( GenJetInfos& _genJetInfos,
   for(unsigned int i = 0; i < sortedGenJets.size(); i++) {
     
     GenJetInfo _genJetInfo;
-    _genJetInfo.init();
     
     _genJetInfo.px     = sortedGenJets[i].px();
     _genJetInfo.py     = sortedGenJets[i].py();

@@ -4,3 +4,9 @@ Trigger efficiencies and scale factors generated 2016.12.14, up-to-date as of 20
 Cover Period 3 (run F, from run 278167) and Period 4 (run GH)
 
 https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults?rev=22#Results_on_the_full_2016_data
+
+
+2018.03.08 - PB - slides on trigger efficiency on single-lepton
+https://indico.cern.ch/event/700229/contributions/2883570/attachments/1596534/2529050/20180207_MuonPOG_MuonHLTReport_KPLee_v2.pdf
+ROOT file taken from 
+https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffs2017#Results_for_Run2017_Nov17_Re_Rec

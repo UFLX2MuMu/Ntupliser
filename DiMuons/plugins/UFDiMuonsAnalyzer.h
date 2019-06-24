@@ -24,6 +24,10 @@
 #include "Ntupliser/RochCor/interface/RoccoR.h"
 #include "Ntupliser/DiMuons/interface/LepMVA.h"
 
+// Classes or json handling
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/json_parser.hpp"
+
 ///////////////////////////////////////////////////////////
 // Class Definition ======================================
 //////////////////////////////////////////////////////////
@@ -64,6 +68,10 @@ public:
   TFile* _PU_wgt_file;
   int _GEN_wgt;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
 
+  //L1 ECAL prefiring event weights and systematic uncertainty
+  float _prefiringweight; 
+  float _prefiringweightup; 
+  float _prefiringweightdown;
 
   ///////////////////////////////////////////////////////////
   // Structs  ==============================================
@@ -81,7 +89,10 @@ public:
   int _Flag_HBHE;
   int _Flag_HBHE_Iso;
   int _Flag_ECAL_TP;
-  
+  int _Flag_BadChCand;
+  int _Flag_eeBadSc;
+  int _Flag_ecalBadCalib;
+ 
   // vector of vertex information
   VertexInfos _vertexInfos;
   int _nVertices;
@@ -269,6 +280,13 @@ public:
   float  _MuIso_SF_4_up;
   float  _MuIso_SF_4_down;
 
+  //json
+  boost::property_tree::ptree _MuIso_SF_3_json;
+  boost::property_tree::ptree _MuID_SF_3_json;
+  boost::property_tree::ptree _MuIso_SF_4_json;
+  boost::property_tree::ptree _MuID_SF_4_json;
+
+
   ///////////////////////////////////////////////////////////
   // Trees  ================================================
   //////////////////////////////////////////////////////////
@@ -302,7 +320,8 @@ private:
   void FillEventFlags( const edm::Event& iEvent, const edm::EventSetup& iSetup,
 		       const edm::Handle<edm::TriggerResults>& evtFlagsHandle,
 		       int& _Flag_all, int& _Flag_badMu, int& _Flag_dupMu, int& _Flag_halo,
-		       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP );
+		       int& _Flag_PV, int& _Flag_HBHE, int& _Flag_HBHE_Iso, int& _Flag_ECAL_TP, 
+                       int& _Flag_BadChCand, int& _Flag_eeBadSc, int& _Flag_ecalBadCalib  );
 
   float calcHtLHE(const edm::Handle<LHEEventProduct>& LHE_handle);
   
@@ -346,6 +365,11 @@ private:
   edm::EDGetTokenT<edm::TriggerResults> _trigResultsToken;
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> _trigObjsToken;
 
+  // L1 ECAL prefiring event weights and systematic variations
+  edm::EDGetTokenT< double > _prefweight_token;
+  edm::EDGetTokenT< double > _prefweightup_token;
+  edm::EDGetTokenT< double > _prefweightdown_token;
+
   // Event flags
   edm::EDGetTokenT< edm::TriggerResults > _evtFlagsToken;
   
@@ -354,11 +378,11 @@ private:
 
   // Electrons
   edm::EDGetTokenT<edm::View<pat::Electron>> _eleCollToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdVetoToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdLooseToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdMediumToken;
-  edm::EDGetTokenT< edm::ValueMap<bool> >    _eleIdTightToken;
-  edm::EDGetTokenT< edm::ValueMap<float> >   _eleIdMvaToken;
+ std::string _eleIdVetoName;
+ std::string _eleIdLooseName;
+ std::string _eleIdMediumName;
+ std::string _eleIdTightName;
+ std::string _eleIdMvaName;
 
   // Taus
   edm::EDGetTokenT<pat::TauCollection> _tauCollToken;
@@ -399,6 +423,7 @@ private:
   bool _slimOut;
 
   int  _skim_nMuons;
+  int  _skim_nLeptons;
   bool _skim_trig;
 
   double _vertex_ndof_min;
@@ -412,6 +437,11 @@ private:
   bool   _muon_use_pfIso;
   double _muon_iso_dR;
   double _muon_iso_max;
+
+  std::string _muon_id_wp_num;// = "MediumID";
+  std::string _muon_id_wp_den;// = "genTracks";
+  std::string _muon_iso_wp_num;// = "LooseRelIso";
+  std::string _muon_iso_wp_den;// = "MediumID";
 
   std::string _ele_ID;
   double _ele_pT_min;

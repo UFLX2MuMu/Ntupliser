@@ -1,0 +1,25 @@
+
+Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/RochcorMuon
+
+"Correction for 2016 Prompt(80x) sample. 2.66/fb data is used. 
+ Report for this version in Muon POG working meeting (July 13th, 2016). 
+ The correction only contains the statistical uncertainty of the correction."
+
+Downloaded rochcor80x_070616v2.tgz
+tar -xvf rochcor80x_070616v2.tgz
+Created RochCor/Calibration/ directory
+Copied the following files:
+  * RoccoR.cc
+  * RoccoR.h
+  * RoccoR_13tev.txt
+  * rochcor2016.cc
+  * rochcor2016.h
+
+Copied BuildFile.xml from KaMuCa/Calibration/ (but commented-out most of it)
+
+Moved .cc and .h files into src/ and interface/ directories, modified includes
+
+Edited interface/RoccoR.h to make some constant parameters C++ compatible
+
+Edited data/Feb06/config.txt to provide 200 toys for statistical uncertainty ... 
+but there are only 100 files available in data/Feb06/, so that's the max available

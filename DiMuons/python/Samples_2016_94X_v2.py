@@ -20,7 +20,7 @@ class sample:
 ## ReReco:     https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2016Analysis#Re_reco_datasets
 ## PromptReco: https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2016Analysis#DATA
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/
-JSON_2016 = 'data/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'  ## 36.814 fb-1
+JSON_2016 = 'data/JSON/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'  ## 36.814 fb-1
 
 AWB_dir = '/store/user/abrinke1/HiggsToMuMu/samples/'
 

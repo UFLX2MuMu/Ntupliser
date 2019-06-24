@@ -40,13 +40,17 @@ struct MuonInfo {
   Double_t pt_Roch_sys_up    = -999;
   Double_t pt_Roch_sys_down  = -999;
 
-  Float_t d0_BS     = -999;
-  Float_t dz_BS     = -999;
-  Float_t d0_PV     = -999;
-  Float_t dz_PV     = -999;
-  Float_t IP_3D     = -999;
-  Float_t SIP_3D    = -999;
-  Float_t segCompat = -999;
+  Float_t d0_BS        = -999;
+  Float_t dz_BS        = -999;
+  Float_t d0_PV        = -999;
+  Float_t dz_PV        = -999;
+  Float_t d0_PV_kinfit = -999;
+  Float_t dz_PV_kinfit = -999;
+  Float_t chi2_kinfit  = -999;
+  Int_t   ndf_kinfit   = -999;
+  Float_t IP_3D        = -999;
+  Float_t SIP_3D       = -999;
+  Float_t segCompat    = -999;
 
   Float_t relIso            = -999;
   Float_t relCombIso        = -999;
@@ -67,11 +71,12 @@ struct MuonInfo {
   // PF information
   Bool_t isPF = -999;
 
-  Double_t pt_kinfit = -999;
-  Double_t pt_PF     = -999;
-  Double_t ptErr_PF  = -999;
-  Double_t eta_PF    = -999;
-  Double_t phi_PF    = -999;
+  Double_t pt_kinfit    = -999;
+  Double_t ptErr_kinfit = -999;
+  Double_t pt_PF        = -999;
+  Double_t ptErr_PF     = -999;
+  Double_t eta_PF       = -999;
+  Double_t phi_PF       = -999;
 
   Float_t sumChargedHadronPtR03   = -999;  // sum-pt of charged Hadron
   Float_t sumChargedParticlePtR03 = -999;  // sum-pt of charged Particles(inludes e/mu)
@@ -85,15 +90,16 @@ struct MuonInfo {
   Float_t sumPhotonEtR04          = -999;
   Float_t sumPUPtR04              = -999;
 
-  const static Int_t nTrig = 4; // this number has to match the number of requested triggers in python/UFDiMuonsAnalyzer_*cff.py
+  const static Int_t nTrig = 9; // this number has to match the number of requested triggers in python/UFDiMuonsAnalyzer_*cff.py
   Bool_t  isHltMatched[nTrig] = {0};
   Float_t hltEff      [nTrig] = {0};
   Float_t hltPt       [nTrig] = {0};
   Float_t hltEta      [nTrig] = {0};
   Float_t hltPhi      [nTrig] = {0};
 
-  Float_t GEN_pt = -999;
-  Float_t GEN_dR = -999;
+  Float_t GEN_pt  = -999;
+  Float_t GEN_dR  = -999;
+  Int_t   GEN_idx = -999; // Index of the matched genMuon in the genMuonInfo collections
 
 };
 
