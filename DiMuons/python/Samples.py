@@ -19,7 +19,7 @@ class sample:
 
 # The JSON file details the valid lumi sections
 ## JSON files: https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/
-golden_23Sep2016ReReco = ['data/JSON/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt']
+golden_23Sep2016ReReco = 'data/JSON/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 
 
 processed_dataset = ['RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1', #0 
