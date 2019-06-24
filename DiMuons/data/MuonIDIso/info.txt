@@ -4,3 +4,22 @@ Trigger efficiencies and scale factors generated 2016.12.14, up-to-date as of 20
 Cover Period 3 (run F, from run 278167) and Period 4 (run GH)
 
 https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults?rev=22#Results_on_the_full_2016_data
+
+
+
+2018.03 - PB - Muon reco ID, isolation, and trigger efficiency and data/MC scale factors for 2017 data Nov17ReReco
+https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffs2017#Results_for_Run2017_Nov17_Re_Rec
+
+json file for SF ID and ISO for 2017 run
+Run2017_BCDEF_SF_ID.json
+Run2017_BCDEF_SF_ISO.json
+downloaded from 
+https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffs2017#Results_for_Run2017_Nov17_Re_Rec
+and explained by these slides on ID and ISO
+https://indico.cern.ch/event/700229/contributions/2883572/attachments/1596400/2529015/7Feb_MuonSFs.pdf
+In the same twiki there is an explaination on how to access the SF values from the json.
+
+
+2018.03 - PB - some extra info about selectors
+https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2
+

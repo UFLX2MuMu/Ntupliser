@@ -40,7 +40,6 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     pat::Jet jet = jetsSelected.at(i);
     JetInfo _jetInfo;
-    _jetInfo.init();
 
     _jetInfo.px       = jet.px();
     _jetInfo.py       = jet.py();
@@ -77,7 +76,7 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     if (_jetInfo.CSV > 1.) _jetInfo.CSV = 1.0;
     _jetInfo.deepCSV = jet.bDiscriminator("pfDeepCSVJetTags:probb") + jet.bDiscriminator("pfDeepCSVJetTags:probbb");
     _jetInfo.puID    = jet.userFloat("pileupJetId:fullDiscriminant");
-    
+
     const reco::GenJet* genJet = jet.genJet();
     if (genJet != NULL) {
       _jetInfo.genMatched = true;
@@ -112,12 +111,12 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     if ( fabs( jet.eta() ) < 2.4 ) nJetsCent += 1;
     else                           _nJetsFwd += 1;
     // https://twiki.cern.ch/twiki/bin/view/CMS/BtagPOG
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X - updated deepCSV WP 2018.12.05 (AWB)
     // https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
     if ( fabs( jet.eta() ) < 2.4 ) {
-      if ( _jetInfo.CSV > 0.5426 )   _nBLoose  += 1;
-      if ( _jetInfo.CSV > 0.8484 )   _nBMed    += 1;
-      if ( _jetInfo.CSV > 0.9535 )   _nBTight  += 1;
+      if ( _jetInfo.deepCSV > 0.1522 )   _nBLoose  += 1;
+      if ( _jetInfo.deepCSV > 0.4941 )   _nBMed    += 1;
+      if ( _jetInfo.deepCSV > 0.8001 )   _nBTight  += 1;
     }
     _jetInfos.push_back( _jetInfo );
 
@@ -238,41 +237,35 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
     // Apply cuts for selected jets
     if ( corr_jet.pt()          < _jet_pT_min  ) continue;
     if ( fabs( corr_jet.eta() ) > _jet_eta_max ) continue;
-    
-    bool isLoose = false;
+
+    // Implementing Jet ID.
+    // Following the JetMET POG recommendation.
+    // For 2017 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2017    
+    bool isLoose = true; // Loose is not recommended, nor supported anymore. Setting it to 1.
     bool isTight = false;
 
-    if ( fabs( corr_jet.eta() ) < 2.7 ) {
+    if ( fabs( corr_jet.eta() ) <= 2.7 ) {
 
-      isLoose = ( corr_jet.neutralHadronEnergyFraction() < 0.99 &&
-		  corr_jet.neutralEmEnergyFraction()     < 0.99 &&
-		  ( corr_jet.chargedMultiplicity() + 
-		    corr_jet.neutralMultiplicity() )     > 1 );
+      isTight =  ( corr_jet.neutralHadronEnergyFraction() < 0.90 &&
+		   corr_jet.neutralEmEnergyFraction()     < 0.90 &&
+                   corr_jet.numberOfDaughters()        > 0.   );
+      if (fabs( corr_jet.eta()) <= 2.4 ){
+        isTight = ( isTight                                      &&
+ 		    corr_jet.chargedMultiplicity()         > 0.  && 
+                    corr_jet.chargedHadronEnergyFraction() > 0.   );
+      }		   
 
-      isTight = ( isLoose                                       && 
-		  corr_jet.neutralHadronEnergyFraction() < 0.90 &&
-		  corr_jet.neutralEmEnergyFraction()     < 0.90 );
-
-      if ( fabs( corr_jet.eta() ) < 2.4 ) {
-	
-	isLoose &= ( corr_jet.chargedHadronEnergyFraction() > 0.   &&
-		     corr_jet.chargedMultiplicity()         > 0    &&
-		     corr_jet.chargedEmEnergyFraction()     < 0.99 );
-	
-	isTight &= isLoose;
-      }
     } // End if ( fabs( corr_jet.eta() ) < 2.7 )
-    else if ( fabs( corr_jet.eta() ) < 3.0 ) {
+    else if ( fabs(corr_jet.eta()) > 2.7 && fabs( corr_jet.eta() ) <= 3.0 ) {
 
-      isLoose = ( corr_jet.neutralEmEnergyFraction()     > 0.01 &&
-		  corr_jet.neutralHadronEnergyFraction() < 0.98 &&
+      isTight = ( corr_jet.neutralEmEnergyFraction()     > 0.02 &&
+		  corr_jet.neutralEmEnergyFraction()     < 0.99 &&
 		  corr_jet.neutralMultiplicity()         > 2 );
-      isTight = isLoose;
     }
-    else {
-      isLoose = ( corr_jet.neutralEmEnergyFraction() < 0.90 &&
-		  corr_jet.neutralMultiplicity()     > 10 );
-      isTight = isLoose;
+    else if (fabs (corr_jet.eta()) > 3.0 ) {
+      isTight = ( corr_jet.neutralEmEnergyFraction()     < 0.90 &&
+		  corr_jet.neutralHadronEnergyFraction() > 0.02 && 
+                  corr_jet.neutralMultiplicity()         > 10 );
     }
 
     if (_jet_ID.find("loose") != std::string::npos && !isLoose) continue;

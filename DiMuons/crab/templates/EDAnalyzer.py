@@ -1,25 +1,16 @@
 # =============================================================#
-#                      UFDiMuonsAnalyzer                       #
-#                                                              #
-# Stripped down, no updateJetCollection, apparently not needed #
-# egmGsfElectronID necessary for electron ID - AWB 23.10.2018  #
+# X2MuMuAnalyzer configuration file                            #
 # =============================================================#
-
-
-# /////////////////////////////////////////////////////////////
-# Load some things
-# /////////////////////////////////////////////////////////////
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process('dimuons')
+process = cms.Process("dimuons")
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 # /////////////////////////////////////////////////////////////
 # Get a sample from our collection of samples
@@ -39,10 +30,10 @@ print '  * From DAS: %s' % samp.DAS
 print '\nLoading Global Tag: ' + samp.GT
 process.GlobalTag.globaltag = samp.GT
 
-
 # /////////////////////////////////////////////////////////////
 # ------------ PoolSource -------------
 # /////////////////////////////////////////////////////////////
+
 readFiles = cms.untracked.vstring();
 # Get list of files from the sample we loaded
 readFiles.extend(samp.files);
@@ -51,81 +42,86 @@ readFiles.extend(samp.files);
 
 # readFiles.extend(['root://cms-xrd-global.cern.ch//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/000FF6AC-9F2A-E611-A063-0CC47A4C8EB0.root']);
 
-# ## From /GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM
-# readFiles.extend(['/store/user/abrinke1/HiggsToMuMu/samples/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/12B931FE-CD3A-E611-9844-0025905C3D98.root'])
-
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
-process.source = cms.Source('PoolSource',fileNames = readFiles)
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
-
-# # use a JSON file when locally executing cmsRun
-# if samp.isData:
-#     import FWCore.PythonUtilities.LumiList as LumiList
-#     process.source.lumisToProcess = LumiList.LumiList(filename = samp.JSON).getVLuminosityBlockRange()
-#     # process.source.lumisToProcess = LumiList.LumiList(filename = 'data/JSON/bad_evt.txt').getVLuminosityBlockRange()
-
-
 # /////////////////////////////////////////////////////////////
 # Save output with TFileService
 # /////////////////////////////////////////////////////////////
 
-process.TFileService = cms.Service('TFileService', fileName = cms.string('tuple.root') )
 
+# /////////////////////////////////////////////////////////////
+# L1 Prefiring maps
+# from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+# /////////////////////////////////////////////////////////////
+
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"),
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
 
 # /////////////////////////////////////////////////////////////
 # Load electron IDs
 # /////////////////////////////////////////////////////////////
 
-## Modeled after https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/python/egmSequence_cff.py
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
+## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-eleIDs = [ 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
-           'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff' ]
-for eleID in eleIDs: setupAllVIDIdsInModule(process, eleID, setupVIDElectronSelection)
 
+setupEgammaPostRecoSeq( 
+  process,
+  runVID = True ,  ## Needed for 2017 V2 IDs
+  era    = '2017-Nov17ReReco' 
+  )
 
 # /////////////////////////////////////////////////////////////
-# Load UFDiMuonsAnalyzer
+# Correct MET from EE noise
+# /////////////////////////////////////////////////////////////
+# More info on https://indico.cern.ch/event/759372/contributions/3149378/attachments/1721436/2802416/metreport.pdf
+
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+
+runMetCorAndUncFromMiniAOD (
+  process,
+  isData = samp.isData,
+  fixEE2017 = True,
+  fixEE2017Params = {'userawPt':True,'ptThreshold':50.0,'minEtaThreshold':2.65,'maxEtaThreshold':3.139},
+  postfix = "ModifiedMET"
+  )
+
+# /////////////////////////////////////////////////////////////
+# Load Analyzer
 # /////////////////////////////////////////////////////////////
 
 if samp.isData:
-  process.load('Ntupliser.DiMuons.UFDiMuonsAnalyzer_cff')
+  process.load("Ntupliser.DiMuons.Analyzer_cff")
 else:
-  process.load('Ntupliser.DiMuons.UFDiMuonsAnalyzer_MC_cff')
+  process.load("Ntupliser.DiMuons.Analyzer_MC_cff")
 
+# /////////////////////////////////////////////////////////////
+# Electron Cut Based IDs
+# /////////////////////////////////////////////////////////////
 
-# # /////////////////////////////////////////////////////////////
-# # Save output tree
-# # /////////////////////////////////////////////////////////////
+## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
+## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
 
-# outCommands = cms.untracked.vstring('keep *')
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 
-# process.treeOut = cms.OutputModule('PoolOutputModule',
-#                                    fileName = cms.untracked.string('GluGlu_HToMuMu_M125_JEC_10k_tree.root'),
-#                                    outputCommands = outCommands
-#                                    )
-
-# process.treeOut_step = cms.EndPath(process.treeOut) ## Keep output tree
-
-
+setupEgammaPostRecoSeq( process,
+                        runVID = True ,  ## Needed for 2017 V2 IDs
+                        era    = '2017-Nov17ReReco' )
+ 
 # /////////////////////////////////////////////////////////////
 # Set the order of operations
 # /////////////////////////////////////////////////////////////
     
-print 'About to run the process path'
-
-## Unscheduled running Recommended at least by JetMET, but apparently 'default' and not necessary in CMSSW >= 9_1_0
-## https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideUnscheduledExecution
-
-## Following struture seen in:
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/test/runMiniAnalyzer_cfg.py#L169
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeJetTools_cff.py#L47
-## https://github.com/pfs/TopLJets2015/blob/master/TopAnalysis/python/customizeEGM_cff.py#L67
-
-process.egamma_step = cms.Path( process.egmGsfElectronIDSequence )  ## See eleIDs above
-process.ntuple_step = cms.Path( process.dimuons )
+process.p = cms.Path( 
+  process.prefiringweight *
+  process.egammaPostRecoSeq *
+  process.fullPatMetSequenceModifiedMET *
+  process.dimuons )
 
 process.schedule = cms.Schedule( process.egamma_step, process.ntuple_step )  ## , process.treeOut_step )

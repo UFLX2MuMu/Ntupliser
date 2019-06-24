@@ -74,7 +74,6 @@ void FillGenMuPairInfos( GenMuPairInfos& _genPairInfos, const GenMuonInfos _muon
   for (int i = 0; i < int(isOS.size()); i++) {
 
     GenMuPairInfo _genPairInfo;
-    _genPairInfo.init();
     
     int iMu1 = isOS.at(i).second.first;
     int iMu2 = isOS.at(i).second.second;

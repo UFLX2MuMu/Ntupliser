@@ -7,22 +7,20 @@
 
 struct GenMuPairInfo {
 
-  Int_t iMu1;
-  Int_t iMu2;
-  Int_t mother_ID;
-  Int_t postFSR;
-  Int_t charge;
+  Int_t iMu1      = -999;
+  Int_t iMu2      = -999;
+  Int_t mother_ID = -999;
+  Int_t postFSR   = -999;
+  Int_t charge    = -999;
 
-  Double_t mass ;
-  Double_t pt   ;
-  Double_t eta  ;
-  Double_t rapid;
-  Double_t phi  ;
-  Double_t dR   ;
-  Double_t dEta ;
-  Double_t dPhi ;
-
-  void init();
+  Double_t mass  = -999;
+  Double_t pt    = -999;
+  Double_t eta   = -999;
+  Double_t rapid = -999;
+  Double_t phi   = -999;
+  Double_t dR    = -999;
+  Double_t dEta  = -999;
+  Double_t dPhi  = -999;
 
 };
 

@@ -66,8 +66,8 @@ void FillLepMVAVars( LepMVAVars & vars, const MuonInfo & mu,
   vars.sip3d                  = mu.SIP_3D;
   vars.dxy                    = log(fabs(mu.d0_PV));
   vars.dz                     = log(fabs(mu.dz_PV));
-  vars.electronMva            = -999;  // For 2016 electrons only                                                                                                                                                                 
-  vars.electronMvaFall17NoIso = -999;  // For 2017 electrons only                                                                                                                                                                 
+  vars.electronMva            = -999;  // For 2016 electrons only
+  vars.electronMvaFall17NoIso = -999;  // For 2017 electrons only
   vars.segmentCompatibility   = mu.segCompat;
 
   TLorentzVector mu_vec;
@@ -123,8 +123,8 @@ void FillLepMVAVars( LepMVAVars & vars, const EleInfo & ele,
   vars.sip3d                  = ele.SIP_3D;
   vars.dxy                    = log(fabs(ele.d0_PV));
   vars.dz                     = log(fabs(ele.dz_PV));
-  vars.electronMva            = ele.mvaID;
-  vars.electronMvaFall17NoIso = -999;  // For 2017 electrons only                                                                                                                                                                 
+  vars.electronMva            = ele.mvaID;  // "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"
+  vars.electronMvaFall17NoIso = ele.mvaID;  // "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"
   vars.segmentCompatibility   = -999;  // For muons only
 
   TLorentzVector ele_vec;

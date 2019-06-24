@@ -7,20 +7,18 @@
 
 struct VertexInfo {
 
-  Bool_t  isValid ;
-  Float_t x       ;	
-  Float_t y       ;	
-  Float_t z       ;	
-  Float_t rho     ;	
-  Float_t xErr    ;	
-  Float_t yErr    ;	
-  Float_t zErr    ;	
-  Float_t chi2    ;
-  Int_t   ndof    ;
-  Float_t normChi2;
+  Bool_t  isValid  = -999;
+  Float_t x        = -999;	
+  Float_t y        = -999;	
+  Float_t z        = -999;	
+  Float_t rho      = -999;	
+  Float_t xErr     = -999;	
+  Float_t yErr     = -999;	
+  Float_t zErr     = -999;	
+  Float_t chi2     = -999;
+  Int_t   ndof     = -999;
+  Float_t normChi2 = -999;
 
-  void init();
-  
 };
 
 typedef std::vector<VertexInfo> VertexInfos;

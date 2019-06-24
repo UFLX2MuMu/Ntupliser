@@ -22,7 +22,6 @@ void FillGenParentInfos( GenParentInfos& _genParentInfos,
     if (not good_ID) continue;
     
     GenParentInfo _genParentInfo;
-    _genParentInfo.init();
     
     _genParentInfo.ID         = parent.pdgId();
     _genParentInfo.status     = parent.status();
