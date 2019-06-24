@@ -46,8 +46,8 @@ samps.extend(DataAndMC)
 # test_str = '_v1'
 # samps.append(SingleMu_2016C)
 # samps.append(H2Mu_gg)
-samps.append(ZJets_AMC)
-samps.append(tt_ll_AMC)
+#samps.append(ZJets_AMC)
+#samps.append(tt_ll_AMC)
 
 # samps.append(SingleMu_2017B)
 
