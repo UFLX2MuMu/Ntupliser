@@ -6,7 +6,7 @@ config.section_('General')
 config.General.requestName = 'STR'
 config.General.workArea = 'logs'
 config.General.transferOutputs = True  ## Do output root files
-config.General.transferLogs = True
+config.General.transferLogs = False
 
 config.section_('JobType')
 config.JobType.psetName = 'STR'
