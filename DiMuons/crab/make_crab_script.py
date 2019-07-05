@@ -9,7 +9,14 @@ from python.Samples import *
 import time  ## For timestamp on crab jobs
 import os  ## For executable permissions on scripts
 import subprocess 
+# from https://stackoverflow.com/questions/15753701/argparse-option-for-passing-a-list-as-option
+import argparse # for options parsing
+parser = argparse.ArgumentParser(description="Pass arguments")
+parser.add_argument("-s", "--samples", nargs='*', dest="samps", default  = [],
+                 help = "List of samples")
+                 
 
+args = parser.parse_args()
 
 ## Read the code tag for the production.
 def get_prod_version():
@@ -36,15 +43,21 @@ print("Production output dir {0}".format(output_dir))
 
 samps = []
 
+for sample_to_add in args.samps:
+  samps.append(samples_dictionary[sample_to_add])
+
 ## Get the samples you want to make a crab config file for 
 test_run = False
-test_str = '_prod2017_{0}'.format(prod_version)
- 
-if (test_run):
-  samps.append(SingleMu_2018A)
-  samps.append(H2Mu_gg_125_NLO)
-else:
-  samps.extend(DataAndMC)
+version_str = '_prod2018_{0}'.format(prod_version)
+
+if (len(samps) == 0): # if no samples specified in the option to the script 
+  if (test_run):
+    samps.append(SingleMu_2018A)
+    samps.append(H2Mu_gg_125_NLO)
+  else:
+    samps.extend(DataAndMC)
+
+print("Sample list: {0}".format(samps))
 
 crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
 crab_analyzers_dir = crab_prod_dir+'/analyzers'
@@ -88,7 +101,7 @@ for samp in samps:
     # crab submission file that uses the above CMSSW analyzer
     for line in in_file:
         if 'requestName' in line:
-            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), test_str.replace(".","p")) ) 
+            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), version_str.replace(".","p")) ) 
 
         if 'psetName' in line: 
             line = line.replace("= 'STR'", "= '%s/%s.py'" % (crab_analyzers_dir, samp.name) )
