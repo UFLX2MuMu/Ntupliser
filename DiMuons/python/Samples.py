@@ -473,3 +473,8 @@ DataAndMC.extend(Background)
 MC = []
 MC.extend(Signal)
 MC.extend(Background)
+
+#create dictionary
+samples_dictionary = {sample.name:sample for sample in DataAndMC}
+
+
