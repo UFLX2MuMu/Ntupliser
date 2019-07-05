@@ -226,7 +226,7 @@ H2Mu_WH_pos_125 = sample( name = 'H2Mu_WH_pos_125',
                           nEvt = -1 ) ## 300 k
 
 H2Mu_WH_pos_130 = sample( name = 'H2Mu_WH_pos_130',
-                          DAS  = '/WplusH_HToMuMu_WToAll_M120_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                          DAS  = '/WplusH_HToMuMu_WToAll_M130_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                           nEvt = -1 ) ## 300 k
 
 ## WH (-)
