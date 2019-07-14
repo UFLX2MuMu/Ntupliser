@@ -72,7 +72,6 @@ process.dimuons.doSys_KaMu = cms.bool(False)
 process.dimuons.doSys_Roch = cms.bool(True)
 process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
 process.dimuons.skim_nMuons = cms.int32(2)
-process.dimuons.skim_nLeptons = cms.int32(3)
 
 # /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
