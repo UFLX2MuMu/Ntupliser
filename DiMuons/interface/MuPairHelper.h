@@ -29,6 +29,15 @@ void FillMuPairMasses( muVecSys& mu1_vec, muVecSys& mu2_vec, pairVecSys& pair_ve
 		       double& massErr, const double MASS_MUON,
 		       const MuonInfo _mu1, const MuonInfo _mu2,
 		       const double _mu1_pt, const double _mu2_pt,
+		       const double _mu1_ptErr, const double _mu2_ptErr,
+                       const float _mu1_phi, const float _mu2_phi,
+                       const float _mu1_eta, const float _mu2_eta );
+
+
+void FillMuPairMasses( muVecSys& mu1_vec, muVecSys& mu2_vec, pairVecSys& pair_vec, 
+		       double& massErr, const double MASS_MUON,
+		       const MuonInfo _mu1, const MuonInfo _mu2,
+		       const double _mu1_pt, const double _mu2_pt,
 		       const double _mu1_ptErr, const double _mu2_ptErr );
 
 #endif  // #ifndef MU_PAIR_HELPER

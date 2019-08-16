@@ -22,6 +22,8 @@ struct MuonInfo {
   Double_t ptErr  = -999;
   Double_t eta    = -999;
   Double_t phi    = -999;
+  Double_t phi_kinfit = -999;
+  Double_t eta_kinfit = -999;
 
   Double_t pt_trk    = -999;
   Double_t ptErr_trk = -999;
