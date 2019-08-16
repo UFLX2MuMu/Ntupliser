@@ -145,7 +145,9 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
       FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
 		      _muonInfos.at(iMu1), _muonInfos.at(iMu2),
 		      _muonInfos.at(iMu1).pt_kinfit, _muonInfos.at(iMu2).pt_kinfit,
-		      _muonInfos.at(iMu1).ptErr_kinfit, _muonInfos.at(iMu2).ptErr_kinfit );
+		      _muonInfos.at(iMu1).ptErr_kinfit, _muonInfos.at(iMu2).ptErr_kinfit,
+                      _muonInfos.at(iMu1).phi_kinfit, _muonInfos.at(iMu2).phi_kinfit,
+                      _muonInfos.at(iMu1).eta_kinfit, _muonInfos.at(iMu2).eta_kinfit );
       
       _pairInfo.mass_kinfit    = pair_vec.nom.M();
       _pairInfo.massErr_kinfit = massErr;
@@ -200,6 +202,35 @@ bool pair_is_OS( std::pair< bool, std::pair<int, int> > i,
   return (i.first || !j.first);
 }
 
+void FillMuPairMasses( muVecSys& mu1_vec, muVecSys& mu2_vec, pairVecSys& pair_vec, 
+		     double& massErr, const double MASS_MUON,
+		     const MuonInfo _mu1, const MuonInfo _mu2, 
+		     const double _mu1_pt, const double _mu2_pt,
+		     const double _mu1_ptErr, const double _mu2_ptErr,
+                     const float _mu1_phi, const float _mu2_phi,
+                     const float _mu1_eta, const float _mu2_eta ) {
+
+  mu1_vec.nom.SetPtEtaPhiM(_mu1_pt, _mu1_eta, _mu1_phi, MASS_MUON);
+  mu2_vec.nom.SetPtEtaPhiM(_mu2_pt, _mu2_eta, _mu2_phi, MASS_MUON);
+  
+  mu1_vec.up.SetPtEtaPhiM(_mu1_pt + _mu1_ptErr, _mu1_eta, _mu1_phi, MASS_MUON);
+  mu2_vec.up.SetPtEtaPhiM(_mu2_pt + _mu2_ptErr, _mu2_eta, _mu2_phi, MASS_MUON);
+  
+  mu1_vec.down.SetPtEtaPhiM(_mu1_pt - _mu1_ptErr, _mu1_eta, _mu1_phi, MASS_MUON);
+  mu2_vec.down.SetPtEtaPhiM(_mu2_pt - _mu2_ptErr, _mu2_eta, _mu2_phi, MASS_MUON);
+  
+  pair_vec.nom   = mu1_vec.nom  + mu2_vec.nom;
+  pair_vec.up1   = mu1_vec.up   + mu2_vec.nom;
+  pair_vec.down1 = mu1_vec.down + mu2_vec.nom;
+  pair_vec.up2   = mu1_vec.nom  + mu2_vec.up;
+  pair_vec.down2 = mu1_vec.nom  + mu2_vec.down;
+  
+  massErr = sqrt( pow(pair_vec.nom.M() - pair_vec.up1.M(),   2) +
+		  pow(pair_vec.nom.M() - pair_vec.down1.M(), 2) + 
+		  pow(pair_vec.nom.M() - pair_vec.up2.M(),   2) + 
+		  pow(pair_vec.nom.M() - pair_vec.down2.M(), 2) ) / 2.;
+  
+}
 void FillMuPairMasses( muVecSys& mu1_vec, muVecSys& mu2_vec, pairVecSys& pair_vec, 
 		     double& massErr, const double MASS_MUON,
 		     const MuonInfo _mu1, const MuonInfo _mu2, 

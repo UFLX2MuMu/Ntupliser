@@ -277,6 +277,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
         _muonInfo.pt_kinfit  = mu1_tlv.Pt();
+        _muonInfo.phi_kinfit = mu1_tlv.Phi();
+        _muonInfo.eta_kinfit = mu1_tlv.Eta();
         _muonInfo.ptErr_kinfit = mu1_ptErr_kinfit;
       }
       if(i==1){ //second muon
@@ -286,12 +288,16 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
         _muonInfo.pt_kinfit  = mu2_tlv.Pt();
+        _muonInfo.phi_kinfit = mu2_tlv.Phi();
+        _muonInfo.eta_kinfit = mu2_tlv.Eta();
         _muonInfo.ptErr_kinfit = mu2_ptErr_kinfit;
      }
     } 
     else{ // if the kinfit was not succesful for this muon use the muonBestTrack 
         _muonInfo.pt_kinfit = muon.muonBestTrack()->pt();
-        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError(); 
+        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError();
+        _muonInfo.phi_kinfit = muon.muonBestTrack()->phi();
+        _muonInfo.eta_kinfit = muon.muonBestTrack()->eta(); 
     }
 
     //DEBUG: Checking dO
