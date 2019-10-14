@@ -50,6 +50,33 @@ cd DiMuons
 cmsRun test/UFDiMuonAnalyzer_2018_02_07.py
 ```
 
+#### Crab submission
+
+Assuming a valid crab certificate.
+
+Check production parameters in:
+
+```
+DiMuons/crab/templates/EDAnalyzer.py # analyzers parameters
+DiMuons/crab/templates/crab_config.py # output directory name, storage site
+```
+
+Producing a tag for bookeeping:
+
+```
+git commit -m "<your message>"
+git tag -m "<message> <tag-name>"
+```
+
+The <tag-name> is used to create a folder for the crab production. If no tag is provided, the hash of the last commit is used to name the crab folder.
+
+Prepare and launch the production:
+
+```
+crab/make_crab_script.py -s <sample name>
+./crab/submit_all
+```
+
 
 ### CMSSW_9_4_10
 
