@@ -8,10 +8,12 @@
 #include "Ntupliser/DiMuons/interface/PhotInfo.h"
 
 void FillPhotInfos( PhotInfos& _photInfos, const reco::PFCandidateCollection photsSelected,
-		    const edm::Handle<pat::PackedCandidateCollection> pfCands );
+		    const edm::Handle<pat::PackedCandidateCollection> pfCands, const pat::MuonCollection muons );
 
-reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateCollection> pfCands );
+reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateCollection> pfCands, 
+                                        const pat::MuonCollection muons, 
+                                        const pat::ElectronCollection eles);
 
-double PhotCalcRelIso( const reco::PFCandidate phot, const edm::Handle<pat::PackedCandidateCollection> pfCands );
+double photonPfIso03(reco::PFCandidate phot, edm::Handle<pat::PackedCandidateCollection> pfCands);
 
 #endif  // #ifndef PHOT_HELPER
