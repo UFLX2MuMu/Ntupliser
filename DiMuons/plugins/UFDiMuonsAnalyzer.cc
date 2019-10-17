@@ -106,6 +106,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _jet_pT_min  = iConfig.getParameter<double>      ("jet_pT_min");
   _jet_eta_max = iConfig.getParameter<double>      ("jet_eta_max");
 
+  _phot_pT_min        = iConfig.getParameter<double> ("phot_pT_min");
+  _phot_eta_max       = iConfig.getParameter<double> ("phot_eta_max");
+  _phot_etaGap_min    = iConfig.getParameter<double> ("phot_etaGap_min");
+  _phot_etaGap_max    = iConfig.getParameter<double> ("phot_etaGap_max");
+  _phot_dRPhoMu_max   = iConfig.getParameter<double> ("phot_dRPhoMu_max");
+  _phot_dROverEt2_max = iConfig.getParameter<double> ("phot_dROverEt2_max");
+  _phot_iso_dR        = iConfig.getParameter<double> ("phot_iso_dR");
+  _phot_iso_max       = iConfig.getParameter<double> ("phot_iso_max");
+
   std::cout << "\nOpening Kalman Muon Calibrator files located in:" << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"   << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV.root" << std::endl;
@@ -489,13 +498,22 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // PHOTONS
   // -------
   if (_isVerbose) std::cout << "\nFilling PhotInfo" << std::endl;
+  // edm::Handle<pat::MuonCollection> muonsForPhot;
+  // iEvent.getByToken(_muonCollToken, muonsForPhot);
 
-  reco::PFCandidateCollection photsSelected = SelectPhots( pfCands );
+  // edm::Handle<edm::View<pat::Electron>>  elesForPhot;
+  // iEvent.getByToken(_eleCollToken, elesForPhot);
+
+  // reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muons, eles );
+  reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muonsSelected, elesSelected, _phot_pT_min,
+                                                          _phot_eta_max, _phot_etaGap_min, _phot_etaGap_max,
+                                                          _phot_dRPhoMu_max, _phot_dROverEt2_max, _phot_iso_dR,
+                                                          _phot_iso_max );
 
   // Sort the selected photons by pT
   sort(photsSelected.begin(), photsSelected.end(), sortPhotsByPt);
 
-  FillPhotInfos( _photInfos, photsSelected, pfCands );
+  FillPhotInfos( _photInfos, photsSelected, pfCands, muonsSelected, _phot_iso_dR );
   _nPhots = _photInfos.size();
 
 
