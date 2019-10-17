@@ -4,7 +4,7 @@
 // Based on Oliver Rieger's FSR recovery tool: https://gitlab.cern.ch/uhh-cmssw/fsr-photon-recovery
 
 void FillPhotInfos( PhotInfos& _photInfos, const reco::PFCandidateCollection photsSelected,
-		    const edm::Handle<pat::PackedCandidateCollection> pfCands, const pat::MuonCollection muons ) {
+		    const edm::Handle<pat::PackedCandidateCollection> pfCands, const pat::MuonCollection muons, const double _phot_iso_dR ) {
   
   _photInfos.clear();
   int nPhots = photsSelected.size();
@@ -25,16 +25,16 @@ void FillPhotInfos( PhotInfos& _photInfos, const reco::PFCandidateCollection pho
       } 
     }
 
-    float dREtg = dRPhoMu/pow(phot.pt(),2);
+    float dROverEt2 = dRPhoMu/pow(phot.pt(),2);
 
     // Fill photon variables
-    _photInfo.pt     = phot.pt();
-    _photInfo.eta    = phot.eta();
-    _photInfo.phi    = phot.phi();
-    _photInfo.dREtg = dREtg;
-    _photInfo.relIso = photonPfIso03( phot, pfCands );
-    _photInfo.dRPhoMu = dRPhoMu;
-    _photInfo.mu_idx = mu_idx;
+    _photInfo.pt        = phot.pt();
+    _photInfo.eta       = phot.eta();
+    _photInfo.phi       = phot.phi();
+    _photInfo.dROverEt2 = dROverEt2;
+    _photInfo.relIso    = photRelIso( phot, pfCands, _phot_iso_dR);
+    _photInfo.dRPhoMu   = dRPhoMu;
+    _photInfo.mu_idx    = mu_idx;
 
     _photInfos.push_back( _photInfo );
   } // End loop: for (int i = 0; i < nPhots; i++)
@@ -44,7 +44,15 @@ void FillPhotInfos( PhotInfos& _photInfos, const reco::PFCandidateCollection pho
 
 reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateCollection> pfCands, 
                                         const pat::MuonCollection muons, 
-                                        const pat::ElectronCollection eles) {
+                                        const pat::ElectronCollection eles,
+                                        const double _phot_pT_min,
+                                        const double _phot_eta_max,
+                                        const double _phot_etaGap_min,
+                                        const double _phot_etaGap_max,
+                                        const double _phot_dRPhoMu_max,
+                                        const double _phot_dROverEt2_max,
+                                        const double _phot_iso_dR,
+                                        const double _phot_iso_max) {
 
   reco::PFCandidateCollection photsSelected;
 
@@ -61,7 +69,7 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
     for (std::vector<pat::PackedCandidate>::const_iterator pfCand = pfCands->begin(); pfCand != pfCands->end(); ++pfCand) {     
 
       if ( pfCand->charge() != 0 || pfCand->pdgId() != 22) continue; // Check if pfCand is photon
-      if (fabs(pfCand->eta()) > 2.4 || (fabs(pfCand->eta()) > 1.4 && fabs(pfCand->eta()) < 1.6) || pfCand->pt() < 2.0) continue; // photon kinematic selection
+      if (abs(pfCand->eta()) > _phot_eta_max || (abs(pfCand->eta()) > _phot_etaGap_min && abs(pfCand->eta()) < _phot_etaGap_max) || pfCand->pt() < _phot_pT_min) continue; // photon kinematic selection
 
       // Find dR between photon and the muon
       if (deltaR(muon->eta(), muon->phi(), pfCand->eta(), pfCand->phi()) <= dRPhoMu){
@@ -83,7 +91,7 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
         }
       }
 
-      if (dRPhoMu > 0.5) continue;
+      if (dRPhoMu > _phot_dRPhoMu_max) continue;
       if (!closest) continue;
 
       // Check that is not in footprint of an electron      
@@ -103,8 +111,8 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
 
       if (eleMatched) continue;
 
-      if (dRPhoMu/pow(FSRPhot.pt(),2) > 0.019) continue;
-      if (photonPfIso03( FSRPhot, pfCands ) > 0.8) continue;
+      if (dRPhoMu/pow(FSRPhot.pt(),2) > _phot_dROverEt2_max) continue;
+      if (photRelIso( FSRPhot, pfCands, _phot_iso_dR) > _phot_iso_max) continue;
 
 
 
@@ -115,12 +123,12 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
 }
 
 
-double photonPfIso03(reco::PFCandidate phot, edm::Handle<pat::PackedCandidateCollection> pfCands) {
+double photRelIso(reco::PFCandidate phot, edm::Handle<pat::PackedCandidateCollection> pfCands, const double _phot_iso_dR) {
   double ptsum = 0.0;
 
   for (const pat::PackedCandidate &pfc : *pfCands) {
     double dr = deltaR(phot.p4(), pfc.p4());
-    if (dr >= 0.3) continue;
+    if (dr >= _phot_iso_dR) continue;
     if (dr < 0.0001) continue;
 
     if (pfc.charge() != 0 && abs(pfc.pdgId()) == 211 && pfc.pt() > 0.2) {
