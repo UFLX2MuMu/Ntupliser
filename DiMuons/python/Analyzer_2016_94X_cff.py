@@ -96,6 +96,15 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(5.0),
 
+                         phot_pT_min        = cms.double(2.0),
+                         phot_eta_max       = cms.double(2.4),
+                         phot_etaGap_min    = cms.double(1.4),
+                         phot_etaGap_max    = cms.double(1.6),
+                         phot_dRPhoMu_max   = cms.double(0.5),
+                         phot_dROverEt2_max = cms.double(0.05),
+                         phot_iso_dR        = cms.double(0.3),
+                         phot_iso_max       = cms.double(2.0),
+
                          ## Event weights and efficiencies
                          PU_wgt_file      = cms.string("PU_wgt_2016_Summer16_v0.root"),
                          Trig_eff_3_file  = cms.string("EfficienciesAndSF_RunBtoF_MuTrig.root"),
