@@ -459,6 +459,15 @@ private:
   double _jet_pT_min;
   double _jet_eta_max;
 
+  double _phot_pT_min;       
+  double _phot_eta_max;      
+  double _phot_etaGap_min;   
+  double _phot_etaGap_max;   
+  double _phot_dRPhoMu_max;  
+  double _phot_dROverEt2_max; 
+  double _phot_iso_dR;       
+  double _phot_iso_max;      
+
   // Not currently used, since we don't use prescaled triggers with this analysis
   // Can probably delete these vars from the class
   std::vector < int > _l1Prescale;
