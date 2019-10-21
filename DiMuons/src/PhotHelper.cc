@@ -47,8 +47,6 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
                                         const pat::ElectronCollection eles,
                                         const double _phot_pT_min,
                                         const double _phot_eta_max,
-                                        const double _phot_etaGap_min,
-                                        const double _phot_etaGap_max,
                                         const double _phot_dRPhoMu_max,
                                         const double _phot_dROverEt2_max,
                                         const double _phot_iso_dR,
@@ -69,7 +67,7 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
     for (std::vector<pat::PackedCandidate>::const_iterator pfCand = pfCands->begin(); pfCand != pfCands->end(); ++pfCand) {     
 
       if ( pfCand->charge() != 0 || pfCand->pdgId() != 22) continue; // Check if pfCand is photon
-      if (abs(pfCand->eta()) > _phot_eta_max || (abs(pfCand->eta()) > _phot_etaGap_min && abs(pfCand->eta()) < _phot_etaGap_max) || pfCand->pt() < _phot_pT_min) continue; // photon kinematic selection
+      if (abs(pfCand->eta()) > _phot_eta_max || (abs(pfCand->eta()) > 1.4 && abs(pfCand->eta()) < 1.6) || pfCand->pt() < _phot_pT_min) continue; // photon kinematic selection
 
       // Find dR between photon and the muon
       if (deltaR(muon->eta(), muon->phi(), pfCand->eta(), pfCand->phi()) <= dRPhoMu){

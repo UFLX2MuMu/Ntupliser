@@ -15,8 +15,6 @@ reco::PFCandidateCollection SelectPhots( const edm::Handle<pat::PackedCandidateC
                                         const pat::ElectronCollection eles,
                                         const double _phot_pT_min,
                                         const double _phot_eta_max,
-                                        const double _phot_etaGap_min,
-                                        const double _phot_etaGap_max,
                                         const double _phot_dRPhoMu_max,
                                         const double _phot_dROverEt2_max,
                                         const double _phot_iso_dR,

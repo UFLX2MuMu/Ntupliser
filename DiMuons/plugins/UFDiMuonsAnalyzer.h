@@ -461,8 +461,6 @@ private:
 
   double _phot_pT_min;       
   double _phot_eta_max;      
-  double _phot_etaGap_min;   
-  double _phot_etaGap_max;   
   double _phot_dRPhoMu_max;  
   double _phot_dROverEt2_max; 
   double _phot_iso_dR;       
