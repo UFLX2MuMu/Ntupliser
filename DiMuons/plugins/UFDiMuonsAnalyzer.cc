@@ -108,8 +108,6 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   _phot_pT_min        = iConfig.getParameter<double> ("phot_pT_min");
   _phot_eta_max       = iConfig.getParameter<double> ("phot_eta_max");
-  _phot_etaGap_min    = iConfig.getParameter<double> ("phot_etaGap_min");
-  _phot_etaGap_max    = iConfig.getParameter<double> ("phot_etaGap_max");
   _phot_dRPhoMu_max   = iConfig.getParameter<double> ("phot_dRPhoMu_max");
   _phot_dROverEt2_max = iConfig.getParameter<double> ("phot_dROverEt2_max");
   _phot_iso_dR        = iConfig.getParameter<double> ("phot_iso_dR");
@@ -506,9 +504,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   // reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muons, eles );
   reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muonsSelected, elesSelected, _phot_pT_min,
-                                                          _phot_eta_max, _phot_etaGap_min, _phot_etaGap_max,
-                                                          _phot_dRPhoMu_max, _phot_dROverEt2_max, _phot_iso_dR,
-                                                          _phot_iso_max );
+                                                          _phot_eta_max, _phot_dRPhoMu_max, _phot_dROverEt2_max, 
+                                                          _phot_iso_dR, _phot_iso_max );
 
   // Sort the selected photons by pT
   sort(photsSelected.begin(), photsSelected.end(), sortPhotsByPt);
