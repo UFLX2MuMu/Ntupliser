@@ -97,8 +97,6 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
 
                          phot_pT_min        = cms.double(2.0),
                          phot_eta_max       = cms.double(2.4),
-                         phot_etaGap_min    = cms.double(1.4),
-                         phot_etaGap_max    = cms.double(1.6),
                          phot_dRPhoMu_max   = cms.double(0.5),
                          phot_dROverEt2_max = cms.double(0.05),
                          phot_iso_dR        = cms.double(0.3),
