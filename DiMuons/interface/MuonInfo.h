@@ -47,6 +47,7 @@ struct MuonInfo {
   Float_t d0_PV        = -999;
   Float_t dz_PV        = -999;
   Float_t d0_PV_kinfit = -999;
+  Float_t d0_BS_kinfit = -999;
   Float_t dz_PV_kinfit = -999;
   Float_t chi2_kinfit  = -999;
   Int_t   ndf_kinfit   = -999;
