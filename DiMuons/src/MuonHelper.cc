@@ -278,19 +278,12 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.chi2_kinfit = dimu_vertex->chiSquared();
       _muonInfo.ndf_kinfit =  dimu_vertex->degreesOfFreedom(); 
       if(i==0){ //first muon
-//        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz());
-//        GlobalVector direction2d(mu1_tlv.Px(),mu1_tlv.Py(), 0);
-//        GlobalVector bs_corrected( beamSpotHandle->position().x() - mu1_position.x(), beamSpotHandle->position().y() - mu1_position.y(), 0 );
-        GlobalVector direction(muon.innerTrack()->px(),muon.innerTrack()->py(),muon.innerTrack()->pz());
-        GlobalVector direction2d(muon.innerTrack()->px(),muon.innerTrack()->py(), 0);
-        GlobalVector bs_corrected( beamSpotHandle->position().x() + muon.innerTrack()->vx(), beamSpotHandle->position().y() + muon.innerTrack()->vy(), 0 );
-        //_muonInfo.d0_BS_kinfit = direction2d.dot(bs_corrected)/direction2d.mag();
-        _muonInfo.d0_BS_kinfit = ( - (muon.innerTrack()->vx() - beamSpotHandle->position().x() ) * muon.innerTrack()->py() + ( muon.innerTrack()->vy() - beamSpotHandle->position().y() ) * muon.innerTrack()->px() / muon.innerTrack()->pt() ) ;
-        std::cout << "d0_BS" << muon.innerTrack()->dxy( beamSpotHandle->position() ) << std::endl << "kinfit d0_BS : " << _muonInfo.d0_BS_kinfit << std::endl << std::endl;
+        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz());
         float prod = IPVec.dot(direction);
         int sign = (prod>=0) ? 1. : -1.;
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.d0_BS_kinfit = ( - (mu1_position.x() - beamSpotHandle->position().x() ) * mu1_tlv.Py() + ( mu1_position.y() - beamSpotHandle->position().y() ) * mu1_tlv.Px() ) / mu1_tlv.Pt()  ;
         _muonInfo.pt_kinfit  = mu1_tlv.Pt();
         _muonInfo.phi_kinfit = mu1_tlv.Phi();
         _muonInfo.eta_kinfit = mu1_tlv.Eta();
@@ -298,13 +291,11 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       }
       if(i==1){ //second muon
         GlobalVector direction(mu2_tlv.Px(),mu2_tlv.Py(),mu2_tlv.Pz()); 
-        GlobalVector direction2d(mu2_tlv.Px(),mu2_tlv.Py(), 0);
-        GlobalVector bs_corrected( beamSpotHandle->position().x() - mu2_position.x(), beamSpotHandle->position().y() - mu2_position.y(), 0 );
-        _muonInfo.d0_BS_kinfit = direction2d.dot(bs_corrected)/direction2d.mag();
         float prod = IPVec.dot(direction);
         int sign = (prod>=0) ? 1. : -1.;
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.d0_BS_kinfit = ( - (mu2_position.x() - beamSpotHandle->position().x() ) * mu2_tlv.Py() + ( mu2_position.y() - beamSpotHandle->position().y() ) * mu2_tlv.Px() ) / mu2_tlv.Pt()  ;
         _muonInfo.pt_kinfit  = mu2_tlv.Pt();
         _muonInfo.phi_kinfit = mu2_tlv.Phi();
         _muonInfo.eta_kinfit = mu2_tlv.Eta();
@@ -316,6 +307,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError();
         _muonInfo.phi_kinfit = muon.muonBestTrack()->phi();
         _muonInfo.eta_kinfit = muon.muonBestTrack()->eta(); 
+        _muonInfo.d0_BS_kinfit  = muon.innerTrack()->dxy( beamSpotHandle->position() );
     }
 
     //DEBUG: Checking dO
