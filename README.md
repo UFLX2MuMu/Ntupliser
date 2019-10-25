@@ -21,8 +21,8 @@ Contact us before running your nutples: we might have just produced it, or about
 
 Instruction for checking out code to run on master_2017_94X in CMSSW_9_4_13
 ```
-scram project -n x2mm_9413
-cd x2mmm_9413/src
+scram project -n x2mm17_9413 CMSSW_9_4_13
+cd x2mm17_9413/src
 cmsenv
 git cms-init
 git cms-merge-topic cms-egamma:EgammaPostRecoTools # cms-egamma:EgammaID_949 is already merged in 9_4_13
@@ -47,7 +47,7 @@ cd Ntupliser
 git checkout master_2017_94X
 scram b -j 6
 cd DiMuons
-cmsRun test/UFDiMuonAnalyzer_2018_02_07.py
+cmsRun test/test_ntupliser_mc.py
 ```
 
 #### Crab submission
