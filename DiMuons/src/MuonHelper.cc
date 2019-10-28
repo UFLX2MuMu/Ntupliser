@@ -30,6 +30,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 
   TLorentzVector mu1_tlv;
   TLorentzVector mu2_tlv;
+ 
+  GlobalVector mu1_position;
+  GlobalVector mu2_position;
 
   Double_t mu1_ptErr_kinfit; mu1_ptErr_kinfit = 0.;
   Double_t mu2_ptErr_kinfit; mu2_ptErr_kinfit = 0.;
@@ -65,7 +68,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         RefCountedKinematicParticle mu1_kinfit = kinfittree->currentParticle();
         AlgebraicVector7 mu1_kinfit_par = mu1_kinfit->currentState().kinematicParameters().vector();
         AlgebraicSymMatrix77 mu1_kinfit_cov = mu1_kinfit->currentState().kinematicParametersError().matrix();
-        mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4)); 
+        mu1_ptErr_kinfit = sqrt(mu1_kinfit_cov(3,3) + mu1_kinfit_cov(4,4));
+        GlobalVector tmp(mu1_kinfit_par.At(0), mu1_kinfit_par.At(1),mu1_kinfit_par.At(2));
+        mu1_position+=(tmp);
         mu1_tlv.SetXYZM(mu1_kinfit_par.At(3),mu1_kinfit_par.At(4),mu1_kinfit_par.At(5), mu1_kinfit_par.At(6));
 //        std::cout << "Mu1 chi2 = " << mu1_kinfit->chiSquared() << std::endl;
 //        std::cout << "Mu1 ndf = " << mu1_kinfit->degreesOfFreedom() << std::endl;
@@ -85,6 +90,8 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         AlgebraicVector7 mu2_kinfit_par = mu2_kinfit->currentState().kinematicParameters().vector();
         AlgebraicSymMatrix77 mu2_kinfit_cov = mu2_kinfit->currentState().kinematicParametersError().matrix(); 
         mu2_ptErr_kinfit = sqrt(mu2_kinfit_cov(3,3) + mu2_kinfit_cov(4,4)); 
+        GlobalVector tmp(mu2_kinfit_par.At(0), mu2_kinfit_par.At(1),mu2_kinfit_par.At(2));
+        mu2_position+=(tmp);
         mu2_tlv.SetXYZM(mu2_kinfit_par.At(3),mu2_kinfit_par.At(4),mu2_kinfit_par.At(5),mu2_kinfit_par.At(6));
       }
 
@@ -271,12 +278,15 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       _muonInfo.chi2_kinfit = dimu_vertex->chiSquared();
       _muonInfo.ndf_kinfit =  dimu_vertex->degreesOfFreedom(); 
       if(i==0){ //first muon
-        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz()); 
+        GlobalVector direction(mu1_tlv.Px(),mu1_tlv.Py(),mu1_tlv.Pz());
         float prod = IPVec.dot(direction);
         int sign = (prod>=0) ? 1. : -1.;
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.d0_BS_kinfit = ( - (mu1_position.x() - beamSpotHandle->position().x() ) * mu1_tlv.Py() + ( mu1_position.y() - beamSpotHandle->position().y() ) * mu1_tlv.Px() ) / mu1_tlv.Pt()  ;
         _muonInfo.pt_kinfit  = mu1_tlv.Pt();
+        _muonInfo.phi_kinfit = mu1_tlv.Phi();
+        _muonInfo.eta_kinfit = mu1_tlv.Eta();
         _muonInfo.ptErr_kinfit = mu1_ptErr_kinfit;
       }
       if(i==1){ //second muon
@@ -285,13 +295,19 @@ void FillMuonInfos( MuonInfos& _muonInfos,
         int sign = (prod>=0) ? 1. : -1.;
         _muonInfo.d0_PV_kinfit *= sign;
         _muonInfo.dz_PV_kinfit *= sign;
+        _muonInfo.d0_BS_kinfit = ( - (mu2_position.x() - beamSpotHandle->position().x() ) * mu2_tlv.Py() + ( mu2_position.y() - beamSpotHandle->position().y() ) * mu2_tlv.Px() ) / mu2_tlv.Pt()  ;
         _muonInfo.pt_kinfit  = mu2_tlv.Pt();
+        _muonInfo.phi_kinfit = mu2_tlv.Phi();
+        _muonInfo.eta_kinfit = mu2_tlv.Eta();
         _muonInfo.ptErr_kinfit = mu2_ptErr_kinfit;
      }
     } 
     else{ // if the kinfit was not succesful for this muon use the muonBestTrack 
         _muonInfo.pt_kinfit = muon.muonBestTrack()->pt();
-        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError(); 
+        _muonInfo.ptErr_kinfit = muon.muonBestTrack()->ptError();
+        _muonInfo.phi_kinfit = muon.muonBestTrack()->phi();
+        _muonInfo.eta_kinfit = muon.muonBestTrack()->eta(); 
+        _muonInfo.d0_BS_kinfit  = muon.innerTrack()->dxy( beamSpotHandle->position() );
     }
 
     //DEBUG: Checking dO
