@@ -278,6 +278,7 @@ ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
 
 
 Background.append(ZJets_AMC)
+Background.append(ZJets_AMC_1)
 Background.append(ZJets_MG)
 Background.append(ZJets_hiM_AMC)
 Background.append(ZJets_hiM_MG)
