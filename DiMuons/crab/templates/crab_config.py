@@ -22,7 +22,6 @@ config.Data.inputDataset = 'STR'
 config.Data.useParent = False
 config.Data.splitting = 'STR'
 config.Data.unitsPerJob = NUM  ## Should take ~10 minutes for 100k events
-
 config.Data.outLFNDirBase = 'STR'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'STR'
