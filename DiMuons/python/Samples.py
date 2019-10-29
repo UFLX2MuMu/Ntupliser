@@ -24,7 +24,8 @@ golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2
 
 processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1', #0
                      'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2', #1
-                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2'] #2
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2', #2
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext2-v1'] #3
 
 data_tier = ['MINIAOD',
              'MINIAODSIM']
@@ -258,6 +259,11 @@ ZJets_AMC = sample( name = 'ZJets_AMC',
                     DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                     nEvt = -1)  ## 1 million
 
+ZJets_AMC_1 = sample( name = 'ZJets_AMC_1',
+                    DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/{0}/{1}'.format(processed_dataset[3],data_tier[1]),
+                    nEvt = -1)  ## 100 million
+
+
 ZJets_MG = sample( name = 'ZJets_MG_1',
                      DAS  = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                      nEvt = -1 ) ## 100 million
@@ -272,6 +278,7 @@ ZJets_hiM_MG = sample( name = 'ZJets_hiM_MG',
 
 
 Background.append(ZJets_AMC)
+Background.append(ZJets_AMC_1)
 Background.append(ZJets_MG)
 Background.append(ZJets_hiM_AMC)
 Background.append(ZJets_hiM_MG)
@@ -473,3 +480,8 @@ DataAndMC.extend(Background)
 MC = []
 MC.extend(Signal)
 MC.extend(Background)
+
+#create dictionary
+samples_dictionary = {sample.name:sample for sample in DataAndMC}
+
+
