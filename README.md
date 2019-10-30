@@ -22,13 +22,18 @@ Contact us before running your nutples: we might have just produced it, or about
 Instruction for checking out code to run on master_2018_102X in CMSSW_10_2_11_patch1
 ```
 scram project -n x2mm18_10211p1 CMSSW CMSSW_10_2_11_patch1
-cd x2mmm18_10211p1/src
 cmsenv
 git cms-init
-git cms-merge-topic cms-egamma:EgammaPostRecoTools 
-scram b -j 9
+git cms-merge-topic cms-egamma:EgammaPostRecoTools
+scram b -j 8
+git clone git@github.com:cms-egamma/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
+cd EgammaAnalysis/ElectronTools/data
+git checkout ScalesSmearing2018_Dev
+cd -
+git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev
+scram b -j 8
 git clone git@github.com:UFLX2MuMu/Ntupliser.git Ntupliser
-git clone -o Analysis https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa # these corrections are only for 2016
+git clone -o Analysis https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa # this Kalman Filter Corrections are only for 2016
 ```
 
 Add the following lines to KaMuCa/Calibration/interface/KalmanMuonCalibrator.h
