@@ -8,6 +8,8 @@ void FillSlimJetInfos( SlimJetInfos& _slimJetInfos, const JetInfos _jetInfos ) {
   for (int i = 0; i < int(_jetInfos.size()); i++) {
     SlimJetInfo s;
     JetInfo j = _jetInfos.at(i);
+
+    s.isTightID = j.isTightID;
     s.pt        = j.pt;
     s.eta       = j.eta;
     s.phi       = j.phi;
@@ -41,6 +43,38 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     pat::Jet jet = jetsSelected.at(i);
     JetInfo _jetInfo;
 
+    // Implementing Jet ID.
+    // Following the JetMET POG recommendation.
+    // For 2017 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2017    
+    // Loose is not recommended, nor supported anymore.
+    bool isTight = false;
+
+    if ( fabs( jet.eta() ) <= 2.7 ) {
+
+      isTight =  ( jet.neutralHadronEnergyFraction() < 0.90 &&
+       jet.neutralEmEnergyFraction()     < 0.90 &&
+                   jet.numberOfDaughters()        > 0.   );
+      if (fabs( jet.eta()) <= 2.4 ){
+        isTight = ( isTight                                      &&
+        jet.chargedMultiplicity()         > 0.  && 
+                    jet.chargedHadronEnergyFraction() > 0.   );
+      }      
+
+    } // End if ( fabs( jet.eta() ) < 2.7 )
+    else if ( fabs(jet.eta()) > 2.7 && fabs( jet.eta() ) <= 3.0 ) {
+
+      isTight = ( jet.neutralEmEnergyFraction()     > 0.02 &&
+      jet.neutralEmEnergyFraction()     < 0.99 &&
+      jet.neutralMultiplicity()         > 2 );
+    }
+    else if (fabs (jet.eta()) > 3.0 ) {
+      isTight = ( jet.neutralEmEnergyFraction()     < 0.90 &&
+      jet.neutralHadronEnergyFraction() > 0.02 && 
+                  jet.neutralMultiplicity()         > 10 );
+    }
+
+    _jetInfo.isTightID = isTight;
+    
     _jetInfo.px       = jet.px();
     _jetInfo.py       = jet.py();
     _jetInfo.pz       = jet.pz();
@@ -50,7 +84,7 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     _jetInfo.mass     = jet.mass();
     _jetInfo.charge   = jet.charge();
     _jetInfo.partonID = jet.partonFlavour();
-    
+
     _jetInfo.chf  = jet.chargedHadronEnergyFraction();
     _jetInfo.nhf  = jet.neutralHadronEnergyFraction();
     _jetInfo.cef  = jet.chargedEmEnergyFraction();
