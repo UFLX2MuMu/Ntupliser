@@ -4,7 +4,7 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::array<std::string, 5> ele_ID_names,
+		   const std::array<std::string, 6> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -30,9 +30,11 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.isLooseID  = ele.electronID(ele_ID_names[1]);
     _eleInfo.isMediumID = ele.electronID(ele_ID_names[2]);
     _eleInfo.isTightID  = ele.electronID(ele_ID_names[3]);
+    _eleInfo.isMvaID    = ele.electronID(ele_ID_names[4]);
 
     // EGamma POG MVA quality
-    _eleInfo.mvaID = ele.userFloat(ele_ID_names[4]);
+    _eleInfo.mvaID = ele.userFloat(ele_ID_names[5]);
+
 
     // Basic isolation
     _eleInfo.relIso         = EleCalcRelIsoPF( ele, _rho, eleEffArea, "DeltaBeta" );
@@ -91,8 +93,14 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const std::array<std::string, 5> ele_ID_names, const std::string _ele_ID,
-				    const double _ele_pT_min, const double _ele_eta_max ) {
+				    const std::array<std::string, 6> ele_ID_names, const std::string _ele_ID,
+				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
+            const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
+            const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
+            const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
+            const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
+            const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
+            const double _ele_eInverseMinusPInverse_endcap_max ) {
   
   // Main Egamma POG page: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPOG
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2
@@ -108,8 +116,9 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
   }
 
   if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
-       _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos )
-    std::cout << "Ele ID is neither tight, medium, loose, nor tight: " << _ele_ID
+       _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos &&
+       _ele_ID.find("mva") == std::string::npos && _ele_ID.find("tZq") == std::string::npos)
+    std::cout << "Ele ID is neither tight, medium, loose, tight, mva, nor tZq-like: " << _ele_ID
               << "\nWill not be used, no electron ID cuts applied" << std::endl;
 
   for (size_t i = 0; i < eles->size(); ++i) {
@@ -123,6 +132,26 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
     if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
     if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
+    if (_ele_ID.find("mva")    != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
+    if (_ele_ID.find("tZq")    != std::string::npos){
+      // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
+      if ( fabs(ele->superCluster()->position().eta()) <= 1.479 ) {
+        if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max ) continue;
+        if ( ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max ) continue;
+        if ( ele->hadronicOverEm() >= _ele_hOverEm_barrel_max ) continue;
+        if ( fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max ) continue;
+        if ( fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max ) continue;
+        if ( fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) continue;
+      }
+      else {
+        if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max ) continue;
+        if ( ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max ) continue;
+        if ( ele->hadronicOverEm() >= _ele_hOverEm_endcap_max ) continue;
+        if ( fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max ) continue;
+        if ( fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max ) continue;
+        if ( fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) continue;
+      }
+    }
 
     elesSelected.push_back(*ele);
 
