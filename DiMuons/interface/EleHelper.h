@@ -13,7 +13,13 @@ void FillEleInfos( EleInfos& _eleInfos,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
 		   const double _rho, const edm::Handle<pat::JetCollection>& jets,
 		   const edm::Handle<pat::PackedCandidateCollection> pfCands,
-		   EffectiveAreas eleEffArea );
+		   EffectiveAreas eleEffArea, const double _ele_missing_hits_barrel_max,
+       const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
+       const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
+       const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
+       const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
+       const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
+       const double _ele_eInverseMinusPInverse_endcap_max );
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,

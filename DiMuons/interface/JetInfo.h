@@ -7,7 +7,6 @@
 
 struct SlimJetInfo {
 
-  Bool_t isTightID = -999;
   Float_t pt       = -999;
   Float_t eta      = -999;
   Float_t phi      = -999;
@@ -25,7 +24,6 @@ struct SlimJetInfo {
 
 struct JetInfo {
   
-  Bool_t isTightID = -999;
   Float_t px       = -999;
   Float_t py       = -999;
   Float_t pz       = -999;

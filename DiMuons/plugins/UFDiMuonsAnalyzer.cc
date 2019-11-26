@@ -510,7 +510,14 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     return;
 
   FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_names,
-		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
+		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea, _ele_missing_hits_barrel_max,
+    _ele_sigmaIEtaIEta_barrel_max, _ele_hOverEm_barrel_max,
+    _ele_dEtaIn_barrel_max, _ele_dPhiIn_barrel_max,
+    _ele_eInverseMinusPInverse_barrel_max, _ele_missing_hits_endcap_max,
+    _ele_sigmaIEtaIEta_endcap_max, _ele_hOverEm_endcap_max,
+    _ele_dEtaIn_endcap_max, _ele_dPhiIn_endcap_max,
+    _ele_eInverseMinusPInverse_endcap_max  );
+  
   _nEles = _eleInfos.size();
 
 
