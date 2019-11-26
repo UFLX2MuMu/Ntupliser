@@ -47,7 +47,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          eleIdMva    = cms.string("mvaEleID-Fall17-iso-V2-wp90"),
                          elePOGMva   = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
-                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
 
                          ## Jets
                          ## Not clear which jet tag below should be used - AWB 21.10.2018
@@ -89,7 +89,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_sf_wp_num = cms.string("LooseRelIso"),
                          muon_iso_sf_wp_den = cms.string("MediumID"),
 
-                         ele_ID                                      = cms.string("tZq"),
+                         ele_ID                                      = cms.string("none"),
                          ele_pT_min                                  = cms.double(10.),
                          ele_eta_max                                 = cms.double(2.5),
                          

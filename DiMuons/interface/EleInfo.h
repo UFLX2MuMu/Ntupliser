@@ -12,6 +12,7 @@ struct EleInfo {
   Bool_t isLooseID          = -999;
   Bool_t isVetoID           = -999;
   Bool_t isMvaID            = -999;
+  Bool_t isTZqID            = -999;
   Bool_t passConversionVeto = -999;
 
   Float_t mvaID  = -999;  // Central EGamma POG MVA ID
