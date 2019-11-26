@@ -149,9 +149,9 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
   if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
        _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos &&
        _ele_ID.find("wp90") == std::string::npos && _ele_ID.find("wpLoose") == std::string::npos &&
-       _ele_ID.find("tZq") == std::string::npos)
-    std::cout << "Ele ID is neither tight, medium, loose, tight, mva-wp90, mva-wpLoose nor tZq-like: " << _ele_ID
-              << "\nWill not be used, no electron ID cuts applied" << std::endl;
+       _ele_ID.find("tZq") == std::string::npos && _ele_ID.find("none") == std::string::npos)
+    std::cout << "Ele ID is neither tight, medium, loose, tight, mva-wp90, mva-wpLoose, nor tZq-like: " << _ele_ID
+              << "\nNo electron ID cuts will be applied. Please set ele_ID = none if you do not want to apply ID cuts." << std::endl;
 
   for (size_t i = 0; i < eles->size(); ++i) {
     
