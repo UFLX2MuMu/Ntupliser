@@ -4,7 +4,7 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::array<std::string, 6> ele_ID_names,
+		   const std::array<std::string, 7> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -54,16 +54,17 @@ void FillEleInfos( EleInfos& _eleInfos,
     }
 
     // Basic quality
-    _eleInfo.isPF       = ele.isPF();
-    _eleInfo.isVetoID   = ele.electronID(ele_ID_names[0]);
-    _eleInfo.isLooseID  = ele.electronID(ele_ID_names[1]);
-    _eleInfo.isMediumID = ele.electronID(ele_ID_names[2]);
-    _eleInfo.isTightID  = ele.electronID(ele_ID_names[3]);
-    _eleInfo.isMvaID    = ele.electronID(ele_ID_names[4]);
-    _eleInfo.isTZqID    = isTZqID;
+    _eleInfo.isPF           = ele.isPF();
+    _eleInfo.isVetoID       = ele.electronID(ele_ID_names[0]);
+    _eleInfo.isLooseID      = ele.electronID(ele_ID_names[1]);
+    _eleInfo.isMediumID     = ele.electronID(ele_ID_names[2]);
+    _eleInfo.isTightID      = ele.electronID(ele_ID_names[3]);
+    _eleInfo.isMvaWp90ID    = ele.electronID(ele_ID_names[4]);
+    _eleInfo.isMvaWpLooseID = ele.electronID(ele_ID_names[5]);
+    _eleInfo.isTZqID        = isTZqID;
 
     // EGamma POG MVA quality
-    _eleInfo.mvaID = ele.userFloat(ele_ID_names[5]);
+    _eleInfo.mvaID = ele.userFloat(ele_ID_names[6]);
 
 
     // Basic isolation
@@ -123,7 +124,7 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const std::array<std::string, 6> ele_ID_names, const std::string _ele_ID,
+				    const std::array<std::string, 7> ele_ID_names, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
             const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
             const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
@@ -147,8 +148,9 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
 
   if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
        _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos &&
-       _ele_ID.find("mva") == std::string::npos && _ele_ID.find("tZq") == std::string::npos)
-    std::cout << "Ele ID is neither tight, medium, loose, tight, mva, nor tZq-like: " << _ele_ID
+       _ele_ID.find("wp90") == std::string::npos && _ele_ID.find("wpLoose") == std::string::npos &&
+       _ele_ID.find("tZq") == std::string::npos)
+    std::cout << "Ele ID is neither tight, medium, loose, tight, mva-wp90, mva-wpLoose nor tZq-like: " << _ele_ID
               << "\nWill not be used, no electron ID cuts applied" << std::endl;
 
   for (size_t i = 0; i < eles->size(); ++i) {
@@ -187,7 +189,8 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
     if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
     if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
-    if (_ele_ID.find("mva")    != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
+    if (_ele_ID.find("wp90")   != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
+    if (_ele_ID.find("wpLoose")!= std::string::npos && !ele->electronID(ele_ID_names[5]) ) continue;
     if (_ele_ID.find("tZq")    != std::string::npos && !isTZqID                          ) continue;
 
     elesSelected.push_back(*ele);

@@ -11,7 +11,8 @@ struct EleInfo {
   Bool_t isMediumID         = -999;
   Bool_t isLooseID          = -999;
   Bool_t isVetoID           = -999;
-  Bool_t isMvaID            = -999;
+  Bool_t isMvaWp90ID        = -999;
+  Bool_t isMvaWpLooseID     = -999;
   Bool_t isTZqID            = -999;
   Bool_t passConversionVeto = -999;
 
