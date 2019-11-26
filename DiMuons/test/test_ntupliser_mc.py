@@ -16,7 +16,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-from python.Samples_2016_94X_v2 import ZJets_AMC as samp
+from python.Samples import ZJets_AMC as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
