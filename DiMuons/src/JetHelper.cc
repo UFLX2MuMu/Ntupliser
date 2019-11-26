@@ -40,7 +40,7 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     
     pat::Jet jet = jetsSelected.at(i);
     JetInfo _jetInfo;
-    
+
     _jetInfo.px       = jet.px();
     _jetInfo.py       = jet.py();
     _jetInfo.pz       = jet.pz();
@@ -50,7 +50,7 @@ void FillJetInfos( JetInfos& _jetInfos, int& _nJetsFwd,
     _jetInfo.mass     = jet.mass();
     _jetInfo.charge   = jet.charge();
     _jetInfo.partonID = jet.partonFlavour();
-
+    
     _jetInfo.chf  = jet.chargedHadronEnergyFraction();
     _jetInfo.nhf  = jet.neutralHadronEnergyFraction();
     _jetInfo.cef  = jet.chargedEmEnergyFraction();
