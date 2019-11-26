@@ -8,7 +8,13 @@ void FillEleInfos( EleInfos& _eleInfos,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
-                   EffectiveAreas eleEffArea ) {
+                   EffectiveAreas eleEffArea , const double _ele_missing_hits_barrel_max,
+                   const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
+                   const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
+                   const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
+                   const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
+                   const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
+                   const double _ele_eInverseMinusPInverse_endcap_max ) {
   
   _eleInfos.clear();
   int nEles = elesSelected.size();
@@ -24,6 +30,29 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.eta    = ele.eta();
     _eleInfo.phi    = ele.phi();
 
+    // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
+    bool isTZqID = true;
+    if ( fabs(ele.superCluster()->position().eta()) <= 1.479 ) {
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max &&
+            ele.full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max &&
+            ele.hadronicOverEm() >= _ele_hOverEm_barrel_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max &&
+            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) {
+        isTZqID = false;
+      }
+    }
+    else {
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max &&
+            ele.full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max &&
+            ele.hadronicOverEm() >= _ele_hOverEm_endcap_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max &&
+            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) {
+        isTZqID = false;
+      }
+    }
+
     // Basic quality
     _eleInfo.isPF       = ele.isPF();
     _eleInfo.isVetoID   = ele.electronID(ele_ID_names[0]);
@@ -31,6 +60,7 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.isMediumID = ele.electronID(ele_ID_names[2]);
     _eleInfo.isTightID  = ele.electronID(ele_ID_names[3]);
     _eleInfo.isMvaID    = ele.electronID(ele_ID_names[4]);
+    _eleInfo.isTZqID    = isTZqID;
 
     // EGamma POG MVA quality
     _eleInfo.mvaID = ele.userFloat(ele_ID_names[5]);
@@ -128,30 +158,37 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     if ( ele->pt()          < _ele_pT_min  ) continue;
     if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
 
+
+    // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
+    bool isTZqID = true;
+    if ( fabs(ele->superCluster()->position().eta()) <= 1.479 ) {
+      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max &&
+            ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max &&
+            ele->hadronicOverEm() >= _ele_hOverEm_barrel_max &&
+            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max &&
+            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max &&
+            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) {
+        isTZqID = false;
+      }
+    }
+    else {
+      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max &&
+            ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max &&
+            ele->hadronicOverEm() >= _ele_hOverEm_endcap_max &&
+            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max &&
+            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max &&
+            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) {
+        isTZqID = false;
+      }
+    }
+
+
     if (_ele_ID.find("veto")   != std::string::npos && !ele->electronID(ele_ID_names[0]) ) continue;
     if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
     if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
     if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
     if (_ele_ID.find("mva")    != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
-    if (_ele_ID.find("tZq")    != std::string::npos){
-      // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
-      if ( fabs(ele->superCluster()->position().eta()) <= 1.479 ) {
-        if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max ) continue;
-        if ( ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max ) continue;
-        if ( ele->hadronicOverEm() >= _ele_hOverEm_barrel_max ) continue;
-        if ( fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max ) continue;
-        if ( fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max ) continue;
-        if ( fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) continue;
-      }
-      else {
-        if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max ) continue;
-        if ( ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max ) continue;
-        if ( ele->hadronicOverEm() >= _ele_hOverEm_endcap_max ) continue;
-        if ( fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max ) continue;
-        if ( fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max ) continue;
-        if ( fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) continue;
-      }
-    }
+    if (_ele_ID.find("tZq")    != std::string::npos && !isTZqID                          ) continue;
 
     elesSelected.push_back(*ele);
 
