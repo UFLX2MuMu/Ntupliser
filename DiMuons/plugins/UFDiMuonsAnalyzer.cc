@@ -106,6 +106,13 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _jet_pT_min  = iConfig.getParameter<double>      ("jet_pT_min");
   _jet_eta_max = iConfig.getParameter<double>      ("jet_eta_max");
 
+  _phot_pT_min        = iConfig.getParameter<double> ("phot_pT_min");
+  _phot_eta_max       = iConfig.getParameter<double> ("phot_eta_max");
+  _phot_dRPhoMu_max   = iConfig.getParameter<double> ("phot_dRPhoMu_max");
+  _phot_dROverEt2_max = iConfig.getParameter<double> ("phot_dROverEt2_max");
+  _phot_iso_dR        = iConfig.getParameter<double> ("phot_iso_dR");
+  _phot_iso_max       = iConfig.getParameter<double> ("phot_iso_max");
+
   std::cout << "\nOpening Kalman Muon Calibrator files located in:" << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/MC_80X_13TeV.root"   << std::endl;
   std::cout << "  * KaMuCa/Calibration/data/DATA_80X_13TeV.root" << std::endl;
@@ -364,7 +371,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<pat::MuonCollection> muons;
   iEvent.getByToken(_muonCollToken, muons);
 
-  // Get jets, rho, and pfCands: needed for effective area isolation and lepMVA
+  // Get jets, rho, and pfCands: needed for effective area isolation and lepMVA, also FSR photons
   edm::Handle<pat::JetCollection> jets;
   if (!_jetsToken.isUninitialized())
     iEvent.getByToken(_jetsToken, jets);
@@ -483,6 +490,28 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   FillEleInfos( _eleInfos, elesSelected, primaryVertex, iEvent, ele_ID_names,
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea );
   _nEles = _eleInfos.size();
+
+
+  // -------
+  // PHOTONS
+  // -------
+  if (_isVerbose) std::cout << "\nFilling PhotInfo" << std::endl;
+  // edm::Handle<pat::MuonCollection> muonsForPhot;
+  // iEvent.getByToken(_muonCollToken, muonsForPhot);
+
+  // edm::Handle<edm::View<pat::Electron>>  elesForPhot;
+  // iEvent.getByToken(_eleCollToken, elesForPhot);
+
+  // reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muons, eles );
+  reco::PFCandidateCollection photsSelected = SelectPhots( pfCands, muonsSelected, elesSelected, _phot_pT_min,
+                                                          _phot_eta_max, _phot_dRPhoMu_max, _phot_dROverEt2_max, 
+                                                          _phot_iso_dR, _phot_iso_max );
+
+  // Sort the selected photons by pT
+  sort(photsSelected.begin(), photsSelected.end(), sortPhotsByPt);
+
+  FillPhotInfos( _photInfos, photsSelected, pfCands, muonsSelected, _phot_iso_dR );
+  _nPhots = _photInfos.size();
 
 
   // // ----
@@ -689,6 +718,7 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("muons",             (MuonInfos*)     &_muonInfos         );
   _outTree->Branch("muPairs",           (MuPairInfos*)   &_muPairInfos       );
   _outTree->Branch("eles",              (EleInfos*)      &_eleInfos          );
+  _outTree->Branch("phots",             (PhotInfos*)     &_photInfos         );
   // _outTree->Branch("taus",              (TauInfos*)      &_tauInfos          );
   _outTree->Branch("met",               (MetInfo*)       &_metInfo           );
   if (_doSys) {
@@ -711,6 +741,7 @@ void UFDiMuonsAnalyzer::beginJob() {
   _outTree->Branch("nMuons",             (int*) &_nMuons             );
   _outTree->Branch("nMuPairs",           (int*) &_nMuPairs           );
   _outTree->Branch("nEles",              (int*) &_nEles              );
+  _outTree->Branch("nPhots",             (int*) &_nPhots             );
   // _outTree->Branch("nTaus",              (int*) &_nTaus              );
   _outTree->Branch("nJets",              (int*) &_nJets              );
   _outTree->Branch("nJetPairs",          (int*) &_nJetPairs           );
@@ -1043,8 +1074,8 @@ void UFDiMuonsAnalyzer::displaySelection() {
 //-- ----------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////
 
-bool UFDiMuonsAnalyzer::sortMuonsByPt    (pat::Muon i,     pat::Muon j    ) { return (i.pt() > j.pt()); }
-bool UFDiMuonsAnalyzer::sortElesByPt     (pat::Electron i, pat::Electron j) { return (i.pt() > j.pt()); }
-bool UFDiMuonsAnalyzer::sortTausByPt     (pat::Tau i,      pat::Tau j     ) { return (i.pt() > j.pt()); }
-bool UFDiMuonsAnalyzer::sortJetsByPt     (pat::Jet i,      pat::Jet j     ) { return (i.pt() > j.pt()); }
-
+bool UFDiMuonsAnalyzer::sortMuonsByPt    (pat::Muon i,         pat::Muon j        ) { return (i.pt() > j.pt()); }
+bool UFDiMuonsAnalyzer::sortElesByPt     (pat::Electron i,     pat::Electron j    ) { return (i.pt() > j.pt()); }
+bool UFDiMuonsAnalyzer::sortPhotsByPt    (reco::PFCandidate i, reco::PFCandidate j) { return (i.pt() > j.pt()); }
+bool UFDiMuonsAnalyzer::sortTausByPt     (pat::Tau i,          pat::Tau j         ) { return (i.pt() > j.pt()); }
+bool UFDiMuonsAnalyzer::sortJetsByPt     (pat::Jet i,          pat::Jet j         ) { return (i.pt() > j.pt()); }
