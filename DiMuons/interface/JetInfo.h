@@ -23,7 +23,7 @@ struct SlimJetInfo {
 };
 
 struct JetInfo {
-  
+
   Float_t px       = -999;
   Float_t py       = -999;
   Float_t pz       = -999;
