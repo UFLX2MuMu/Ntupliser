@@ -82,6 +82,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   // LHE weights and info for MC
   _LHE_token = consumes<LHEEventProduct>   (edm::InputTag("externalLHEProducer"));
+  _LHE_token_alt = consumes<LHEEventProduct>   (edm::InputTag("source"));
   
   // Object selection from config file
   _vertex_ndof_min = iConfig.getParameter<double> ("vertex_ndof_min");
@@ -255,9 +256,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     if (_isVerbose) std::cout << "\nAccessing LHEEventProduct info" << std::endl;
     edm::Handle<LHEEventProduct> LHE_handle;
     iEvent.getByToken(_LHE_token, LHE_handle);
-    if (!LHE_handle.isValid()) {
-      std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting LHEEventProduct from Event!" << std::endl;
-      return;
+    if (!LHE_handle.isValid()) iEvent.getByToken(_LHE_token_alt, LHE_handle);
+      if (!LHE_handle.isValid()) {
+        std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting LHEEventProduct from Event!" << std::endl;
+        return;
     }
 
     _LHE_HT = calcHtLHE( LHE_handle );
