@@ -38,15 +38,16 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
 
                          ## Electrons
-                         eleColl     = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto   = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
-                         eleIdLoose  = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
-                         eleIdMedium = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
-                         eleIdTight  = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
-                         eleIdMva    = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L106
-                         ## WARNING this is spring 15, following SUSY-standard, i.e. not the most up-to-date values
-                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt'),
+                         eleColl         = cms.InputTag("slimmedElectrons"),
+                         eleIdVeto       = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose      = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium     = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight      = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
+                         eleIdMvaWp90    = cms.string("mvaEleID-Fall17-iso-V2-wp90"),
+                         eleIdMvaWpLoose = cms.string("mvaEleID-Fall17-iso-V2-wpLoose"),
+                         elePOGMva       = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+                         ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
+                         eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
 
                          ## Jets
                          ## Not clear which jet tag below should be used - AWB 21.10.2018
@@ -88,9 +89,23 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muon_iso_sf_wp_num = cms.string("LooseRelIso"),
                          muon_iso_sf_wp_den = cms.string("MediumID"),
 
-                         ele_ID      = cms.string("loose"),
+                         ele_ID      = cms.string("none"),
                          ele_pT_min  = cms.double(10.),
                          ele_eta_max = cms.double(2.5),
+
+                         ele_missing_hits_barrel_max                 = cms.double(2.0),
+                         ele_sigmaIEtaIEta_barrel_max                = cms.double(0.011),
+                         ele_hOverEm_barrel_max                      = cms.double(0.1),
+                         ele_dEtaIn_barrel_max                       = cms.double(0.01),
+                         ele_dPhiIn_barrel_max                       = cms.double(0.04),
+                         ele_eInverseMinusPInverse_barrel_max        = cms.double(0.01),
+
+                         ele_missing_hits_endcap_max                 = cms.double(2.0),
+                         ele_sigmaIEtaIEta_endcap_max                = cms.double(0.03),
+                         ele_hOverEm_endcap_max                      = cms.double(0.07),
+                         ele_dEtaIn_endcap_max                       = cms.double(0.008),
+                         ele_dPhiIn_endcap_max                       = cms.double(0.07),
+                         ele_eInverseMinusPInverse_endcap_max        = cms.double(0.005),
 
                          jet_ID      = cms.string("tight"),
                          jet_pT_min  = cms.double(20.0),
