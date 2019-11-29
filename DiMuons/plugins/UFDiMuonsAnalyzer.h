@@ -375,7 +375,9 @@ private:
   std::string _eleIdLooseName;
   std::string _eleIdMediumName;
   std::string _eleIdTightName;
-  std::string _eleIdMvaName;
+  std::string _eleIdMvaWp90Name;
+  std::string _eleIdMvaWpLooseName;
+  std::string _elePOGMvaName;
 
   // Taus
   edm::EDGetTokenT<pat::TauCollection> _tauCollToken;
@@ -439,6 +441,20 @@ private:
   std::string _ele_ID;
   double _ele_pT_min;
   double _ele_eta_max;
+
+  double _ele_missing_hits_barrel_max;
+  double _ele_sigmaIEtaIEta_barrel_max;
+  double _ele_hOverEm_barrel_max;
+  double _ele_dEtaIn_barrel_max;
+  double _ele_dPhiIn_barrel_max;
+  double _ele_eInverseMinusPInverse_barrel_max;
+
+  double _ele_missing_hits_endcap_max;
+  double _ele_sigmaIEtaIEta_endcap_max;
+  double _ele_hOverEm_endcap_max;
+  double _ele_dEtaIn_endcap_max;
+  double _ele_dPhiIn_endcap_max;
+  double _ele_eInverseMinusPInverse_endcap_max;
 
   double _tau_pT_min;
   double _tau_eta_max;
