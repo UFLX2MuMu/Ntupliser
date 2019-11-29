@@ -237,35 +237,41 @@ pat::JetCollection SelectJets( const edm::Handle<pat::JetCollection>& jets,
     // Apply cuts for selected jets
     if ( corr_jet.pt()          < _jet_pT_min  ) continue;
     if ( fabs( corr_jet.eta() ) > _jet_eta_max ) continue;
-
-    // Implementing Jet ID.
-    // Following the JetMET POG recommendation.
-    // For 2017 data and MC: https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2017    
-    bool isLoose = true; // Loose is not recommended, nor supported anymore. Setting it to 1.
+    
+    bool isLoose = false;
     bool isTight = false;
 
-    if ( fabs( corr_jet.eta() ) <= 2.7 ) {
+    if ( fabs( corr_jet.eta() ) < 2.7 ) {
 
-      isTight =  ( corr_jet.neutralHadronEnergyFraction() < 0.90 &&
-		   corr_jet.neutralEmEnergyFraction()     < 0.90 &&
-                   corr_jet.numberOfDaughters()        > 0.   );
-      if (fabs( corr_jet.eta()) <= 2.4 ){
-        isTight = ( isTight                                      &&
- 		    corr_jet.chargedMultiplicity()         > 0.  && 
-                    corr_jet.chargedHadronEnergyFraction() > 0.   );
-      }		   
-
-    } // End if ( fabs( corr_jet.eta() ) < 2.7 )
-    else if ( fabs(corr_jet.eta()) > 2.7 && fabs( corr_jet.eta() ) <= 3.0 ) {
-
-      isTight = ( corr_jet.neutralEmEnergyFraction()     > 0.02 &&
+      isLoose = ( corr_jet.neutralHadronEnergyFraction() < 0.99 &&
 		  corr_jet.neutralEmEnergyFraction()     < 0.99 &&
+		  ( corr_jet.chargedMultiplicity() + 
+		    corr_jet.neutralMultiplicity() )     > 1 );
+
+      isTight = ( isLoose                                       && 
+		  corr_jet.neutralHadronEnergyFraction() < 0.90 &&
+		  corr_jet.neutralEmEnergyFraction()     < 0.90 );
+
+      if ( fabs( corr_jet.eta() ) < 2.4 ) {
+	
+	isLoose &= ( corr_jet.chargedHadronEnergyFraction() > 0.   &&
+		     corr_jet.chargedMultiplicity()         > 0    &&
+		     corr_jet.chargedEmEnergyFraction()     < 0.99 );
+	
+	isTight &= isLoose;
+      }
+    } // End if ( fabs( corr_jet.eta() ) < 2.7 )
+    else if ( fabs( corr_jet.eta() ) < 3.0 ) {
+
+      isLoose = ( corr_jet.neutralEmEnergyFraction()     > 0.01 &&
+		  corr_jet.neutralHadronEnergyFraction() < 0.98 &&
 		  corr_jet.neutralMultiplicity()         > 2 );
+      isTight = isLoose;
     }
-    else if (fabs (corr_jet.eta()) > 3.0 ) {
-      isTight = ( corr_jet.neutralEmEnergyFraction()     < 0.90 &&
-		  corr_jet.neutralHadronEnergyFraction() > 0.02 && 
-                  corr_jet.neutralMultiplicity()         > 10 );
+    else {
+      isLoose = ( corr_jet.neutralEmEnergyFraction() < 0.90 &&
+		  corr_jet.neutralMultiplicity()     > 10 );
+      isTight = isLoose;
     }
 
     if (_jet_ID.find("loose") != std::string::npos && !isLoose) continue;
