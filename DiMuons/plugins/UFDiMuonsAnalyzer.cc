@@ -257,7 +257,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     edm::Handle<LHEEventProduct> LHE_handle;
     iEvent.getByToken(_LHE_token, LHE_handle);
     if (!LHE_handle.isValid()) iEvent.getByToken(_LHE_token_alt, LHE_handle);
-      if (!LHE_handle.isValid()) {
+    if (!LHE_handle.isValid()) {
         std::cout << "UFDiMuonsAnalyzer::analyze: Error in getting LHEEventProduct from Event!" << std::endl;
         return;
     }
