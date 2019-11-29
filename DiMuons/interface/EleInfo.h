@@ -22,6 +22,7 @@ struct EleInfo {
   Int_t   charge = -999;
   Float_t pt     = -999;
   Float_t eta    = -999;
+  Float_t scEta  = -999;
   Float_t phi    = -999;
 
   Float_t d0_PV  = -999;
