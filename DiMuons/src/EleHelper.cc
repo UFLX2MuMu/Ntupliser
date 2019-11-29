@@ -28,6 +28,7 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.charge = ele.charge();
     _eleInfo.pt     = ele.pt();
     _eleInfo.eta    = ele.eta();
+    _eleInfo.scEta  = ele.superCluster()->position().eta();
     _eleInfo.phi    = ele.phi();
 
     // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
@@ -157,8 +158,8 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     
     const auto ele = eles->ptrAt(i);
 
-    if ( ele->pt()          < _ele_pT_min  ) continue;
-    if ( fabs( ele->eta() ) > _ele_eta_max ) continue;
+    if ( ele->pt()                                     < _ele_pT_min  ) continue;
+    if ( fabs( ele->superCluster()->position().eta() ) > _ele_eta_max ) continue;
 
 
     // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
