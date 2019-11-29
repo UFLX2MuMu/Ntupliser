@@ -403,6 +403,10 @@ ZZ_4l_amc = sample( name = 'ZZ_4l_amc',
 
 ggZZ_4mu = sample ( name = 'ggZZ_4mu',
                     DAS  = '/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                    files = ["/store/mc/RunIISummer16MiniAODv3/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/4E25DF26-2EEB-E811-BEBE-0CC47AF9B2E2.root",
+                             "/store/mc/RunIISummer16MiniAODv3/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/B84A75C9-2EEB-E811-8D48-0025905D1D50.root",
+                             "/store/mc/RunIISummer16MiniAODv3/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/38AE8C6F-2EEB-E811-BD40-0025905C42F4.root",
+                             "/store/mc/RunIISummer16MiniAODv3/GluGluToContinToZZTo4mu_13TeV_MCFM701_pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/B451A6F9-2EEB-E811-8A83-0025905D1CAC.root"],
                     nEvt = -1 )
 
 ggZZ_2e2mu = sample ( name = 'ggZZ_2e2mu',

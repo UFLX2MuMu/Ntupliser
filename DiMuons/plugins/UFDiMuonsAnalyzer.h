@@ -416,6 +416,8 @@ private:
 
   // LHE weights and info for MC
   edm::EDGetTokenT<LHEEventProduct> _LHE_token;
+  edm::EDGetTokenT<LHEEventProduct> _LHE_token_alt;
+
 
   ///////////////////////////////////////////////////////////
   // Basic types  ===========================================
