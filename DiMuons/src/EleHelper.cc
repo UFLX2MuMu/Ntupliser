@@ -31,25 +31,25 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.phi    = ele.phi();
 
     // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
-    bool isTZqID = true;
+    bool isTZqID = false;
     if ( fabs(ele.superCluster()->position().eta()) <= 1.479 ) {
-      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max &&
-            ele.full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max &&
-            ele.hadronicOverEm() >= _ele_hOverEm_barrel_max &&
-            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max &&
-            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) {
-        isTZqID = false;
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_barrel_max &&
+            ele.full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_barrel_max &&
+            ele.hadronicOverEm() < _ele_hOverEm_barrel_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
+            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+        isTZqID = true;
       }
     }
     else {
-      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max &&
-            ele.full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max &&
-            ele.hadronicOverEm() >= _ele_hOverEm_endcap_max &&
-            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max &&
-            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max &&
-            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) {
-        isTZqID = false;
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_endcap_max &&
+            ele.full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_endcap_max &&
+            ele.hadronicOverEm() < _ele_hOverEm_endcap_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
+            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
+        isTZqID = true;
       }
     }
 
@@ -162,25 +162,25 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
 
 
     // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
-    bool isTZqID = true;
+    bool isTZqID = false;
     if ( fabs(ele->superCluster()->position().eta()) <= 1.479 ) {
-      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_barrel_max &&
-            ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_barrel_max &&
-            ele->hadronicOverEm() >= _ele_hOverEm_barrel_max &&
-            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_barrel_max &&
-            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_barrel_max ) {
-        isTZqID = false;
+      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_barrel_max &&
+            ele->full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_barrel_max &&
+            ele->hadronicOverEm() < _ele_hOverEm_barrel_max &&
+            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
+            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
+            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+        isTZqID = true;
       }
     }
     else {
-      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) >= _ele_missing_hits_endcap_max &&
-            ele->full5x5_sigmaIetaIeta() >= _ele_sigmaIEtaIEta_endcap_max &&
-            ele->hadronicOverEm() >= _ele_hOverEm_endcap_max &&
-            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) >= _ele_dEtaIn_endcap_max &&
-            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) >= _ele_dPhiIn_endcap_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() >= _ele_eInverseMinusPInverse_endcap_max ) {
-        isTZqID = false;
+      if ( ele->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_endcap_max &&
+            ele->full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_endcap_max &&
+            ele->hadronicOverEm() < _ele_hOverEm_endcap_max &&
+            fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
+            fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
+            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
+        isTZqID = true;
       }
     }
 
