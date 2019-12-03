@@ -127,7 +127,7 @@ for samp in samps:
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
-                line = line.replace('= NUM', '= 5')  ## 5
+                line = line.replace('= NUM', '= 2')  ## 5
 
         if 'inputDBS' in line:
             line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
