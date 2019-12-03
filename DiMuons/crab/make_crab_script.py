@@ -38,7 +38,7 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
-output_dir = '/store/user/bortigno/h2mm/ntuples/2018/102X/{0}'.format(prod_version)
+output_dir = '/store/user/bortigno/h2mm/ntuples/2017/94X/{0}'.format(prod_version)
 print("Production output dir {0}".format(output_dir))
 
 samps = []
@@ -48,11 +48,11 @@ for sample_to_add in args.samps:
 
 ## Get the samples you want to make a crab config file for 
 test_run = False
-version_str = '_prod2018_{0}'.format(prod_version)
+version_str = '_prod2017_{0}'.format(prod_version)
 
 if (len(samps) == 0): # if no samples specified in the option to the script 
   if (test_run):
-    samps.append(SingleMu_2018A)
+    samps.append(SingleMu_2017C)
     samps.append(H2Mu_gg_125_NLO)
   else:
     samps.extend(DataAndMC)
