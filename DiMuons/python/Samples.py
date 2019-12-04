@@ -243,8 +243,8 @@ H2Mu_ttH_120 = sample( name = 'H2Mu_ttH_120',
 
 H2Mu_ttH_125 = sample( name = 'H2Mu_ttH_125',
                        DAS  = '/ttHToMuMu_M125_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v3/MINIAODSIM',
-                       nEvt = -1, ## 300 k
-                       files = [ AWB_dir+H2Mu_ttH_dir+'C8B266CB-3551-E811-8C8A-3417EBE6458E.root' ] )
+                       nEvt = -1 ) ## 300 k
+                    
 
 H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
                        DAS  = '/ttHToMuMu_M130_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
