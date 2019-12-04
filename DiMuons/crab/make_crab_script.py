@@ -52,7 +52,7 @@ version_str = '_prod2017_{0}'.format(prod_version)
 
 if (len(samps) == 0): # if no samples specified in the option to the script 
   if (test_run):
-    samps.append(SingleMu_2017C)
+    samps.append(SingleMu_2017B)
     samps.append(H2Mu_gg_125_NLO)
   else:
     samps.extend(DataAndMC)

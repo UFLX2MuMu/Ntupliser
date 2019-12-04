@@ -16,7 +16,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-from python.Samples_2017_94X_v2 import H2Mu_gg_125_NLO as samp
+from python.Samples import H2Mu_gg_125_NLO as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
