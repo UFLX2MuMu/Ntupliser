@@ -29,7 +29,7 @@ cmsRun test/test_ntupliser_data.py
 If all is good prepare a tag. 
 ```
 git tag -m "first test of v17.<version>.X" prod-v17.<version>.0
-python crab/make_crab_script.py <samples names> 
+python crab/make_crab_script.py -s <samples names> 
 ```
 
 This will create a directory <crab_dir> with date and tag - if you forgot to tag it will have the hash of your last commit. 
