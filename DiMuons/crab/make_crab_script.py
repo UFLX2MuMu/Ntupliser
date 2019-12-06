@@ -14,8 +14,9 @@ import argparse # for options parsing
 parser = argparse.ArgumentParser(description="Pass arguments")
 parser.add_argument("-s", "--samples", nargs='*', dest="samps", default  = [],
                  help = "List of samples")
+parser.add_argument("-t", "--test-run", action='store_true', dest="test_run", default  = False,
+                 help = "Running a test run with one data era and one signal.")
                  
-
 args = parser.parse_args()
 
 ## Read the code tag for the production.
@@ -38,25 +39,28 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
-output_dir = '/store/user/bortigno/h2mm/ntuples/2018/102X/{0}'.format(prod_version)
+homedir = os.environ['HOME']
+username = homedir.split('/')[-1]
+output_dir = '/store/user/{0}/h2mm/ntuples/2018/102X/{1}'.format(username,prod_version)
 print("Production output dir {0}".format(output_dir))
 
 samps = []
 
-for sample_to_add in args.samps:
-  samps.append(samples_dictionary[sample_to_add])
+if(args.test_run == True and len(samps) > 0):
+  print("Test run does not accept input sample. Samples will be overwritten with test default.")
+
+if (args.test_run):
+  samps.append(SingleMu_2018A)
+  samps.append(H2Mu_gg_125_NLO)
+else: 
+  if (len(args.samps) == 0): # if no samples specified in the option to the script 
+    samps.extend(DataAndMC)
+  else:
+    for sample_to_add in args.samps:
+      samps.append(samples_dictionary[sample_to_add])
 
 ## Get the samples you want to make a crab config file for 
-test_run = False
 version_str = '_prod2018_{0}'.format(prod_version)
-
-if (len(samps) == 0): # if no samples specified in the option to the script 
-  if (test_run):
-    samps.append(SingleMu_2018A)
-    samps.append(H2Mu_gg_125_NLO)
-  else:
-    samps.extend(DataAndMC)
-
 print("Sample list: {0}".format(samps))
 
 crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
@@ -120,7 +124,7 @@ for samp in samps:
                 line = line.replace("= 'STR'", "= 'Automatic'")
 
         if 'unitsPerJob' in line: # in case of automatic splitting it's the number of minutes
-            if test_run:
+            if args.test_run:
                 line = line.replace('= NUM', '= 180')
             elif samp.isData:
                 line = line.replace('= NUM', '= 2700')  ## this should be the number of lumisections per file. with 100 I get 2200 output files for 2018.
