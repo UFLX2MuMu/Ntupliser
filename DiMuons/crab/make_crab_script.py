@@ -123,11 +123,11 @@ for samp in samps:
             if test_run:
                 line = line.replace('= NUM', '= 180')
             elif samp.isData:
-                line = line.replace('= NUM', '= 270')  ## this should be the number of lumisections per file. with 100 I get 2200 output files for 2018.
+                line = line.replace('= NUM', '= 2700')  ## this should be the number of lumisections per file. with 100 I get 2200 output files for 2018.
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
-                line = line.replace('= NUM', '= 270')  ## 5
+                line = line.replace('= NUM', '= 1250')  ## 5
 
         if 'inputDBS' in line:
             line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
