@@ -16,7 +16,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # Get a sample from our collection of samples
 # /////////////////////////////////////////////////////////////
 
-from python.Samples_2017_94X_v2 import H2Mu_gg_125_NLO as samp
+from python.Samples import H2Mu_gg_125_NLO as samp
 
 if samp.isData:
     print '\nRunning over data sample %s' % samp.name
@@ -57,6 +57,23 @@ if samp.isData:
 process.TFileService = cms.Service("TFileService", fileName = cms.string("tuple.root") )
 
 # /////////////////////////////////////////////////////////////
+# Load Analyzer
+# /////////////////////////////////////////////////////////////
+
+if samp.isData:
+  process.load("Ntupliser.DiMuons.Analyzer_cff")
+else:
+  process.load("Ntupliser.DiMuons.Analyzer_MC_cff")
+
+# Overwrite the settings in the Ntupliser/DiMuons/python/Analyzers*cff analyzers
+process.dimuons.isVerbose  = cms.untracked.bool(False)
+process.dimuons.doSys      = cms.bool(True)
+process.dimuons.doSys_KaMu = cms.bool(False)
+process.dimuons.doSys_Roch = cms.bool(True)
+process.dimuons.slimOut    = cms.bool(False) #reducing the number of branches. This should be the same in data and MC to avoid confusion.
+process.dimuons.skim_nMuons = cms.int32(2)
+
+# /////////////////////////////////////////////////////////////
 # L1 Prefiring maps
 # from https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
 # /////////////////////////////////////////////////////////////
@@ -85,6 +102,29 @@ setupEgammaPostRecoSeq(
   )
 
 # /////////////////////////////////////////////////////////////
+# Updated Jet Energy Scale corrections
+# /////////////////////////////////////////////////////////////
+
+## Following https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+##   - Last check that procedure was up-to-date: March 10, 2017 (AWB)
+##   - checked again 21.06.2018 (PB)
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+if samp.isData:
+    JEC_to_apply = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+else:
+    JEC_to_apply = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+    
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJets'),
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', JEC_to_apply, 'None')
+    )
+
+process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
+
+# /////////////////////////////////////////////////////////////
 # Correct MET from EE noise
 # /////////////////////////////////////////////////////////////
 # More info on https://indico.cern.ch/event/759372/contributions/3149378/attachments/1721436/2802416/metreport.pdf
@@ -100,36 +140,13 @@ runMetCorAndUncFromMiniAOD (
   )
 
 # /////////////////////////////////////////////////////////////
-# Load Analyzer
-# /////////////////////////////////////////////////////////////
-
-if samp.isData:
-  process.load("Ntupliser.DiMuons.Analyzer_cff")
-else:
-  process.load("Ntupliser.DiMuons.Analyzer_MC_cff")
-
-# /////////////////////////////////////////////////////////////
-# Electron Cut Based IDs
-# /////////////////////////////////////////////////////////////
-
-## Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V2
-## More complete recipe documentation: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
-##               - In particular here: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#VID_based_recipe_provides_pass_f
-
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-
-setupEgammaPostRecoSeq( process,
-                        runVID = True ,  ## Needed for 2017 V2 IDs
-                        era    = '2017-Nov17ReReco' )
- 
-# /////////////////////////////////////////////////////////////
 # Set the order of operations
 # /////////////////////////////////////////////////////////////
     
 process.p = cms.Path( 
   process.prefiringweight *
   process.egammaPostRecoSeq *
+  process.jecSequence *
   process.fullPatMetSequenceModifiedMET *
   process.dimuons )
 
