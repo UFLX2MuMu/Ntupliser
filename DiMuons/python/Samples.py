@@ -25,7 +25,9 @@ golden_17SepReReco = 'data/JSON/2018/Cert_314472-325175_13TeV_17SeptEarlyReReco2
 processed_dataset = ['RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1', #0
                      'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2', #1
                      'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext1-v2', #2
-                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext2-v1'] #3
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15_ext2-v1', #3
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3', #4
+                     'RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v4'] #5
 
 data_tier = ['MINIAOD',
              'MINIAODSIM']
@@ -352,15 +354,15 @@ ggZZ_4mu = sample ( name = 'ggZZ_4mu',
                     nEvt = -1 )
 
 ggZZ_2e2mu = sample ( name = 'ggZZ_2e2mu',
-                      DAS  = '/GluGluToContinToZZTo2e2mu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                      DAS  = '/GluGluToContinToZZTo2e2mu_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[4],data_tier[1]),
                       nEvt = -1 )
 
 ggZZ_2mu2tau = sample ( name = 'ggZZ_2mu2tau',
-                        DAS  = '/GluGluToContinToZZTo2mu2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        DAS  = '/GluGluToContinToZZTo2mu2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[5],data_tier[1]),
                         nEvt = -1 )
 
 ggZZ_2e2tau  = sample  ( name = 'ggZZ_2e2tau',
-                        DAS  = '/GluGluToContinToZZTo2e2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
+                        DAS  = '/GluGluToContinToZZTo2e2tau_13TeV_MCFM701_pythia8/{0}/{1}'.format(processed_dataset[4],data_tier[1]),
                         nEvt = -1 )
 
 ggZZ_2mu2nu = sample  ( name = 'ggZZ_2mu2nu',
