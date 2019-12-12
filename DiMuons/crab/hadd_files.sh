@@ -3,7 +3,6 @@
 prod_tag=$1
 
 eos_dir="/eos/cms/store/user/eyigitba/h2mm/ntuples/2016/94X/"
-tmp_dir="/afs/cern.ch/work/e/eyigitba/tmp"
 max_add=5
 
 for dir1 in `ls $eos_dir$prod_tag`; do
