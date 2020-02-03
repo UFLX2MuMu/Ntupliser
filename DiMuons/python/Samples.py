@@ -371,7 +371,7 @@ WZ_3l = sample( name = 'WZ_3l',
                 nEvt = -1 ) ## 11 million
 
 ZZ_2l_2q = sample( name = 'ZZ_2l_2q',
-                   DAS  = '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM/',
+                   DAS  = '/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
                    nEvt = -1 ) ## 28 million
 
 ZZ_4l = sample( name = 'ZZ_4l',
