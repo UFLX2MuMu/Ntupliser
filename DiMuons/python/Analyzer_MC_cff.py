@@ -107,7 +107,7 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          ele_dPhiIn_endcap_max                       = cms.double(0.07),
                          ele_eInverseMinusPInverse_endcap_max        = cms.double(0.005),
 
-                         jet_ID      = cms.string("tight"),
+                         jet_ID      = cms.string("loose"),
                          jet_pT_min  = cms.double(20.0),
                          jet_eta_max = cms.double(5.0),
 
