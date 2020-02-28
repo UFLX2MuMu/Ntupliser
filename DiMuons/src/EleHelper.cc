@@ -243,7 +243,6 @@ double EleCalcRelIsoPF( const pat::Electron ele, const double rho,
 
   if      (type == "DeltaBeta") PU = 0.5 * ele.pfIsolationVariables().sumPUPt;
   else if (type == "EffArea")   PU = rho * eleEffArea.getEffectiveArea( ele.eta() );
-  PU   = 0.5 * ele.pfIsolationVariables().sumPUPt;
   iso  = ele.pfIsolationVariables().sumChargedHadronPt;
   iso += std::fmax( 0., ele.pfIsolationVariables().sumNeutralHadronEt + ele.pfIsolationVariables().sumPhotonEt - PU );
 
