@@ -4,7 +4,7 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::array<std::string, 7> ele_ID_names,
+		   const std::array<std::string, 8> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -39,8 +39,47 @@ void FillEleInfos( EleInfos& _eleInfos,
             ele.hadronicOverEm() < _ele_hOverEm_barrel_max &&
             fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
             fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max &&
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() > -0.05) {
         isTZqID = true;
+        // Additional tZq ID variables
+        _eleInfo.sigmaIEtaIEta_tZqCut         = ele.full5x5_sigmaIetaIeta();
+        _eleInfo.hOverEm_tZqCut               = ele.hadronicOverEm();
+        _eleInfo.dEtaIn_tZqCut                = fabs( ele.deltaEtaSuperClusterTrackAtVtx() );
+        _eleInfo.dPhiIn_tZqCut                = fabs( ele.deltaPhiSuperClusterTrackAtVtx() );
+        _eleInfo.eInverseMinusPInverse_tZqCut = (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy();
+        _eleInfo.missingInnerHits_tZqCut = ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS);
+      }
+    }
+    else {
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_endcap_max &&
+            ele.full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_endcap_max &&
+            ele.hadronicOverEm() < _ele_hOverEm_endcap_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max &&
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() > -0.05) {
+        isTZqID = true;
+        // Additional tZq ID variables
+        _eleInfo.sigmaIEtaIEta_tZqCut         = ele.full5x5_sigmaIetaIeta();
+        _eleInfo.hOverEm_tZqCut               = ele.hadronicOverEm();
+        _eleInfo.dEtaIn_tZqCut                = fabs( ele.deltaEtaSuperClusterTrackAtVtx() );
+        _eleInfo.dPhiIn_tZqCut                = fabs( ele.deltaPhiSuperClusterTrackAtVtx() );
+        _eleInfo.eInverseMinusPInverse_tZqCut = (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy();
+        _eleInfo.missingInnerHits_tZqCut = ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS);
+      }
+    }
+
+    // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
+    bool isTZqID_wrong = false;
+    if ( fabs(ele.superCluster()->position().eta()) <= 1.479 ) {
+      if ( ele.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) < _ele_missing_hits_barrel_max &&
+            ele.full5x5_sigmaIetaIeta() < _ele_sigmaIEtaIEta_barrel_max &&
+            ele.hadronicOverEm() < _ele_hOverEm_barrel_max &&
+            fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
+            fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
+            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+        isTZqID_wrong = true;
       }
     }
     else {
@@ -50,7 +89,7 @@ void FillEleInfos( EleInfos& _eleInfos,
             fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
             fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
             fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
-        isTZqID = true;
+        isTZqID_wrong = true;
       }
     }
 
@@ -62,7 +101,9 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.isTightID      = ele.electronID(ele_ID_names[3]);
     _eleInfo.isMvaWp90ID    = ele.electronID(ele_ID_names[4]);
     _eleInfo.isMvaWpLooseID = ele.electronID(ele_ID_names[5]);
+    _eleInfo.isMvaWp90NoIsoID    = ele.electronID(ele_ID_names[7]);
     _eleInfo.isTZqID        = isTZqID;
+    _eleInfo.isTZqID_wrong        = isTZqID_wrong;
 
     // EGamma POG MVA quality
     _eleInfo.mvaID = ele.userFloat(ele_ID_names[6]);
@@ -74,6 +115,12 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.miniIso        = EleCalcMiniIso ( ele, pfCands, _rho, eleEffArea, false );
     _eleInfo.miniIsoCharged = EleCalcMiniIso ( ele, pfCands, _rho, eleEffArea, true );
 
+    // Additional tZq ID variables
+    _eleInfo.sigmaIEtaIEta         = ele.full5x5_sigmaIetaIeta();
+    _eleInfo.hOverEm               = ele.hadronicOverEm();
+    _eleInfo.dEtaIn                = fabs( ele.deltaEtaSuperClusterTrackAtVtx() );
+    _eleInfo.dPhiIn                = fabs( ele.deltaPhiSuperClusterTrackAtVtx() );
+    _eleInfo.eInverseMinusPInverse = (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy();
 
     // Basic vertexing?
 
@@ -125,7 +172,7 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const std::array<std::string, 7> ele_ID_names, const std::string _ele_ID,
+				    const std::array<std::string, 8> ele_ID_names, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
             const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
             const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
@@ -170,7 +217,8 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
             ele->hadronicOverEm() < _ele_hOverEm_barrel_max &&
             fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
             fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max &&
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() > -0.05) {
         isTZqID = true;
       }
     }
@@ -180,7 +228,8 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
             ele->hadronicOverEm() < _ele_hOverEm_endcap_max &&
             fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
             fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max &&
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() > -0.05 ) {
         isTZqID = true;
       }
     }
