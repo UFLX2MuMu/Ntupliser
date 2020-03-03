@@ -109,12 +109,12 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _ele_dPhiIn_barrel_max                = iConfig.getParameter<double>      ("ele_dPhiIn_barrel_max");
   _ele_eInverseMinusPInverse_barrel_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_barrel_max");
 
-  _ele_missing_hits_barrel_max          = iConfig.getParameter<double>      ("ele_missing_hits_endcap_max");
-  _ele_sigmaIEtaIEta_barrel_max         = iConfig.getParameter<double>      ("ele_sigmaIEtaIEta_endcap_max");
-  _ele_hOverEm_barrel_max               = iConfig.getParameter<double>      ("ele_hOverEm_endcap_max");
-  _ele_dEtaIn_barrel_max                = iConfig.getParameter<double>      ("ele_dEtaIn_endcap_max");
-  _ele_dPhiIn_barrel_max                = iConfig.getParameter<double>      ("ele_dPhiIn_endcap_max");
-  _ele_eInverseMinusPInverse_barrel_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_max");
+  _ele_missing_hits_endcap_max          = iConfig.getParameter<double>      ("ele_missing_hits_endcap_max");
+  _ele_sigmaIEtaIEta_endcap_max         = iConfig.getParameter<double>      ("ele_sigmaIEtaIEta_endcap_max");
+  _ele_hOverEm_endcap_max               = iConfig.getParameter<double>      ("ele_hOverEm_endcap_max");
+  _ele_dEtaIn_endcap_max                = iConfig.getParameter<double>      ("ele_dEtaIn_endcap_max");
+  _ele_dPhiIn_endcap_max                = iConfig.getParameter<double>      ("ele_dPhiIn_endcap_max");
+  _ele_eInverseMinusPInverse_endcap_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_max");
 
   // _tau_pT_min  = iConfig.getParameter<double>       ("tau_pT_min");
   // _tau_eta_max = iConfig.getParameter<double>       ("tau_eta_max");
