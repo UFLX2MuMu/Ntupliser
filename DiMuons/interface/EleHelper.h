@@ -9,7 +9,7 @@
 void FillEleInfos( EleInfos& _eleInfos,
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::array<std::string, 8> ele_ID_names,
+		   const std::array<std::string, 7> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
 		   const double _rho, const edm::Handle<pat::JetCollection>& jets,
 		   const edm::Handle<pat::PackedCandidateCollection> pfCands,
@@ -23,7 +23,7 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const std::array<std::string, 8> ele_ID_names, const std::string _ele_ID,
+				    const std::array<std::string, 7> ele_ID_names, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
             const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
             const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,

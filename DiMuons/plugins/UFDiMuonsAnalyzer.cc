@@ -53,7 +53,6 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _eleIdMediumName     = iConfig.getParameter<std::string>("eleIdMedium");
   _eleIdTightName      = iConfig.getParameter<std::string>("eleIdTight");
   _eleIdMvaWp90Name    = iConfig.getParameter<std::string>("eleIdMvaWp90");
-  _eleIdMvaWp90NoIsoName    = iConfig.getParameter<std::string>("eleIdMvaWp90NoIso");
   _eleIdMvaWpLooseName = iConfig.getParameter<std::string>("eleIdMvaWpLoose");
   _elePOGMvaName       = iConfig.getParameter<std::string>("elePOGMva");
 
@@ -492,7 +491,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::View<pat::Electron>>  eles;
   iEvent.getByToken(_eleCollToken, eles);
 
-  std::array<std::string, 8> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWpLooseName, _elePOGMvaName, _eleIdMvaWp90NoIsoName}};
+  std::array<std::string, 7> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWpLooseName, _elePOGMvaName}};
 
   pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_ID_names,
 						     _ele_ID, _ele_pT_min, _ele_eta_max, _ele_missing_hits_barrel_max,
