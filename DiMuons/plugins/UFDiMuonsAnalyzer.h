@@ -386,7 +386,6 @@ private:
   std::string _eleIdTightName;
   std::string _eleIdMvaWp90Name;
   std::string _eleIdMvaWpLooseName;
-  std::string _eleIdMvaWp90NoIsoName;
   std::string _elePOGMvaName;
 
   // Taus

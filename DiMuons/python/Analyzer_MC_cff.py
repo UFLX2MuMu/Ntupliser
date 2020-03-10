@@ -45,7 +45,6 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          eleIdTight      = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
                          eleIdMvaWp90    = cms.string("mvaEleID-Fall17-iso-V2-wp90"),
                          eleIdMvaWpLoose = cms.string("mvaEleID-Fall17-iso-V2-wpLoose"),
-                         eleIdMvaWp90NoIso    = cms.string("mvaEleID-Fall17-noIso-V2-wp90"),
                          elePOGMva       = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
                          eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
