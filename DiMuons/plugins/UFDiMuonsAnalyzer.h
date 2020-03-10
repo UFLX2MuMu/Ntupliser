@@ -449,6 +449,7 @@ private:
   double _ele_dEtaIn_barrel_max;
   double _ele_dPhiIn_barrel_max;
   double _ele_eInverseMinusPInverse_barrel_max;
+  double _ele_eInverseMinusPInverse_barrel_min;
 
   double _ele_missing_hits_endcap_max;
   double _ele_sigmaIEtaIEta_endcap_max;
@@ -456,6 +457,7 @@ private:
   double _ele_dEtaIn_endcap_max;
   double _ele_dPhiIn_endcap_max;
   double _ele_eInverseMinusPInverse_endcap_max;
+  double _ele_eInverseMinusPInverse_endcap_min;
 
   double _tau_pT_min;
   double _tau_eta_max;
