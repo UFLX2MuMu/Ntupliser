@@ -16,10 +16,11 @@ void FillEleInfos( EleInfos& _eleInfos,
 		   EffectiveAreas eleEffArea, const double _ele_missing_hits_barrel_max,
        const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
        const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
-       const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
-       const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
-       const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
-       const double _ele_eInverseMinusPInverse_endcap_max );
+       const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_eInverseMinusPInverse_barrel_min,
+       const double _ele_missing_hits_endcap_max, const double _ele_sigmaIEtaIEta_endcap_max,
+       const double _ele_hOverEm_endcap_max, const double _ele_dEtaIn_endcap_max,
+       const double _ele_dPhiIn_endcap_max, const double _ele_eInverseMinusPInverse_endcap_max,
+       const double _ele_eInverseMinusPInverse_endcap_min );
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
@@ -27,10 +28,11 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
 				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
             const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
             const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
-            const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
-            const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
-            const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
-            const double _ele_eInverseMinusPInverse_endcap_max );
+            const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_eInverseMinusPInverse_barrel_min,
+            const double _ele_missing_hits_endcap_max, const double _ele_sigmaIEtaIEta_endcap_max,
+            const double _ele_hOverEm_endcap_max, const double _ele_dEtaIn_endcap_max,
+            const double _ele_dPhiIn_endcap_max, const double _ele_eInverseMinusPInverse_endcap_max,
+            const double _ele_eInverseMinusPInverse_endcap_min );
 
 bool   ElePassKinematics( const pat::Electron ele, const reco::Vertex primaryVertex );
 double EleCalcRelIsoPF  ( const pat::Electron ele, const double rho, EffectiveAreas eleEffArea, const std::string type );

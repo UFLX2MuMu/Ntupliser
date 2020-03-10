@@ -113,6 +113,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _ele_dEtaIn_barrel_max                = iConfig.getParameter<double>      ("ele_dEtaIn_barrel_max");
   _ele_dPhiIn_barrel_max                = iConfig.getParameter<double>      ("ele_dPhiIn_barrel_max");
   _ele_eInverseMinusPInverse_barrel_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_barrel_max");
+  _ele_eInverseMinusPInverse_barrel_min = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_barrel_min");
 
   _ele_missing_hits_endcap_max          = iConfig.getParameter<double>      ("ele_missing_hits_endcap_max");
   _ele_sigmaIEtaIEta_endcap_max         = iConfig.getParameter<double>      ("ele_sigmaIEtaIEta_endcap_max");
@@ -120,6 +121,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _ele_dEtaIn_endcap_max                = iConfig.getParameter<double>      ("ele_dEtaIn_endcap_max");
   _ele_dPhiIn_endcap_max                = iConfig.getParameter<double>      ("ele_dPhiIn_endcap_max");
   _ele_eInverseMinusPInverse_endcap_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_max");
+  _ele_eInverseMinusPInverse_endcap_min = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_min");
 
   // _tau_pT_min  = iConfig.getParameter<double>       ("tau_pT_min");
   // _tau_eta_max = iConfig.getParameter<double>       ("tau_eta_max");
@@ -520,10 +522,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 						     _ele_ID, _ele_pT_min, _ele_eta_max, _ele_missing_hits_barrel_max,
                  _ele_sigmaIEtaIEta_barrel_max, _ele_hOverEm_barrel_max,
                  _ele_dEtaIn_barrel_max, _ele_dPhiIn_barrel_max,
-                 _ele_eInverseMinusPInverse_barrel_max, _ele_missing_hits_endcap_max,
-                 _ele_sigmaIEtaIEta_endcap_max, _ele_hOverEm_endcap_max,
-                 _ele_dEtaIn_endcap_max, _ele_dPhiIn_endcap_max,
-                 _ele_eInverseMinusPInverse_endcap_max );
+                 _ele_eInverseMinusPInverse_barrel_max, _ele_eInverseMinusPInverse_barrel_min,
+                 _ele_missing_hits_endcap_max, _ele_sigmaIEtaIEta_endcap_max,
+                 _ele_hOverEm_endcap_max, _ele_dEtaIn_endcap_max,
+                 _ele_dPhiIn_endcap_max, _ele_eInverseMinusPInverse_endcap_max,
+                 _ele_eInverseMinusPInverse_endcap_min );
 
   
   // Sort the selected electrons by pT
@@ -537,10 +540,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea, _ele_missing_hits_barrel_max,
     _ele_sigmaIEtaIEta_barrel_max, _ele_hOverEm_barrel_max,
     _ele_dEtaIn_barrel_max, _ele_dPhiIn_barrel_max,
-    _ele_eInverseMinusPInverse_barrel_max, _ele_missing_hits_endcap_max,
-    _ele_sigmaIEtaIEta_endcap_max, _ele_hOverEm_endcap_max,
-    _ele_dEtaIn_endcap_max, _ele_dPhiIn_endcap_max,
-    _ele_eInverseMinusPInverse_endcap_max  );
+    _ele_eInverseMinusPInverse_barrel_max, _ele_eInverseMinusPInverse_barrel_min,
+    _ele_missing_hits_endcap_max, _ele_sigmaIEtaIEta_endcap_max,
+    _ele_hOverEm_endcap_max, _ele_dEtaIn_endcap_max,
+    _ele_dPhiIn_endcap_max, _ele_eInverseMinusPInverse_endcap_max,
+    _ele_eInverseMinusPInverse_endcap_min );
   
   _nEles = _eleInfos.size();
 
