@@ -12,10 +12,8 @@ struct EleInfo {
   Bool_t isLooseID          = -999;
   Bool_t isVetoID           = -999;
   Bool_t isMvaWp90ID        = -999;
-  Bool_t isMvaWp90NoIsoID        = -999;
   Bool_t isMvaWpLooseID     = -999;
   Bool_t isTZqID            = -999;
-  Bool_t isTZqID_wrong      = -999;
   Bool_t passConversionVeto = -999;
 
   Float_t mvaID  = -999;  // Central EGamma POG MVA ID
@@ -31,21 +29,6 @@ struct EleInfo {
   Float_t dz_PV  = -999;
   Float_t IP_3D  = -999;
   Float_t SIP_3D = -999;
-
-  Float_t sigmaIEtaIEta         = -999;
-  Float_t hOverEm               = -999;
-  Float_t dEtaIn                = -999;
-  Float_t dPhiIn                = -999;
-  Float_t eInverseMinusPInverse = -999;
-
-  Float_t sigmaIEtaIEta_tZqCut         = -999;
-  Float_t hOverEm_tZqCut               = -999;
-  Float_t dEtaIn_tZqCut                = -999;
-  Float_t dPhiIn_tZqCut                = -999;
-  Float_t eInverseMinusPInverse_tZqCut = -999;
-
-  Float_t missingInnerHits_tZqCut = -999;
-
 
   Float_t missingInnerHits = -999;
  
