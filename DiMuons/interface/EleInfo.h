@@ -12,6 +12,7 @@ struct EleInfo {
   Bool_t isLooseID          = -999;
   Bool_t isVetoID           = -999;
   Bool_t isMvaWp90ID        = -999;
+  Bool_t isMvaWp90NoIsoID   = -999;
   Bool_t isMvaWpLooseID     = -999;
   Bool_t isTZqID            = -999;
   Bool_t passConversionVeto = -999;
@@ -31,7 +32,13 @@ struct EleInfo {
   Float_t SIP_3D = -999;
 
   Float_t missingInnerHits = -999;
- 
+
+  Float_t sigmaIEtaIEta         = -999;
+  Float_t hOverEm               = -999;
+  Float_t dEtaIn                = -999;
+  Float_t dPhiIn                = -999;
+  Float_t eInverseMinusPInverse = -999;
+
   Bool_t isPF = -999; 
 
   Float_t relIso                = -999;

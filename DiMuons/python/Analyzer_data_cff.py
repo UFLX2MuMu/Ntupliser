@@ -38,14 +38,15 @@ dimuons = cms.EDAnalyzer('UFDiMuonsAnalyzer',
                          muEffArea  = cms.FileInPath('Ntupliser/DiMuons/data/EffArea/effAreas_cone03_Muons_Fall17.txt'),
 
                          ## Electrons
-                         eleColl         = cms.InputTag("slimmedElectrons"),
-                         eleIdVeto       = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
-                         eleIdLoose      = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
-                         eleIdMedium     = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
-                         eleIdTight      = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
-                         eleIdMvaWp90    = cms.string("mvaEleID-Fall17-iso-V2-wp90"),
-                         eleIdMvaWpLoose = cms.string("mvaEleID-Fall17-iso-V2-wpLoose"),
-                         elePOGMva       = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+                         eleColl           = cms.InputTag("slimmedElectrons"),
+                         eleIdVeto         = cms.string("cutBasedElectronID-Fall17-94X-V2-veto"),
+                         eleIdLoose        = cms.string("cutBasedElectronID-Fall17-94X-V2-loose"),
+                         eleIdMedium       = cms.string("cutBasedElectronID-Fall17-94X-V2-medium"),
+                         eleIdTight        = cms.string("cutBasedElectronID-Fall17-94X-V2-tight"),
+                         eleIdMvaWp90      = cms.string("mvaEleID-Fall17-iso-V2-wp90"),
+                         eleIdMvaWp90NoIso = cms.string("mvaEleID-Fall17-noIso-V2-wp90"),
+                         eleIdMvaWpLoose   = cms.string("mvaEleID-Fall17-iso-V2-wpLoose"),
+                         elePOGMva         = cms.string("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
                          ## https://github.com/GhentAnalysis/heavyNeutrino/blob/master/multilep/test/multilep.py#L107
                          eleEffArea  = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
 

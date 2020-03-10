@@ -376,6 +376,7 @@ private:
   std::string _eleIdMediumName;
   std::string _eleIdTightName;
   std::string _eleIdMvaWp90Name;
+  std::string _eleIdMvaWp90NoIsoName;
   std::string _eleIdMvaWpLooseName;
   std::string _elePOGMvaName;
 

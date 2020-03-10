@@ -47,14 +47,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muonCollToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonColl"));
 
   // Electrons
-  _eleCollToken        = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
-  _eleIdVetoName       = iConfig.getParameter<std::string>("eleIdVeto");
-  _eleIdLooseName      = iConfig.getParameter<std::string>("eleIdLoose");
-  _eleIdMediumName     = iConfig.getParameter<std::string>("eleIdMedium");
-  _eleIdTightName      = iConfig.getParameter<std::string>("eleIdTight");
-  _eleIdMvaWp90Name    = iConfig.getParameter<std::string>("eleIdMvaWp90");
-  _eleIdMvaWpLooseName = iConfig.getParameter<std::string>("eleIdMvaWpLoose");
-  _elePOGMvaName       = iConfig.getParameter<std::string>("elePOGMva");
+  _eleCollToken          = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
+  _eleIdVetoName         = iConfig.getParameter<std::string>("eleIdVeto");
+  _eleIdLooseName        = iConfig.getParameter<std::string>("eleIdLoose");
+  _eleIdMediumName       = iConfig.getParameter<std::string>("eleIdMedium");
+  _eleIdTightName        = iConfig.getParameter<std::string>("eleIdTight");
+  _eleIdMvaWp90Name      = iConfig.getParameter<std::string>("eleIdMvaWp90");
+  _eleIdMvaWp90NoIsoName = iConfig.getParameter<std::string>("eleIdMvaWp90NoIso");
+  _eleIdMvaWpLooseName   = iConfig.getParameter<std::string>("eleIdMvaWpLoose");
+  _elePOGMvaName         = iConfig.getParameter<std::string>("elePOGMva");
 
   // // Taus
   // _tauCollToken = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauColl"));
@@ -491,7 +492,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::View<pat::Electron>>  eles;
   iEvent.getByToken(_eleCollToken, eles);
 
-  std::array<std::string, 7> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWpLooseName, _elePOGMvaName}};
+  std::array<std::string, 8> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWp90NoIsoName, _eleIdMvaWpLooseName, _elePOGMvaName}};
 
   pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_ID_names,
 						     _ele_ID, _ele_pT_min, _ele_eta_max, _ele_missing_hits_barrel_max,
