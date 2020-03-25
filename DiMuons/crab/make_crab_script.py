@@ -9,7 +9,15 @@ from python.Samples import *
 import time  ## For timestamp on crab jobs
 import os  ## For executable permissions on scripts
 import subprocess 
-
+# from https://stackoverflow.com/questions/15753701/argparse-option-for-passing-a-list-as-option
+import argparse # for options parsing
+parser = argparse.ArgumentParser(description="Pass arguments")
+parser.add_argument("-s", "--samples", nargs='*', dest="samps", default  = [],
+                 help = "List of samples")
+parser.add_argument("-t", "--test-run", action='store_true', dest="test_run", default  = False,
+                 help = "Running a test run with one data era and one signal.")
+                 
+args = parser.parse_args()
 
 ## Read the code tag for the production.
 def get_prod_version():
@@ -31,27 +39,28 @@ def get_prod_version():
 prod_version = get_prod_version()
 print("Production using code version {0} starting" .format(prod_version))
 
+homedir = os.environ['HOME']
+username = homedir.split('/')[-1]
+output_dir = '/store/user/{0}/h2mm/ntuples/2017/94X/{1}'.format(username,prod_version)
+print("Production output dir {0}".format(output_dir))
+
 samps = []
+if(args.test_run == True and len(samps) > 0):
+  print("Test run does not accept input sample. Samples will be overwritten with test default.")
+
+if (args.test_run):
+  samps.append(SingleMu_2017B)
+  samps.append(H2Mu_gg_125_NLO)
+else: 
+  if (len(args.samps) == 0): # if no samples specified in the option to the script 
+    samps.extend(DataAndMC)
+  else:
+    for sample_to_add in args.samps:
+      samps.append(samples_dictionary[sample_to_add])
 
 ## Get the samples you want to make a crab config file for 
-test_run = False
-test_str = '_prod2017_{0}'.format(prod_version)
- 
-# samps.extend(SingleMu)
-# samps.extend(Signal)
-# samps.extend(Background)
-samps.extend(DataAndMC)
-
-# test_run = True
-# test_str = '_v1'
-# samps.append(SingleMu_2016C)
-# samps.append(H2Mu_gg)
-# samps.append(ZJets_MG_HT_2500_inf)
-
-# samps.append(SingleMu_2017B)
-
-#samps.append(Zd2Mu_125)
-#samps.append(Zd2Mu_150)
+version_str = '_prod2017_{0}'.format(prod_version)
+print("Sample list: {0}".format(samps))
 
 crab_prod_dir = 'crab_%s-%s'%(time.strftime('%Y_%m_%d_%H_%M'),prod_version)
 crab_analyzers_dir = crab_prod_dir+'/analyzers'
@@ -95,7 +104,7 @@ for samp in samps:
     # crab submission file that uses the above CMSSW analyzer
     for line in in_file:
         if 'requestName' in line:
-            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), test_str.replace(".","p")) ) 
+            line = line.replace("= 'STR'", "= '%s_%s%s'" % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), version_str.replace(".","p")) ) 
 
         if 'psetName' in line: 
             line = line.replace("= 'STR'", "= '%s/%s.py'" % (crab_analyzers_dir, samp.name) )
@@ -109,25 +118,28 @@ for samp in samps:
 
         if 'splitting' in line:
             if samp.isData:
-                line = line.replace("= 'STR'", "= 'LumiBased'")
+                line = line.replace("= 'STR'", "= 'Automatic'")
             else:
-                line = line.replace("= 'STR'", "= 'FileBased'")
+                line = line.replace("= 'STR'", "= 'Automatic'")
 
-        if 'unitsPerJob' in line:
-            if test_run:
-                line = line.replace('= NUM', '= 1')
+        if 'unitsPerJob' in line: # in case of automatic splitting it's the number of minutes
+            if args.test_run:
+                line = line.replace('= NUM', '= 180')
             elif samp.isData:
-                line = line.replace('= NUM', '= 250')  ## 100
+                line = line.replace('= NUM', '= 2700')  ## this should be the number of lumisections per file. with 100 I get 2200 output files for 2018.
             # elif samp.name == 'ZJets_MG' or ('ZJets_MG' in samp.name and '_B' in samp.name) or samp.name == 'ZZ_4l_AMC':
             #     line = line.replace('= NUM', '= 3')  ## 10-file jobs fail with too much RAM
             else:
-                line = line.replace('= NUM', '= 5')  ## 5
+                line = line.replace('= NUM', '= 1250')  ## 5
 
         if 'inputDBS' in line:
             line = line.replace("= 'DBS'", "= '%s'"  % samp.inputDBS)
 
         if 'outputDatasetTag' in line:
             line = line.replace("= 'STR'", "= '%s'" % samp.name)
+
+        if 'outLFNDirBase' in line:
+            line = line.replace("= 'STR'", "= '{0}/'".format(output_dir))
 
         out_file.write(line)
     
@@ -156,6 +168,6 @@ out_file.write('\n')
 # out_file.write('voms-proxy-init --voms cms --valid 168:00\n')
 out_file.write('\n')
 for samp in samps:
-    out_file.write('crab status -d %s/logs/crab_%s*\n' % (crab_prod_dir,samp.name))
+    out_file.write('crab status -d logs/crab_%s_%s%s\n' % (samp.name, time.strftime('%Y_%m_%d_%H_%M'), version_str.replace(".","p")) )
 out_file.close()
 os.chmod('%s/check_all.sh' % crab_prod_dir, 0o744)

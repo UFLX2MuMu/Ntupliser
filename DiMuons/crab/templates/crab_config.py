@@ -23,7 +23,7 @@ config.Data.useParent = False
 config.Data.splitting = 'STR'
 config.Data.unitsPerJob = NUM  ## Should take ~10 minutes for 100k events
 
-config.Data.outLFNDirBase = '/store/group/phys_higgs/HiggsExo/H2Mu/X2MuMu/ntuples/2017/94X_v2/STR/'
+config.Data.outLFNDirBase = 'STR'
 config.Data.publication = False
 config.Data.outputDatasetTag = 'STR'
 
