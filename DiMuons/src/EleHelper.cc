@@ -32,6 +32,8 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.scEta  = ele.superCluster()->position().eta();
     _eleInfo.phi    = ele.phi();
 
+    _eleInfo.pt_SS = (ele.p4() * ele.userFloat("ecalTrkEnergyPostCorr") / ele.energy()).Pt();
+
     // Custom cut based ele ID selection based on tZq analysis: http://cms.cern.ch/iCMS/jsp/db_notes/noteInfo.jsp?cmsnoteid=CMS%20AN-2018/100 
     bool isTZqID = false;
     if ( fabs(ele.superCluster()->position().eta()) <= 1.479 ) {

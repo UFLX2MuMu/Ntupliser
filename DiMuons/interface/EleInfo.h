@@ -26,6 +26,8 @@ struct EleInfo {
   Float_t scEta  = -999;
   Float_t phi    = -999;
 
+  Float_t pt_SS  = -999;
+
   Float_t d0_PV  = -999;
   Float_t dz_PV  = -999;
   Float_t IP_3D  = -999;
