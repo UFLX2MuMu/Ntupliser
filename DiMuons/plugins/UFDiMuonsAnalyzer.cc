@@ -53,14 +53,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _muonCollToken = consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muonColl"));
 
   // Electrons
-  _eleCollToken        = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
-  _eleIdVetoName       = iConfig.getParameter<std::string>("eleIdVeto");
-  _eleIdLooseName      = iConfig.getParameter<std::string>("eleIdLoose");
-  _eleIdMediumName     = iConfig.getParameter<std::string>("eleIdMedium");
-  _eleIdTightName      = iConfig.getParameter<std::string>("eleIdTight");
-  _eleIdMvaWp90Name    = iConfig.getParameter<std::string>("eleIdMvaWp90");
-  _eleIdMvaWpLooseName = iConfig.getParameter<std::string>("eleIdMvaWpLoose");
-  _elePOGMvaName       = iConfig.getParameter<std::string>("elePOGMva");
+  _eleCollToken          = consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("eleColl"));
+  _eleIdVetoName         = iConfig.getParameter<std::string>("eleIdVeto");
+  _eleIdLooseName        = iConfig.getParameter<std::string>("eleIdLoose");
+  _eleIdMediumName       = iConfig.getParameter<std::string>("eleIdMedium");
+  _eleIdTightName        = iConfig.getParameter<std::string>("eleIdTight");
+  _eleIdMvaWp90Name      = iConfig.getParameter<std::string>("eleIdMvaWp90");
+  _eleIdMvaWp90NoIsoName = iConfig.getParameter<std::string>("eleIdMvaWp90NoIso");
+  _eleIdMvaWpLooseName   = iConfig.getParameter<std::string>("eleIdMvaWpLoose");
+  _elePOGMvaName         = iConfig.getParameter<std::string>("elePOGMva");
 
   // // Taus
   // _tauCollToken = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauColl"));
@@ -113,13 +114,15 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _ele_dEtaIn_barrel_max                = iConfig.getParameter<double>      ("ele_dEtaIn_barrel_max");
   _ele_dPhiIn_barrel_max                = iConfig.getParameter<double>      ("ele_dPhiIn_barrel_max");
   _ele_eInverseMinusPInverse_barrel_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_barrel_max");
+  _ele_eInverseMinusPInverse_barrel_min = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_barrel_min");
 
-  _ele_missing_hits_barrel_max          = iConfig.getParameter<double>      ("ele_missing_hits_endcap_max");
-  _ele_sigmaIEtaIEta_barrel_max         = iConfig.getParameter<double>      ("ele_sigmaIEtaIEta_endcap_max");
-  _ele_hOverEm_barrel_max               = iConfig.getParameter<double>      ("ele_hOverEm_endcap_max");
-  _ele_dEtaIn_barrel_max                = iConfig.getParameter<double>      ("ele_dEtaIn_endcap_max");
-  _ele_dPhiIn_barrel_max                = iConfig.getParameter<double>      ("ele_dPhiIn_endcap_max");
-  _ele_eInverseMinusPInverse_barrel_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_max");
+  _ele_missing_hits_endcap_max          = iConfig.getParameter<double>      ("ele_missing_hits_endcap_max");
+  _ele_sigmaIEtaIEta_endcap_max         = iConfig.getParameter<double>      ("ele_sigmaIEtaIEta_endcap_max");
+  _ele_hOverEm_endcap_max               = iConfig.getParameter<double>      ("ele_hOverEm_endcap_max");
+  _ele_dEtaIn_endcap_max                = iConfig.getParameter<double>      ("ele_dEtaIn_endcap_max");
+  _ele_dPhiIn_endcap_max                = iConfig.getParameter<double>      ("ele_dPhiIn_endcap_max");
+  _ele_eInverseMinusPInverse_endcap_max = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_max");
+  _ele_eInverseMinusPInverse_endcap_min = iConfig.getParameter<double>      ("ele_eInverseMinusPInverse_endcap_min");
 
   // _tau_pT_min  = iConfig.getParameter<double>       ("tau_pT_min");
   // _tau_eta_max = iConfig.getParameter<double>       ("tau_eta_max");
@@ -537,16 +540,17 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<edm::View<pat::Electron>>  eles;
   iEvent.getByToken(_eleCollToken, eles);
 
-  std::array<std::string, 7> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWpLooseName, _elePOGMvaName}};
+  std::array<std::string, 8> ele_ID_names {{_eleIdVetoName, _eleIdLooseName, _eleIdMediumName, _eleIdTightName, _eleIdMvaWp90Name, _eleIdMvaWp90NoIsoName, _eleIdMvaWpLooseName, _elePOGMvaName}};
 
   pat::ElectronCollection elesSelected = SelectEles( eles, primaryVertex, ele_ID_names,
 						     _ele_ID, _ele_pT_min, _ele_eta_max, _ele_missing_hits_barrel_max,
                  _ele_sigmaIEtaIEta_barrel_max, _ele_hOverEm_barrel_max,
                  _ele_dEtaIn_barrel_max, _ele_dPhiIn_barrel_max,
-                 _ele_eInverseMinusPInverse_barrel_max, _ele_missing_hits_endcap_max,
-                 _ele_sigmaIEtaIEta_endcap_max, _ele_hOverEm_endcap_max,
-                 _ele_dEtaIn_endcap_max, _ele_dPhiIn_endcap_max,
-                 _ele_eInverseMinusPInverse_endcap_max );
+                 _ele_eInverseMinusPInverse_barrel_max, _ele_eInverseMinusPInverse_barrel_min,
+                 _ele_missing_hits_endcap_max, _ele_sigmaIEtaIEta_endcap_max,
+                 _ele_hOverEm_endcap_max, _ele_dEtaIn_endcap_max,
+                 _ele_dPhiIn_endcap_max, _ele_eInverseMinusPInverse_endcap_max,
+                 _ele_eInverseMinusPInverse_endcap_min );
 
   
   // Sort the selected electrons by pT
@@ -560,10 +564,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		_lepVars_ele, _lepMVA_ele, _rho, jets, pfCands, eleEffArea, _ele_missing_hits_barrel_max,
     _ele_sigmaIEtaIEta_barrel_max, _ele_hOverEm_barrel_max,
     _ele_dEtaIn_barrel_max, _ele_dPhiIn_barrel_max,
-    _ele_eInverseMinusPInverse_barrel_max, _ele_missing_hits_endcap_max,
-    _ele_sigmaIEtaIEta_endcap_max, _ele_hOverEm_endcap_max,
-    _ele_dEtaIn_endcap_max, _ele_dPhiIn_endcap_max,
-    _ele_eInverseMinusPInverse_endcap_max  );
+    _ele_eInverseMinusPInverse_barrel_max, _ele_eInverseMinusPInverse_barrel_min,
+    _ele_missing_hits_endcap_max, _ele_sigmaIEtaIEta_endcap_max,
+    _ele_hOverEm_endcap_max, _ele_dEtaIn_endcap_max,
+    _ele_dPhiIn_endcap_max, _ele_eInverseMinusPInverse_endcap_max,
+    _ele_eInverseMinusPInverse_endcap_min );
   
   _nEles = _eleInfos.size();
 
