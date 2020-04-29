@@ -148,6 +148,8 @@ for samp in samps:
     out_file.close()
     in_file.close()
 
+for samp in samps:
+   print(samp.DAS)
 
 print '\nCreating submit_all.sh and check_all.sh scripts'
 
