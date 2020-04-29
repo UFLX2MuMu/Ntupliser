@@ -12,7 +12,8 @@ ROOT.AutoLibraryLoader.enable()
 # load FWlite python libraries
 from DataFormats.FWLite import Handle, Events
 
-filein=["/eos/cms//store/data/Run2017F/SingleMuon/MINIAOD/17Nov2017-v1/60000/A868A5F6-D4E9-E711-9422-FA163E31662A.root"]
+filein=["/eos/cms//store/data/Run2017F/SingleMuon/MINIAOD/31Mar2018-v1/00003/002E160D-7437-E811-A5A4-0025904886E6.root"]
+
 
 #filein=["/eos/cms/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU2017_94X_mc2017_realistic_v11_ext1-v1/00000/1C18929B-FF90-E811-976C-02163E014BB0.root"]
 #filein=['/eos/cms//store/user/bortigno/mc_genproduction/darkphoton/LHE-MINIAODSIM/ZD_UpTo2j_MZD125_Eps2e-2_v0/ZD_UpTo2j_MZD125_Eps2e-2/RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v11LHE-MINIAODSIM/180525_114650/0000/darkphoton_miniaodsim_299.root']
