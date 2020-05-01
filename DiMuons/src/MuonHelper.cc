@@ -18,6 +18,9 @@ void FillMuonInfos( MuonInfos& _muonInfos,
 		    const edm::Handle<pat::PackedCandidateCollection> pfCands,
 		    EffectiveAreas muEffArea ) {
 
+
+
+
   // std::cout << "\nInside FillMuonInfos" << std::endl;
 
   double const MASS_MUON = 0.105658367; // GeV/c^2
@@ -25,6 +28,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
   _muonInfos.clear();
   int nMuons = muonsSelected.size();
 
+ 
 
   // Testing Kinematic fit : Needs to be integrated in the Ntupliser data format - PB 10.09.2018
 
@@ -118,6 +122,16 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       std::cout << "ERROR: The muon is NOT global NOR tracker ?!?\n";
       continue;
     }
+
+
+    // Refitting track with BS
+  
+    const GlobalPoint beamspot(0,0,0);
+    const GlobalError beamspot_error(0.01,0,0.01,0,0,0.001);
+    SingleTrackVertexConstraint mu_w_bs;
+    const reco::TransientTrack ttm = getTransientTrack(muon.track());
+    mu_w_bs.constrain(ttm,beamspot,beamspot_error);
+ 
 
     // Basic kinematics
     // "muon.pt()" returns PF quantities if PF is available - and all loose/med/tight muons are PF
@@ -420,6 +434,15 @@ pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons,
   
   return muonsSelected;
 }
+
+
+//The reconstructed muon trajectories 
+reco::TransientTrack getTransientTrack(const reco::TrackRef& trackRef) {
+
+      reco::TransientTrack transientTrack(trackRef, paramField);
+      return transientTrack;
+}
+ 
 
 bool MuonIsLoose ( const pat::Muon muon ) {
   bool _isLoose = ( muon.isPFMuon() && ( muon.isGlobalMuon() || muon.isTrackerMuon() ) );

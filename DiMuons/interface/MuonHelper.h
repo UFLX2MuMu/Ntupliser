@@ -10,6 +10,8 @@
 #include "Ntupliser/DiMuons/interface/GenMuonInfo.h"
 #include "Ntupliser/DiMuons/interface/LepMVA.h"
 
+#include "RecoVertex/KalmanVertexFit/interface/SingleTrackVertexConstraint.h"
+
 // Classes for json handling
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
@@ -36,6 +38,11 @@ pat::MuonCollection SelectMuons( const edm::Handle<pat::MuonCollection>& muons,
 				 const double _muon_pT_min, const double _muon_eta_max, const double _muon_trig_dR,
 				 const bool _muon_use_pfIso, const double _muon_iso_dR, const double _muon_iso_max,
 				 const double _rho, EffectiveAreas muEffArea );
+
+
+//For the fit with the BS
+OAEParametrizedMagneticField *paramField = new OAEParametrizedMagneticField("3_8T");
+reco::TransientTrack getTransientTrack(const reco::TrackRef& trackRef);
 
 bool MuonIsLoose ( const pat::Muon muon );
 bool MuonIsMedium( const pat::Muon muon );
