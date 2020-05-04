@@ -42,6 +42,11 @@ struct MuonInfo {
   Double_t pt_Roch_sys_up    = -999;
   Double_t pt_Roch_sys_down  = -999;
 
+  Float_t pt_bs        = -999; 
+  Float_t phi_bs       = -999;
+  Float_t ptErr_bs     = -999; 
+  Float_t chi2_bs      = -999;
+
   Float_t d0_BS        = -999;
   Float_t dz_BS        = -999;
   Float_t d0_PV        = -999;

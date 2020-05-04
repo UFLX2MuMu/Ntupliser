@@ -188,6 +188,20 @@ void FillMuPairInfos( MuPairInfos& _pairInfos, const MuonInfos _muonInfos ) {
       _pairInfo.pt_Roch_sys_down   = pair_vec.nom.Pt();
     }
 
+    // Beamspot constrained 
+    if ( _muonInfos.at(iMu1).pt_bs > 0 && _muonInfos.at(iMu2).pt_bs > 0 ) {
+      FillMuPairMasses( mu1_vec, mu2_vec, pair_vec, massErr, MASS_MUON, 
+		      _muonInfos.at(iMu1),          _muonInfos.at(iMu2),
+		      _muonInfos.at(iMu1).pt_bs,    _muonInfos.at(iMu2).pt_bs,
+		      _muonInfos.at(iMu1).ptErr_bs, _muonInfos.at(iMu2).ptErr_bs,
+                      _muonInfos.at(iMu1).phi_bs,   _muonInfos.at(iMu2).phi_bs,
+                      _muonInfos.at(iMu1).eta,      _muonInfos.at(iMu2).eta   );
+      
+      _pairInfo.mass_bs    = pair_vec.nom.M();
+      _pairInfo.massErr_bs = massErr;
+      _pairInfo.pt_bs      = pair_vec.nom.Pt();
+    }
+ 
     _pairInfos.push_back( _pairInfo );
   } // End loop: for (int i = 0; i < isOS.size(); i++)
   

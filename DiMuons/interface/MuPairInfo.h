@@ -55,6 +55,10 @@ struct MuPairInfo {
   Double_t mass_Roch_sys_down = -999;
   Double_t pt_Roch_sys_down   = -999;
 
+  Double_t mass_bs    = -999;
+  Double_t massErr_bs = -999;
+  Double_t pt_bs      = -999;
+
 };
 
 typedef std::vector<MuPairInfo> MuPairInfos;

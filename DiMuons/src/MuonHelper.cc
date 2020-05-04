@@ -124,15 +124,6 @@ void FillMuonInfos( MuonInfos& _muonInfos,
     }
 
 
-    // Refitting track with BS
-  
-    const GlobalPoint beamspot(0,0,0);
-    const GlobalError beamspot_error(0.01,0,0.01,0,0,0.001);
-    SingleTrackVertexConstraint mu_w_bs;
-    const reco::TransientTrack ttm = getTransientTrack(muon.track());
-    mu_w_bs.constrain(ttm,beamspot,beamspot_error);
- 
-
     // Basic kinematics
     // "muon.pt()" returns PF quantities if PF is available - and all loose/med/tight muons are PF
     _muonInfo.charge = muon.charge();
@@ -215,6 +206,22 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       int charge_Roch     = muon.innerTrack()->charge();
       int trk_layers_Roch = muon.innerTrack()->hitPattern().trackerLayersWithMeasurement(); 
 
+      // Beamspot constrained muons
+      // Refitting track with BS
+      const GlobalPoint beamspot(beamSpotHandle->position().x(), beamSpotHandle->position().y(), beamSpotHandle->position().z() ) ;
+      const GlobalError beamspot_error(beamSpotHandle->covariance3D()); // (beamSpotHandle->rotatedCovariance3D()); // should it be the covariance3D() or rotatedCovariance3D() like in https://github.com/cms-sw/cmssw/blob/f6e0d5cad8bfd5646c03b8c203df10aaba5618e5/RecoVertex/VertexPrimitives/interface/VertexState.h ? - PB 04.05.20
+      SingleTrackVertexConstraint mu_w_bs;
+      const reco::TransientTrack ttm = getTransientTrack(muon.track());
+      boost::tuple<bool, reco::TransientTrack, float> bs_fit_result = mu_w_bs.constrain(ttm,beamspot,beamspot_error);
+      //std::cout << "Refitted : Track : Transient track pt = " << bs_fit_result.get<1>().track().pt() << "  " << ttm.track().pt() << "  " << muon.pt() << std::endl;
+
+      _muonInfo.pt_bs = bs_fit_result.get<1>().track().pt(); 
+      _muonInfo.phi_bs = bs_fit_result.get<1>().track().phi(); 
+      _muonInfo.ptErr_bs = bs_fit_result.get<1>().track().ptError(); 
+      _muonInfo.chi2_bs = bs_fit_result.get<2>(); 
+
+      // GEN Muons
+     
       int iMatch = -99;
       if (not _isData) {
 	for (unsigned int i = 0; i < _genMuonInfos.size(); i++) {
