@@ -27,6 +27,8 @@
 #include "RecoVertex/VertexTools/interface/VertexDistance3D.h"
 #include "RecoVertex/VertexTools/interface/VertexDistanceXY.h"
 
+
+
 class KinematicVertexFitter {
 
   public: 
@@ -50,7 +52,7 @@ class KinematicVertexFitter {
       //Passing transient muon tracks to the fitter
       std::vector<reco::TransientTrack> muon_tracks;
       for (pat::MuonCollection::const_iterator imu = pat_muons.begin(); imu != pat_muons.end(); ++imu){
-        muons_for_kinematic_fit.push_back(pFactory.particle(getTransientTrack(imu->track()), muon_mass, chi, ndf, muon_mass_sigma));
+        muons_for_kinematic_fit.push_back(pFactory.particle(getTransientTrack(imu->track()), muon_mass, imu->track()->chi2(), imu->track()->ndof(), muon_mass_sigma));
       }
 
       //Fitting.
@@ -68,8 +70,8 @@ class KinematicVertexFitter {
     float const muon_mass = 0.105658367; 
     float muon_mass_sigma = muon_mass * 1.e-6;
     // initial chi2 and ndf before kinematic fits. The chi2 of the reconstruction is not considered
-    float chi = 0.;
-    float ndf = 0.; 
+    //float chi = 0.;
+    //float ndf = 0.; 
 
 
 };
