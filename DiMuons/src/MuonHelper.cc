@@ -209,7 +209,7 @@ void FillMuonInfos( MuonInfos& _muonInfos,
       // Beamspot constrained muons
       // Refitting track with BS
       const GlobalPoint beamspot(beamSpotHandle->position().x(), beamSpotHandle->position().y(), beamSpotHandle->position().z() ) ;
-      const GlobalError beamspot_error(beamSpotHandle->covariance3D()); // (beamSpotHandle->rotatedCovariance3D()); // should it be the covariance3D() or rotatedCovariance3D() like in https://github.com/cms-sw/cmssw/blob/f6e0d5cad8bfd5646c03b8c203df10aaba5618e5/RecoVertex/VertexPrimitives/interface/VertexState.h ? - PB 04.05.20
+      const GlobalError beamspot_error(beamSpotHandle->rotatedCovariance3D()); // (beamSpotHandle->covariance3D()); // should it be the covariance3D() or rotatedCovariance3D() like in https://github.com/cms-sw/cmssw/blob/f6e0d5cad8bfd5646c03b8c203df10aaba5618e5/RecoVertex/VertexPrimitives/interface/VertexState.h ? - PB 04.05.20
       SingleTrackVertexConstraint mu_w_bs;
       const reco::TransientTrack ttm = getTransientTrack(muon.track());
       boost::tuple<bool, reco::TransientTrack, float> bs_fit_result = mu_w_bs.constrain(ttm,beamspot,beamspot_error);
