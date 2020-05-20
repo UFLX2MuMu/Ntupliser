@@ -4,17 +4,18 @@
 void FillEleInfos( EleInfos& _eleInfos, 
 		   const pat::ElectronCollection elesSelected,
 		   const reco::Vertex primaryVertex, const edm::Event& iEvent,
-		   const std::array<std::string, 7> ele_ID_names,
+		   const std::array<std::string, 8> ele_ID_names,
 		   LepMVAVars & _lepVars_ele, std::shared_ptr<TMVA::Reader> & _lepMVA_ele,
                    const double _rho, const edm::Handle<pat::JetCollection>& jets,
                    const edm::Handle<pat::PackedCandidateCollection> pfCands,
                    EffectiveAreas eleEffArea , const double _ele_missing_hits_barrel_max,
                    const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
                    const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
-                   const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
-                   const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
-                   const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
-                   const double _ele_eInverseMinusPInverse_endcap_max ) {
+                   const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_eInverseMinusPInverse_barrel_min,
+                   const double _ele_missing_hits_endcap_max, const double _ele_sigmaIEtaIEta_endcap_max,
+                   const double _ele_hOverEm_endcap_max, const double _ele_dEtaIn_endcap_max,
+                   const double _ele_dPhiIn_endcap_max, const double _ele_eInverseMinusPInverse_endcap_max,
+                   const double _ele_eInverseMinusPInverse_endcap_min ) {
   
   _eleInfos.clear();
   int nEles = elesSelected.size();
@@ -39,7 +40,8 @@ void FillEleInfos( EleInfos& _eleInfos,
             ele.hadronicOverEm() < _ele_hOverEm_barrel_max &&
             fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
             fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max &&
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() > _ele_eInverseMinusPInverse_barrel_min) {
         isTZqID = true;
       }
     }
@@ -49,23 +51,25 @@ void FillEleInfos( EleInfos& _eleInfos,
             ele.hadronicOverEm() < _ele_hOverEm_endcap_max &&
             fabs( ele.deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
             fabs( ele.deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
-            fabs(1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max &&
+            (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy() > _ele_eInverseMinusPInverse_endcap_min) {
         isTZqID = true;
       }
     }
 
     // Basic quality
-    _eleInfo.isPF           = ele.isPF();
-    _eleInfo.isVetoID       = ele.electronID(ele_ID_names[0]);
-    _eleInfo.isLooseID      = ele.electronID(ele_ID_names[1]);
-    _eleInfo.isMediumID     = ele.electronID(ele_ID_names[2]);
-    _eleInfo.isTightID      = ele.electronID(ele_ID_names[3]);
-    _eleInfo.isMvaWp90ID    = ele.electronID(ele_ID_names[4]);
-    _eleInfo.isMvaWpLooseID = ele.electronID(ele_ID_names[5]);
-    _eleInfo.isTZqID        = isTZqID;
+    _eleInfo.isPF             = ele.isPF();
+    _eleInfo.isVetoID         = ele.electronID(ele_ID_names[0]);
+    _eleInfo.isLooseID        = ele.electronID(ele_ID_names[1]);
+    _eleInfo.isMediumID       = ele.electronID(ele_ID_names[2]);
+    _eleInfo.isTightID        = ele.electronID(ele_ID_names[3]);
+    _eleInfo.isMvaWp90ID      = ele.electronID(ele_ID_names[4]);
+    _eleInfo.isMvaWp90NoIsoID = ele.electronID(ele_ID_names[5]);
+    _eleInfo.isMvaWpLooseID   = ele.electronID(ele_ID_names[6]);
+    _eleInfo.isTZqID          = isTZqID;
 
     // EGamma POG MVA quality
-    _eleInfo.mvaID = ele.userFloat(ele_ID_names[6]);
+    _eleInfo.mvaID = ele.userFloat(ele_ID_names[7]);
 
 
     // Basic isolation
@@ -74,6 +78,12 @@ void FillEleInfos( EleInfos& _eleInfos,
     _eleInfo.miniIso        = EleCalcMiniIso ( ele, pfCands, _rho, eleEffArea, false );
     _eleInfo.miniIsoCharged = EleCalcMiniIso ( ele, pfCands, _rho, eleEffArea, true );
 
+    // Additional tZq ID variables
+    _eleInfo.sigmaIEtaIEta         = ele.full5x5_sigmaIetaIeta();
+    _eleInfo.hOverEm               = ele.hadronicOverEm();
+    _eleInfo.dEtaIn                = fabs( ele.deltaEtaSuperClusterTrackAtVtx() );
+    _eleInfo.dPhiIn                = fabs( ele.deltaPhiSuperClusterTrackAtVtx() );
+    _eleInfo.eInverseMinusPInverse = (1.0 - ele.eSuperClusterOverP()) / ele.ecalEnergy();
 
     // Basic vertexing?
 
@@ -125,14 +135,15 @@ void FillEleInfos( EleInfos& _eleInfos,
 
 
 pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>& eles, const reco::Vertex primaryVertex,
-				    const std::array<std::string, 7> ele_ID_names, const std::string _ele_ID,
+				    const std::array<std::string, 8> ele_ID_names, const std::string _ele_ID,
 				    const double _ele_pT_min, const double _ele_eta_max, const double _ele_missing_hits_barrel_max,
             const double _ele_sigmaIEtaIEta_barrel_max, const double _ele_hOverEm_barrel_max,
             const double _ele_dEtaIn_barrel_max, const double _ele_dPhiIn_barrel_max,
-            const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_missing_hits_endcap_max,
-            const double _ele_sigmaIEtaIEta_endcap_max, const double _ele_hOverEm_endcap_max,
-            const double _ele_dEtaIn_endcap_max, const double _ele_dPhiIn_endcap_max,
-            const double _ele_eInverseMinusPInverse_endcap_max ) {
+            const double _ele_eInverseMinusPInverse_barrel_max, const double _ele_eInverseMinusPInverse_barrel_min,
+            const double _ele_missing_hits_endcap_max, const double _ele_sigmaIEtaIEta_endcap_max,
+            const double _ele_hOverEm_endcap_max, const double _ele_dEtaIn_endcap_max,
+            const double _ele_dPhiIn_endcap_max, const double _ele_eInverseMinusPInverse_endcap_max,
+            const double _ele_eInverseMinusPInverse_endcap_min ) {
   
   // Main Egamma POG page: https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPOG
   // Following https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2
@@ -147,11 +158,12 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
     return elesSelected;
   }
 
-  if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos && 
+  if ( _ele_ID.find("veto")   == std::string::npos && _ele_ID.find("loose") == std::string::npos &&
        _ele_ID.find("medium") == std::string::npos && _ele_ID.find("tight") == std::string::npos &&
-       _ele_ID.find("wp90") == std::string::npos && _ele_ID.find("wpLoose") == std::string::npos &&
-       _ele_ID.find("tZq") == std::string::npos && _ele_ID.find("none") == std::string::npos)
-    std::cout << "Ele ID is neither tight, medium, loose, tight, mva-wp90, mva-wpLoose, nor tZq-like: " << _ele_ID
+       _ele_ID.find("wp90") == std::string::npos && _ele_ID.find("wp90NoIso") == std::string::npos &&
+       _ele_ID.find("wpLoose") == std::string::npos && _ele_ID.find("tZq") == std::string::npos &&
+       _ele_ID.find("none") == std::string::npos)
+    std::cout << "Ele ID is neither tight, medium, loose, tight, mva-wp90, mva-wp90-noIso, mva-wpLoose, nor tZq-like: " << _ele_ID
               << "\nNo electron ID cuts will be applied. Please set ele_ID = none if you do not want to apply ID cuts." << std::endl;
 
   for (size_t i = 0; i < eles->size(); ++i) {
@@ -170,7 +182,8 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
             ele->hadronicOverEm() < _ele_hOverEm_barrel_max &&
             fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_barrel_max &&
             fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_barrel_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max ) {
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_barrel_max &&
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() > _ele_eInverseMinusPInverse_barrel_min) {
         isTZqID = true;
       }
     }
@@ -180,19 +193,21 @@ pat::ElectronCollection SelectEles( const edm::Handle<edm::View<pat::Electron>>&
             ele->hadronicOverEm() < _ele_hOverEm_endcap_max &&
             fabs( ele->deltaEtaSuperClusterTrackAtVtx() ) < _ele_dEtaIn_endcap_max &&
             fabs( ele->deltaPhiSuperClusterTrackAtVtx() ) < _ele_dPhiIn_endcap_max &&
-            fabs(1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max ) {
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() < _ele_eInverseMinusPInverse_endcap_max &&
+            (1.0 - ele->eSuperClusterOverP()) / ele->ecalEnergy() > _ele_eInverseMinusPInverse_endcap_min) {
         isTZqID = true;
       }
     }
 
 
-    if (_ele_ID.find("veto")   != std::string::npos && !ele->electronID(ele_ID_names[0]) ) continue;
-    if (_ele_ID.find("loose")  != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
-    if (_ele_ID.find("medium") != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
-    if (_ele_ID.find("tight")  != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
-    if (_ele_ID.find("wp90")   != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
-    if (_ele_ID.find("wpLoose")!= std::string::npos && !ele->electronID(ele_ID_names[5]) ) continue;
-    if (_ele_ID.find("tZq")    != std::string::npos && !isTZqID                          ) continue;
+    if (_ele_ID.find("veto")      != std::string::npos && !ele->electronID(ele_ID_names[0]) ) continue;
+    if (_ele_ID.find("loose")     != std::string::npos && !ele->electronID(ele_ID_names[1]) ) continue;
+    if (_ele_ID.find("medium")    != std::string::npos && !ele->electronID(ele_ID_names[2]) ) continue;
+    if (_ele_ID.find("tight")     != std::string::npos && !ele->electronID(ele_ID_names[3]) ) continue;
+    if (_ele_ID.find("wp90")      != std::string::npos && !ele->electronID(ele_ID_names[4]) ) continue;
+    if (_ele_ID.find("wp90NoIso") != std::string::npos && !ele->electronID(ele_ID_names[5]) ) continue;
+    if (_ele_ID.find("wpLoose")   != std::string::npos && !ele->electronID(ele_ID_names[6]) ) continue;
+    if (_ele_ID.find("tZq")       != std::string::npos && !isTZqID                          ) continue;
 
     elesSelected.push_back(*ele);
 
@@ -243,7 +258,6 @@ double EleCalcRelIsoPF( const pat::Electron ele, const double rho,
 
   if      (type == "DeltaBeta") PU = 0.5 * ele.pfIsolationVariables().sumPUPt;
   else if (type == "EffArea")   PU = rho * eleEffArea.getEffectiveArea( ele.eta() );
-  PU   = 0.5 * ele.pfIsolationVariables().sumPUPt;
   iso  = ele.pfIsolationVariables().sumChargedHadronPt;
   iso += std::fmax( 0., ele.pfIsolationVariables().sumNeutralHadronEt + ele.pfIsolationVariables().sumPhotonEt - PU );
 
