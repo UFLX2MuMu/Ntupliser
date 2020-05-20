@@ -250,6 +250,24 @@ H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
                        DAS  = '/ttHToMuMu_M130_TuneCP5_13TeV-powheg-pythia8/'+DAS_era_MC_a+'-v1/MINIAODSIM',
                        nEvt = -1 ) ## 300 k
 
+## pre-approval requests
+H2Mu_THW_125 = sample( name = 'H2Mu_THW_125',
+                       DAS  = '/THW_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-722d342ee61704392dd37792585c69c0/USER',
+                       nEvt = -1 ) ## 300 k
+
+H2Mu_ggZH_125 = sample( name = 'H2Mu_ggZH_125',
+                        DAS  = '/ggZH_HToMuMu_ZToLL_M125_13TeV_powheg_pythia8/rgerosa-RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-722d342ee61704392dd37792585c69c0/USER',
+                        nEvt = -1)
+
+H2Mu_THQ_125 = sample( name = 'H2Mu_THQ_125',
+                        DAS  = '/THQ_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-722d342ee61704392dd37792585c69c0/USER',
+                        nEvt = -1,
+                        files= ['/store/user/rgerosa/PrivateMC/THQ_HToMuMu_TuneCP5_13TeV-madgraph-pythia/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3/200501_074802/0000/miniAOD_step_266.root'])
+
+H2Mu_bbH_125 = sample( name = 'H2Mu_bbH_125',
+                        DAS  = '/bbHToMuMu_M-125_4FS_yb2_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM',
+                        nEvt = -1)
+
 
 Signal = []  ## All H2Mu signal samples
 Signal.append(H2Mu_gg_125_NLO)
@@ -273,7 +291,12 @@ Signal.append(H2Mu_VBF_130_NLO_2)
 Signal.append(H2Mu_WH_pos_130)
 Signal.append(H2Mu_WH_neg_130)
 Signal.append(H2Mu_ZH_130)
+Signal.append(H2Mu_ttH_130)
 
+Signal.append(H2Mu_ggZH_125)
+Signal.append(H2Mu_THQ_125)
+Signal.append(H2Mu_THW_125)
+Signal.append(H2Mu_bbH_125)
 
 
 # # =======================================================================================================
