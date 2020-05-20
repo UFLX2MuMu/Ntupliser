@@ -376,6 +376,7 @@ private:
   std::string _eleIdMediumName;
   std::string _eleIdTightName;
   std::string _eleIdMvaWp90Name;
+  std::string _eleIdMvaWp90NoIsoName;
   std::string _eleIdMvaWpLooseName;
   std::string _elePOGMvaName;
 
@@ -448,6 +449,7 @@ private:
   double _ele_dEtaIn_barrel_max;
   double _ele_dPhiIn_barrel_max;
   double _ele_eInverseMinusPInverse_barrel_max;
+  double _ele_eInverseMinusPInverse_barrel_min;
 
   double _ele_missing_hits_endcap_max;
   double _ele_sigmaIEtaIEta_endcap_max;
@@ -455,6 +457,7 @@ private:
   double _ele_dEtaIn_endcap_max;
   double _ele_dPhiIn_endcap_max;
   double _ele_eInverseMinusPInverse_endcap_max;
+  double _ele_eInverseMinusPInverse_endcap_min;
 
   double _tau_pT_min;
   double _tau_eta_max;

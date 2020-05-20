@@ -478,7 +478,6 @@ double MuonCalcRelIsoPF( const pat::Muon muon, const double _muon_iso_dR, const 
   else if ( _muon_iso_dR == 0.3 ) {
     if      (type == "DeltaBeta") PU = 0.5 * muon.pfIsolationR03().sumPUPt;
     else if (type == "EffArea")   PU = rho * muEffArea.getEffectiveArea( muon.eta() );
-    PU   = 0.5 * muon.pfIsolationR03().sumPUPt;
     iso  = muon.pfIsolationR03().sumChargedHadronPt;
     iso += std::fmax( 0., muon.pfIsolationR03().sumNeutralHadronEt + muon.pfIsolationR03().sumPhotonEt - PU );
   }
