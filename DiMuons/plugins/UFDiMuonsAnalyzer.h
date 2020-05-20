@@ -67,6 +67,7 @@ public:
   TH1D*  _PU_wgt_hist_down;
   TFile* _PU_wgt_file;
   int _GEN_wgt;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
+  float _MG_wgt;
 
 
   ///////////////////////////////////////////////////////////

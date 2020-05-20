@@ -243,6 +243,14 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     _LHE_HT = calcHtLHE( LHE_handle );
 
+    _MG_wgt = 1.;
+    for (uint i = 0; i < LHE_handle->weights().size(); i++) {
+      if(LHE_handle->weights()[i].id.find("rwgt_12") != std::string::npos){
+        _MG_wgt = LHE_handle->weights()[i].wgt/LHE_handle->originalXWGTUP();
+        if(_isVerbose) std::cout << "MG variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << _MG_wgt << std::endl;
+      }
+    }
+
     // std::cout << "\n\n***  Printing LHEEventProduct variables  ***" << std::endl;
     // std::cout << "Original weight = " << LHE_handle->originalXWGTUP() <<  std::endl;
     // for (uint i = 0; i < LHE_handle->weights().size(); i++) {
@@ -871,7 +879,8 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("PU_wgt_up",   &_PU_wgt_up,   "PU_wgt_up/F"   );
     _outTree->Branch("PU_wgt_down", &_PU_wgt_down, "PU_wgt_down/F" );
     _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/I"     );
-    
+    _outTree->Branch("MG_wgt",     &_MG_wgt,     "MG_wgt/F"     );
+
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
     _outTree->Branch("nGenMuPairs", (int*) &_nGenMuPairs );
