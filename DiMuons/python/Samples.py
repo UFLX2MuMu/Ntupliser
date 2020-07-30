@@ -223,16 +223,19 @@ H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
                        nEvt = -1 ) ## 300 k
 
 
-H2Mu_ggZH_125 = sample( name = 'H2Mu_ggZZ_125', 
+H2Mu_ggZH_125 = sample( name = 'H2Mu_ggZH_125', 
                         DAS = '/ggZH_HToMuMu_ZToLL_M125_13TeV_powheg_pythia8/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER',
+                        inputDSB = 'phys03',
                         nEvt = -1 )
 
 H2Mu_THW_125 = sample( name = 'H2Mu_THW_125', 
                        DAS = '/THW_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER', 
+                       inputDSB = 'phys03',
                        nEvt = -1 )
 
 H2Mu_THQ_125 = sample( name = 'H2Mu_THQ_125',
                        DAS = '/THQ_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER',
+                       inputDSB = 'phys03',
                        nEvt = -1 )
 
 H2Mu_bbH_125 = sample( name = 'H2Mu_bbH_125',
@@ -262,7 +265,7 @@ Signal.append(H2Mu_WH_neg_130)
 Signal.append(H2Mu_ZH_130)
 Signal.append(H2Mu_ttH_130)
 
-Signal.append(H2Mu_ggZZ_125)
+Signal.append(H2Mu_ggZH_125)
 Signal.append(H2Mu_THW_125)
 Signal.append(H2Mu_THQ_125)
 Signal.append(H2Mu_bbH_125)
