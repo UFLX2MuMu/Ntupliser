@@ -54,6 +54,11 @@ public:
   int   _sumEventWeightsOld;
   float _sumEventWeightsQCDup;
   float _sumEventWeightsQCDdn;
+  float _sumEventWeightsPDFup;
+  float _sumEventWeightsPDFdn;
+  float _sumEventWeightsPSup;
+  float _sumEventWeightsPSdn;
+
 
   // tracks pairs, e.g. cocktail
   typedef std::pair<reco::Track,reco::Track> TrackPair;
@@ -73,6 +78,10 @@ public:
   float _GEN_wgt;
   float _GEN_wgt_QCDup;
   float _GEN_wgt_QCDdn;
+  float _GEN_wgt_PDFup;
+  float _GEN_wgt_PDFdn;
+  float _GEN_wgt_PSup;
+  float _GEN_wgt_PSdn;
 
   ///////////////////////////////////////////////////////////
   // Structs  ==============================================

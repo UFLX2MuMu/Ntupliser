@@ -15,6 +15,10 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _sumEventWeightsOld = 0;
   _sumEventWeightsQCDup = 0.0;
   _sumEventWeightsQCDdn = 0.0;
+  _sumEventWeightsPDFup = 0.0;
+  _sumEventWeightsPDFdn = 0.0;
+  _sumEventWeightsPSup  = 0.0;
+  _sumEventWeightsPSdn  = 0.0;
   _outTree = fs->make<TTree>("tree", "myTree");
   _outTreeMetadata = fs->make<TTree>("metadata", "Metadata Tree");
 
@@ -231,6 +235,10 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     _sumEventWeightsOld += 1;
     _sumEventWeightsQCDup += 1;
     _sumEventWeightsQCDdn += 1;
+    _sumEventWeightsPDFup += 1;
+    _sumEventWeightsPDFdn += 1;
+    _sumEventWeightsPSup += 1;
+    _sumEventWeightsPSdn += 1;
   }
   else {
     // The generated weight. Due to the interference of terms in QM in the
@@ -248,12 +256,27 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
       return;
     }
 
+    // find PS wgts and load envelope
+    // All weights saved in the genEvtInfo->weights() are PS variations
+    // Xunwu Zuo 2020.07.30
+    float PS_up = 1.;
+    float PS_dn = 1.;
+    for (uint i = 0; i < genEvtInfo->weights().size(); i++) {
+      float PS_wgt = 1.0;
+      PS_wgt = genEvtInfo->weights().at(i);
+      if(_isVerbose) std::cout << "PS variation: " << " " << i << " : " << "no name info" << " : " << PS_wgt << std::endl;  // unfortunately no name saved for PS weights
+      if ( PS_wgt > PS_up ) PS_up = PS_wgt;
+      if ( PS_wgt < PS_dn ) PS_dn = PS_wgt;
+    }
+
     _LHE_HT = calcHtLHE( LHE_handle );
 
     // apply MG_wgt
-    float MG_wgt = 1.;
+    float MG_wgt  = 1.;
     float QCD_up = 1.;
     float QCD_dn = 1.;
+    float PDF_up = 1.;
+    float PDF_dn = 1.;
     for (uint i = 0; i < LHE_handle->weights().size(); i++) {
        // find MG_wgt 
        if(LHE_handle->weights()[i].id.find("rwgt_12") != std::string::npos){
@@ -261,14 +284,13 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
          if(_isVerbose) std::cout << "MG variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << MG_wgt << std::endl;
        }
 
-       // find QCD wgt and load envolope
-       if(LHE_handle->weights()[i].id == "1001" or  // 1001 for NomNom
-          LHE_handle->weights()[i].id == "1002" or  // 1002 for UpNom
-          LHE_handle->weights()[i].id == "1003" or  // 1003 for DownNom
-          LHE_handle->weights()[i].id == "1004" or  // 1004 for NomUp
-          LHE_handle->weights()[i].id == "1005" or  // 1005 for UpUp
-          LHE_handle->weights()[i].id == "1007" or  // 1007 for NomDown
-          LHE_handle->weights()[i].id == "1009" ){    // 1009 for DownDown
+       // find QCD wgt and load envelope
+       // Central produced samples count from 1001 to 1009. Private samples from Raffaele count from 1 to 9. 
+       // But they all share index order 0 to 8.
+       // 1001 for NomNom, 1002 for UpNom, 1003 for DownNom, 1004 for NomUp, 1005 for UpUp, 1007 for NomDown, 1009 for DownDown
+       // Do not use 1006 UpDown, and 1008 DownUp, as recommended in https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#Retrieving_the_weights
+       // Xunwu Zuo 2020.07.30
+       if( i<=8 and i!=5 and i!=7 ) {
          float QCD_wgt = 1.0;
          QCD_wgt = LHE_handle->weights()[i].wgt/LHE_handle->originalXWGTUP();
          if(_isVerbose) std::cout << "QCD variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << QCD_wgt << std::endl;
@@ -276,17 +298,41 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
          if ( QCD_wgt < QCD_dn ) QCD_dn = QCD_wgt;
        }
 
+       // find PDF wgt and load envelope
+       // There maybe one or many sets of PDF variations saved
+       // Use NNPDF30_lo_as_0130 for 2016 and NNPDF31_nnlo_hessian_pdfas for 2017/2018
+       // They are saved as the first set by index order
+       // Xunwu Zuo 2020.07.30
+       if ( i >= 9 and i<= 109 ) { 
+         // A nominal set contains 101 variations, but for some cases unfortunately it could contain 103 variations. 
+         // One should in principle loop through all 103 values in those cases. 
+         // But we do not want to check each sample... And we suppose the last two are not important
+         // Xunwu Zuo 2020.07.30 
+         float PDF_wgt = 1.0;
+         PDF_wgt = LHE_handle->weights()[i].wgt/LHE_handle->originalXWGTUP();
+         if(_isVerbose) std::cout << "PDF variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << PDF_wgt << std::endl;
+         if ( PDF_wgt > PDF_up ) PDF_up = PDF_wgt;
+         if ( PDF_wgt < PDF_dn ) PDF_dn = PDF_wgt;
+       }
 
      }
+     // finished loading various weights
 
      _GEN_wgt = _GEN_wgt_old * MG_wgt; // New way of calculating GEN_wgt
      _sumEventWeights += _GEN_wgt;  // New way of calculating sumEventWeights
 
      _GEN_wgt_QCDup = _GEN_wgt * QCD_up;
      _GEN_wgt_QCDdn = _GEN_wgt * QCD_dn;
+     _GEN_wgt_PDFup = _GEN_wgt * PDF_up;
+     _GEN_wgt_PDFdn = _GEN_wgt * PDF_dn;
+     _GEN_wgt_PSup  = _GEN_wgt * PS_up;
+     _GEN_wgt_PSdn  = _GEN_wgt * PS_dn;
      _sumEventWeightsQCDup += _GEN_wgt_QCDup;
      _sumEventWeightsQCDdn += _GEN_wgt_QCDdn;
-
+     _sumEventWeightsPDFup += _GEN_wgt_PDFup;
+     _sumEventWeightsPDFdn += _GEN_wgt_PDFdn;
+     _sumEventWeightsPSup += _GEN_wgt_PSup;
+     _sumEventWeightsPSdn += _GEN_wgt_PSdn;
 
     // std::cout << "\n\n***  Printing LHEEventProduct variables  ***" << std::endl;
     // std::cout << "Original weight = " << LHE_handle->originalXWGTUP() <<  std::endl;
@@ -919,6 +965,10 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/F"     );
     _outTree->Branch("GEN_wgt_QCDup",     &_GEN_wgt_QCDup,     "GEN_wgt_QCDup/F"     );
     _outTree->Branch("GEN_wgt_QCDdn",     &_GEN_wgt_QCDdn,     "GEN_wgt_QCDdn/F"     );
+    _outTree->Branch("GEN_wgt_PDFup",     &_GEN_wgt_PDFup,     "GEN_wgt_PDFup/F"     );
+    _outTree->Branch("GEN_wgt_PDFdn",     &_GEN_wgt_PDFdn,     "GEN_wgt_PDFdn/F"     );
+    _outTree->Branch("GEN_wgt_PSup",      &_GEN_wgt_PSup,      "GEN_wgt_PSup/F"      );
+    _outTree->Branch("GEN_wgt_PSdn",      &_GEN_wgt_PSdn,      "GEN_wgt_PSdn/F"      );
 
     
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
@@ -952,6 +1002,10 @@ void UFDiMuonsAnalyzer::endJob()
   std::cout << "Number of events weighted without MG_wgt: "  << _sumEventWeightsOld << std::endl;
   std::cout << "Number of events weighted with QCD up:"  << _sumEventWeightsQCDup << std::endl;
   std::cout << "Number of events weighted with QCD dn:"  << _sumEventWeightsQCDdn << std::endl;
+  std::cout << "Number of events weighted with PDF up:"  << _sumEventWeightsPDFup << std::endl;
+  std::cout << "Number of events weighted with PDF dn:"  << _sumEventWeightsPDFdn << std::endl;
+  std::cout << "Number of events weighted with PS up:"   << _sumEventWeightsPSup << std::endl;
+  std::cout << "Number of events weighted with PS dn:"   << _sumEventWeightsPSdn << std::endl;
 
   std::cout<<"number of dimuon candidates: "
            <<_outTree->GetEntries()<<std::endl;
@@ -962,6 +1016,10 @@ void UFDiMuonsAnalyzer::endJob()
   _outTreeMetadata->Branch("sumEventWeightsOld",   &_sumEventWeightsOld,  "sumEventWeightsOld/I");
   _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsQCDup,  "sumEventWeightsQCDup/F");
   _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsQCDdn,  "sumEventWeightsQCDdn/F");
+  _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsPDFup,  "sumEventWeightsPDFup/F");
+  _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsPDFdn,  "sumEventWeightsPDFdn/F");
+  _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsPSup,   "sumEventWeightsPSup/F");
+  _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsPSdn,   "sumEventWeightsPSdn/F");
   _outTreeMetadata->Branch("isMonteCarlo",      &_isMonteCarlo,     "isMonteCarlo/O");
 
   _outTreeMetadata->Branch("trigNames",  "std::vector< std::string >", &_trigNames);
