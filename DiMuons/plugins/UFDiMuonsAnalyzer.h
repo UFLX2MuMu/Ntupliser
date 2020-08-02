@@ -58,6 +58,8 @@ public:
   float _sumEventWeightsPDFdn;
   float _sumEventWeightsPSup;
   float _sumEventWeightsPSdn;
+  float _sumEventWeightsGenEvtInfoCent;
+  float _sumEventWeightsOriginalXWGTUP;
 
 
   // tracks pairs, e.g. cocktail
@@ -82,6 +84,8 @@ public:
   float _GEN_wgt_PDFdn;
   float _GEN_wgt_PSup;
   float _GEN_wgt_PSdn;
+  float _GEN_wgt_GenEvtInfoCent;
+  float _GEN_wgt_OriginalXWGTUP;
 
   ///////////////////////////////////////////////////////////
   // Structs  ==============================================

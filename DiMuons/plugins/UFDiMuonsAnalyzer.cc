@@ -19,6 +19,8 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
   _sumEventWeightsPDFdn = 0.0;
   _sumEventWeightsPSup  = 0.0;
   _sumEventWeightsPSdn  = 0.0;
+  _sumEventWeightsGenEvtInfoCent = 0.0;
+  _sumEventWeightsOriginalXWGTUP = 0.0;
   _outTree = fs->make<TTree>("tree", "myTree");
   _outTreeMetadata = fs->make<TTree>("metadata", "Metadata Tree");
 
@@ -239,6 +241,8 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     _sumEventWeightsPDFdn += 1;
     _sumEventWeightsPSup += 1;
     _sumEventWeightsPSdn += 1;
+    _sumEventWeightsGenEvtInfoCent += 1;
+    _sumEventWeightsOriginalXWGTUP += 1;
   }
   else {
     // The generated weight. Due to the interference of terms in QM in the
@@ -263,7 +267,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     float PS_dn = 1.;
     for (uint i = 0; i < genEvtInfo->weights().size(); i++) {
       float PS_wgt = 1.0;
-      PS_wgt = genEvtInfo->weights().at(i);
+      PS_wgt = genEvtInfo->weights().at(i) / genEvtInfo->weight();
       if(_isVerbose) std::cout << "PS variation: " << " " << i << " : " << "no name info" << " : " << PS_wgt << std::endl;  // unfortunately no name saved for PS weights
       if ( PS_wgt > PS_up ) PS_up = PS_wgt;
       if ( PS_wgt < PS_dn ) PS_dn = PS_wgt;
@@ -333,6 +337,11 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
      _sumEventWeightsPDFdn += _GEN_wgt_PDFdn;
      _sumEventWeightsPSup += _GEN_wgt_PSup;
      _sumEventWeightsPSdn += _GEN_wgt_PSdn;
+     // also save center values of decimal weights
+     _GEN_wgt_GenEvtInfoCent = genEvtInfo->weight();
+     _GEN_wgt_OriginalXWGTUP = LHE_handle->originalXWGTUP();
+     _sumEventWeightsGenEvtInfoCent += _GEN_wgt_GenEvtInfoCent;
+     _sumEventWeightsOriginalXWGTUP += _GEN_wgt_OriginalXWGTUP;
 
     // std::cout << "\n\n***  Printing LHEEventProduct variables  ***" << std::endl;
     // std::cout << "Original weight = " << LHE_handle->originalXWGTUP() <<  std::endl;
@@ -969,7 +978,8 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("GEN_wgt_PDFdn",     &_GEN_wgt_PDFdn,     "GEN_wgt_PDFdn/F"     );
     _outTree->Branch("GEN_wgt_PSup",      &_GEN_wgt_PSup,      "GEN_wgt_PSup/F"      );
     _outTree->Branch("GEN_wgt_PSdn",      &_GEN_wgt_PSdn,      "GEN_wgt_PSdn/F"      );
-
+    _outTree->Branch("GEN_wgt_GenEvtInfoCent",     &_GEN_wgt_GenEvtInfoCent,     "GEN_wgt_GenEvtInfoCent/F"     );
+    _outTree->Branch("GEN_wgt_OriginalXWGTUP",     &_GEN_wgt_OriginalXWGTUP,     "GEN_wgt_OriginalXWGTUP/F"     );
     
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
@@ -1006,6 +1016,8 @@ void UFDiMuonsAnalyzer::endJob()
   std::cout << "Number of events weighted with PDF dn:"  << _sumEventWeightsPDFdn << std::endl;
   std::cout << "Number of events weighted with PS up:"   << _sumEventWeightsPSup << std::endl;
   std::cout << "Number of events weighted with PS dn:"   << _sumEventWeightsPSdn << std::endl;
+  std::cout << "Number of events weighted with genEvtInfo->weight():"           << _sumEventWeightsGenEvtInfoCent << std::endl;
+  std::cout << "Number of events weighted with LHE_handle->originalXWGTUP():"   << _sumEventWeightsOriginalXWGTUP << std::endl;
 
   std::cout<<"number of dimuon candidates: "
            <<_outTree->GetEntries()<<std::endl;
@@ -1016,10 +1028,12 @@ void UFDiMuonsAnalyzer::endJob()
   _outTreeMetadata->Branch("sumEventWeightsOld",   &_sumEventWeightsOld,  "sumEventWeightsOld/I");
   _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsQCDup,  "sumEventWeightsQCDup/F");
   _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsQCDdn,  "sumEventWeightsQCDdn/F");
-  _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsPDFup,  "sumEventWeightsPDFup/F");
-  _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsPDFdn,  "sumEventWeightsPDFdn/F");
-  _outTreeMetadata->Branch("sumEventWeightsQCDup",   &_sumEventWeightsPSup,   "sumEventWeightsPSup/F");
-  _outTreeMetadata->Branch("sumEventWeightsQCDdn",   &_sumEventWeightsPSdn,   "sumEventWeightsPSdn/F");
+  _outTreeMetadata->Branch("sumEventWeightsPDFup",   &_sumEventWeightsPDFup,  "sumEventWeightsPDFup/F");
+  _outTreeMetadata->Branch("sumEventWeightsPDFdn",   &_sumEventWeightsPDFdn,  "sumEventWeightsPDFdn/F");
+  _outTreeMetadata->Branch("sumEventWeightsPSup",    &_sumEventWeightsPSup,   "sumEventWeightsPSup/F");
+  _outTreeMetadata->Branch("sumEventWeightsPSdn",    &_sumEventWeightsPSdn,   "sumEventWeightsPSdn/F");
+  _outTreeMetadata->Branch("sumEventWeightsGenEvtInfoCent",   &_sumEventWeightsGenEvtInfoCent,  "sumEventWeightsGenEvtInfoCent/F");
+  _outTreeMetadata->Branch("sumEventWeightsOriginalXWGTUP",   &_sumEventWeightsOriginalXWGTUP,  "sumEventWeightsOriginalXWGTUP/F");
   _outTreeMetadata->Branch("isMonteCarlo",      &_isMonteCarlo,     "isMonteCarlo/O");
 
   _outTreeMetadata->Branch("trigNames",  "std::vector< std::string >", &_trigNames);
