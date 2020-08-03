@@ -50,7 +50,8 @@ public:
   // meta-data not given in python config file
   // info gathered from py cfg defined later (py-cfg meta data: isMonteCarlo, trigNames, tauIDNames, bTagName)
   int _numEvents;
-  int _sumEventWeights;
+  float _sumEventWeights;
+  int _sumEventWeightsOld; // Old version of sumEventWeights which doesn't include MG_wgt in calculation
 
   // tracks pairs, e.g. cocktail
   typedef std::pair<reco::Track,reco::Track> TrackPair;
@@ -66,7 +67,8 @@ public:
   TH1D*  _PU_wgt_hist_up;
   TH1D*  _PU_wgt_hist_down;
   TFile* _PU_wgt_file;
-  int _GEN_wgt;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
+  int _GEN_wgt_old;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
+  float _GEN_wgt;    // multiplication of old GEN_wgt and MG_wgt for samples with reweighting 12
 
   //L1 ECAL prefiring event weights and systematic uncertainty
   float _prefiringweight; 
