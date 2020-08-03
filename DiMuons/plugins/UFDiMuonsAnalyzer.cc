@@ -11,8 +11,7 @@ UFDiMuonsAnalyzer::UFDiMuonsAnalyzer(const edm::ParameterSet& iConfig):
 
   // Initialize the weighted count and the trees.
   // Use the file service to make the trees so that it knows to save them.
-  _sumEventWeights = 0.0;
-  _sumEventWeightsOld = 0;
+  _sumEventWeights = 0;
   _outTree = fs->make<TTree>("tree", "myTree");
   _outTreeMetadata = fs->make<TTree>("metadata", "Metadata Tree");
 
@@ -225,14 +224,14 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if (_isVerbose) std::cout << "\n\n A N A L Y Z I N G   E V E N T = " << _numEvents << std::endl << std::endl;
   
   if (!_isMonteCarlo)
-    _sumEventWeightsOld += 1;
+    _sumEventWeights += 1;
   else {
     // The generated weight. Due to the interference of terms in QM in the
     // NLO simulations there are negative weights that need to be accounted for. 
     edm::Handle<GenEventInfoProduct> genEvtInfo;
     iEvent.getByToken(_genEvtInfoToken, genEvtInfo );
-    _GEN_wgt_old = (genEvtInfo->weight() > 0) ? 1 : -1;  // Why don't we use the decimal weight? - AWB 08.11.16
-    _sumEventWeightsOld += _GEN_wgt_old;
+    _GEN_wgt = (genEvtInfo->weight() > 0) ? 1 : -1;  // Why don't we use the decimal weight? - AWB 08.11.16
+    _sumEventWeights += _GEN_wgt;
 
     if (_isVerbose) std::cout << "\nAccessing LHEEventProduct info" << std::endl;
     edm::Handle<LHEEventProduct> LHE_handle;
@@ -244,16 +243,13 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     _LHE_HT = calcHtLHE( LHE_handle );
 
-    float MG_wgt = 1.;
+    _MG_wgt = 1.;
     for (uint i = 0; i < LHE_handle->weights().size(); i++) {
       if(LHE_handle->weights()[i].id.find("rwgt_12") != std::string::npos){
-        MG_wgt = LHE_handle->weights()[i].wgt/LHE_handle->originalXWGTUP();
-        if(_isVerbose) std::cout << "MG variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << MG_wgt << std::endl;
+        _MG_wgt = LHE_handle->weights()[i].wgt/LHE_handle->originalXWGTUP();
+        if(_isVerbose) std::cout << "MG variation: " << " " << i << " : " << LHE_handle->weights()[i].id << " : " << _MG_wgt << std::endl;
       }
     }
-
-    _GEN_wgt = _GEN_wgt_old * MG_wgt; // New way of calculating GEN_wgt
-    _sumEventWeights += _GEN_wgt;  // New way of calculating sumEventWeights
 
     // std::cout << "\n\n***  Printing LHEEventProduct variables  ***" << std::endl;
     // std::cout << "Original weight = " << LHE_handle->originalXWGTUP() <<  std::endl;
@@ -882,8 +878,8 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("PU_wgt",      &_PU_wgt,      "PU_wgt/F"      );
     _outTree->Branch("PU_wgt_up",   &_PU_wgt_up,   "PU_wgt_up/F"   );
     _outTree->Branch("PU_wgt_down", &_PU_wgt_down, "PU_wgt_down/F" );
-    _outTree->Branch("GEN_wgt_old",     &_GEN_wgt_old,     "GEN_wgt_old/I"     );
-    _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/F"     );
+    _outTree->Branch("GEN_wgt",     &_GEN_wgt,     "GEN_wgt/I"     );
+    _outTree->Branch("MG_wgt",     &_MG_wgt,     "MG_wgt/F"     );
 
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
@@ -912,16 +908,14 @@ void UFDiMuonsAnalyzer::endJob()
 // Set up the meta data ttree and save it.
 
   std::cout << "Total Number of Events Read: "<< _numEvents << std::endl <<std::endl;
-  std::cout << "Number of events weighted with MG_wgt: "  << _sumEventWeights << std::endl <<std::endl;
-  std::cout << "Number of events weighted without MG_wgt: "  << _sumEventWeightsOld << std::endl <<std::endl;
+  std::cout << "Number of events weighted: "  << _sumEventWeights << std::endl <<std::endl;
 
   std::cout<<"number of dimuon candidates: "
            <<_outTree->GetEntries()<<std::endl;
 
   // create the metadata tree branches
   _outTreeMetadata->Branch("originalNumEvents", &_numEvents,        "originalNumEvents/I");
-  _outTreeMetadata->Branch("sumEventWeights",   &_sumEventWeights,  "sumEventWeights/F");
-  _outTreeMetadata->Branch("sumEventWeightsOld",   &_sumEventWeightsOld,  "sumEventWeightsOld/I");
+  _outTreeMetadata->Branch("sumEventWeights",   &_sumEventWeights,  "sumEventWeights/I");
   _outTreeMetadata->Branch("isMonteCarlo",      &_isMonteCarlo,     "isMonteCarlo/O");
 
   _outTreeMetadata->Branch("trigNames",  "std::vector< std::string >", &_trigNames);
