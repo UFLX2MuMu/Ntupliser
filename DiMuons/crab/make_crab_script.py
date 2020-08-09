@@ -50,8 +50,15 @@ if(args.test_run == True and len(samps) > 0):
   print("Test run does not accept input sample. Samples will be overwritten with test default.")
 
 if (args.test_run):
-  samps.append(SingleMu_2018A)
+#  samps.append(SingleMu_2018A)
   samps.append(H2Mu_gg_125_NLO)
+  samps.append(H2Mu_WH_pos_125)
+  samps.append(H2Mu_WH_neg_125)
+  samps.append(H2Mu_ZH_125)
+  samps.append(H2Mu_ttH_125)
+  samps.append(H2Mu_ggZH_125)
+  samps.append(H2Mu_THQ_125)
+  samps.append(H2Mu_THW_125)
 else: 
   if (len(args.samps) == 0): # if no samples specified in the option to the script 
     samps.extend(DataAndMC)
