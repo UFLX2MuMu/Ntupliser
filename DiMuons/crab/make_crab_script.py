@@ -51,14 +51,26 @@ if(args.test_run == True and len(samps) > 0):
 
 if (args.test_run):
 #  samps.append(SingleMu_2018A)
-  samps.append(H2Mu_gg_125_NLO)
-  samps.append(H2Mu_WH_pos_125)
-  samps.append(H2Mu_WH_neg_125)
-  samps.append(H2Mu_ZH_125)
-  samps.append(H2Mu_ttH_125)
-  samps.append(H2Mu_ggZH_125)
-  samps.append(H2Mu_THQ_125)
-  samps.append(H2Mu_THW_125)
+#  samps.append(H2Mu_gg_125_NLO)
+#  samps.append(H2Mu_WH_pos_125)
+#  samps.append(H2Mu_WH_neg_125)
+#  samps.append(H2Mu_ZH_125)
+#  samps.append(H2Mu_ttH_125)
+#  samps.append(H2Mu_ggZH_125)
+#  samps.append(H2Mu_THQ_125)
+#  samps.append(H2Mu_THW_125)
+  samps.append(H2Mu_WH_pos_UEup_125)
+  samps.append(H2Mu_WH_pos_UEdn_125)
+  samps.append(H2Mu_WH_neg_UEup_125)
+  samps.append(H2Mu_WH_neg_UEdn_125)
+  samps.append(H2Mu_ZH_UEup_125)
+  samps.append(H2Mu_ZH_UEdn_125)
+  samps.append(H2Mu_ttH_UEup_125)
+  samps.append(H2Mu_ttH_UEdn_125)
+
+
+#  samps.append(H2EE_ggH_125)
+#  samps.append(H2EE_VBF_125)
 else: 
   if (len(args.samps) == 0): # if no samples specified in the option to the script 
     samps.extend(DataAndMC)
