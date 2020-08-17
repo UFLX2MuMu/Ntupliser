@@ -183,6 +183,14 @@ H2Mu_WH_pos_130 = sample( name = 'H2Mu_WH_pos_130',
                           DAS  = '/WplusH_HToMuMu_WToAll_M120_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                           nEvt = -1 ) ## 300 k
 
+H2Mu_WH_pos_UEup_125 = sample( name = 'H2Mu_WH_pos_UEup_125',
+                               DAS = '/WplusH_HToMuMu_WToAll_M125_TuneCP5up_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                               nEvt = -1 )
+
+H2Mu_WH_pos_UEdn_125 = sample( name = 'H2Mu_WH_pos_UEdn_125',
+                               DAS = '/WplusH_HToMuMu_WToAll_M125_TuneCP5down_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                               nEvt = -1 )
+
 ## WH (-)
 H2Mu_WH_neg_120 = sample( name = 'H2Mu_WH_neg_120',
                            DAS  = '/WminusH_HToMuMu_WToAll_M120_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
@@ -195,6 +203,14 @@ H2Mu_WH_neg_125 = sample( name = 'H2Mu_WH_neg_125',
 H2Mu_WH_neg_130 = sample( name = 'H2Mu_WH_neg_130',
                           DAS  = '/WminusH_HToMuMu_WToAll_M130_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                           nEvt = -1 ) ## 300 k
+
+H2Mu_WH_neg_UEup_125 = sample( name = 'H2Mu_WH_neg_UEup_125',
+                               DAS = '/WminusH_HToMuMu_WToAll_M125_TuneCP5up_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                               nEvt = -1 )
+
+H2Mu_WH_neg_UEdn_125 = sample( name = 'H2Mu_WH_neg_UEdn_125',
+                               DAS = '/WminusH_HToMuMu_WToAll_M125_TuneCP5down_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                               nEvt = -1 )
 
 ## ZH
 H2Mu_ZH_120 = sample( name = 'H2Mu_ZH_120',
@@ -209,6 +225,14 @@ H2Mu_ZH_130 = sample( name = 'H2Mu_ZH_130',
                       DAS  = '/ZH_HToMuMu_ZToAll_M130_TuneCP5_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                       nEvt = -1 ) ## 300 k
 
+H2Mu_ZH_UEup_125 = sample( name = 'H2Mu_ZH_UEup_125',
+                           DAS = '/ZH_HToMuMu_ZToAll_M125_TuneCP5up_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                           nEvt = -1 )
+
+H2Mu_ZH_UEdn_125 = sample( name = 'H2Mu_ZH_UEdn_125',
+                           DAS = '/ZH_HToMuMu_ZToAll_M125_TuneCP5down_PSweights_13TeV_powheg_pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                           nEvt = -1 )
+
 ## ttH
 H2Mu_ttH_120 = sample( name = 'H2Mu_ttH_120',
                        DAS  = '/ttHToMuMu_M120_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
@@ -222,17 +246,29 @@ H2Mu_ttH_130 = sample( name = 'H2Mu_ttH_130',
                        DAS  = '/ttHToMuMu_M130_TuneCP5_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[0],data_tier[1]),
                        nEvt = -1 ) ## 300 k
 
+H2Mu_ttH_UEup_125 = sample( name = 'H2Mu_ttH_UEup_125',
+                            DAS = '/ttHToMuMu_M125_TuneCP5up_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                            nEvt = -1 )
 
-H2Mu_ggZH_125 = sample( name = 'H2Mu_ggZZ_125', 
+H2Mu_ttH_UEdn_125 = sample( name = 'H2Mu_ttH_UEdn_125',
+                            DAS = '/ttHToMuMu_M125_TuneCP5down_PSweights_13TeV-powheg-pythia8/{0}/{1}'.format(processed_dataset[1],data_tier[1]),
+                            nEvt = -1 )
+
+
+## minor signals
+H2Mu_ggZH_125 = sample( name = 'H2Mu_ggZH_125', 
                         DAS = '/ggZH_HToMuMu_ZToLL_M125_13TeV_powheg_pythia8/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER',
+                        inputDBS = 'phys03',
                         nEvt = -1 )
 
 H2Mu_THW_125 = sample( name = 'H2Mu_THW_125', 
                        DAS = '/THW_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER', 
+                       inputDBS = 'phys03',
                        nEvt = -1 )
 
 H2Mu_THQ_125 = sample( name = 'H2Mu_THQ_125',
                        DAS = '/THQ_HToMuMu_TuneCP5_13TeV-madgraph-pythia/rgerosa-RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-MINIAODSIM-34b6f628d6169f12feadf56f2d534f5f/USER',
+                       inputDBS = 'phys03',
                        nEvt = -1 )
 
 H2Mu_bbH_125 = sample( name = 'H2Mu_bbH_125',
@@ -262,7 +298,16 @@ Signal.append(H2Mu_WH_neg_130)
 Signal.append(H2Mu_ZH_130)
 Signal.append(H2Mu_ttH_130)
 
-Signal.append(H2Mu_ggZZ_125)
+Signal.append(H2Mu_WH_pos_UEup_125)
+Signal.append(H2Mu_WH_pos_UEdn_125)
+Signal.append(H2Mu_WH_neg_UEup_125)
+Signal.append(H2Mu_WH_neg_UEdn_125)
+Signal.append(H2Mu_ZH_UEup_125)
+Signal.append(H2Mu_ZH_UEdn_125)
+Signal.append(H2Mu_ttH_UEup_125)
+Signal.append(H2Mu_ttH_UEdn_125)
+
+Signal.append(H2Mu_ggZH_125)
 Signal.append(H2Mu_THQ_125)
 Signal.append(H2Mu_THW_125)
 Signal.append(H2Mu_bbH_125)
