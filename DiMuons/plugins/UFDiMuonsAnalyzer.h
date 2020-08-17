@@ -52,6 +52,15 @@ public:
   int _numEvents;
   float _sumEventWeights;
   int   _sumEventWeightsOld;
+  float _sumEventWeightsQCDup;
+  float _sumEventWeightsQCDdn;
+  float _sumEventWeightsPDFup;
+  float _sumEventWeightsPDFdn;
+  float _sumEventWeightsPSup;
+  float _sumEventWeightsPSdn;
+  float _sumEventWeightsGenEvtInfoCent;
+  float _sumEventWeightsOriginalXWGTUP;
+
 
   // tracks pairs, e.g. cocktail
   typedef std::pair<reco::Track,reco::Track> TrackPair;
@@ -69,6 +78,14 @@ public:
   TFile* _PU_wgt_file;
   int   _GEN_wgt_old;    // +1 or -1 weight for nlo samples, -1 simulates interference when filling histos
   float _GEN_wgt;
+  float _GEN_wgt_QCDup;
+  float _GEN_wgt_QCDdn;
+  float _GEN_wgt_PDFup;
+  float _GEN_wgt_PDFdn;
+  float _GEN_wgt_PSup;
+  float _GEN_wgt_PSdn;
+  float _GEN_wgt_GenEvtInfoCent;
+  float _GEN_wgt_OriginalXWGTUP;
 
   ///////////////////////////////////////////////////////////
   // Structs  ==============================================
