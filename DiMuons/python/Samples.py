@@ -263,8 +263,8 @@ Signal.append(H2Mu_ZH_130)
 Signal.append(H2Mu_ttH_130)
 
 Signal.append(H2Mu_ggZZ_125)
-Signal.append(H2Mu_THW_125)
 Signal.append(H2Mu_THQ_125)
+Signal.append(H2Mu_THW_125)
 Signal.append(H2Mu_bbH_125)
 
 # # =======================================================================================================
