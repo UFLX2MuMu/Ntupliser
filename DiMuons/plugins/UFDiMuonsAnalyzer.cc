@@ -232,6 +232,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   _numEvents++;
   if (_isVerbose) std::cout << "\n\n A N A L Y Z I N G   E V E N T = " << _numEvents << std::endl << std::endl;
   
+
   if (!_isMonteCarlo) {
     _sumEventWeights += 1;
     _sumEventWeightsOld += 1;
@@ -244,6 +245,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
     _sumEventWeightsGenEvtInfoCent += 1;
     _sumEventWeightsOriginalXWGTUP += 1;
   }
+
   else {
     // The generated weight. Due to the interference of terms in QM in the
     // NLO simulations there are negative weights that need to be accounted for. 
@@ -342,6 +344,7 @@ void UFDiMuonsAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
      _GEN_wgt_OriginalXWGTUP = LHE_handle->originalXWGTUP();
      _sumEventWeightsGenEvtInfoCent += _GEN_wgt_GenEvtInfoCent;
      _sumEventWeightsOriginalXWGTUP += _GEN_wgt_OriginalXWGTUP;
+
 
     // std::cout << "\n\n***  Printing LHEEventProduct variables  ***" << std::endl;
     // std::cout << "Original weight = " << LHE_handle->originalXWGTUP() <<  std::endl;
@@ -979,12 +982,10 @@ void UFDiMuonsAnalyzer::beginJob() {
     _outTree->Branch("GEN_wgt_PSup",      &_GEN_wgt_PSup,      "GEN_wgt_PSup/F"      );
     _outTree->Branch("GEN_wgt_PSdn",      &_GEN_wgt_PSdn,      "GEN_wgt_PSdn/F"      );
     _outTree->Branch("GEN_wgt_GenEvtInfoCent",     &_GEN_wgt_GenEvtInfoCent,     "GEN_wgt_GenEvtInfoCent/F"     );
-    _outTree->Branch("GEN_wgt_OriginalXWGTUP",     &_GEN_wgt_OriginalXWGTUP,     "GEN_wgt_OriginalXWGTUP/F"     );
-    
+    _outTree->Branch("GEN_wgt_OriginalXWGTUP",     &_GEN_wgt_OriginalXWGTUP,     "GEN_wgt_OriginalXWGTUP/F"     );    
     _outTree->Branch("nGenParents", (int*) &_nGenParents );
     _outTree->Branch("nGenMuons",   (int*) &_nGenMuons   );
-    _outTree->Branch("nGenMuPairs", (int*) &_nGenMuPairs );
-    
+    _outTree->Branch("nGenMuPairs", (int*) &_nGenMuPairs );    
     _outTree->Branch("genParents", (GenParentInfos*) &_genParentInfos );
     _outTree->Branch("genMuons",   (GenMuonInfos*)   &_genMuonInfos   );
     _outTree->Branch("genMuPairs", (GenMuPairInfos*) &_genMuPairInfos );
@@ -1018,6 +1019,7 @@ void UFDiMuonsAnalyzer::endJob()
   std::cout << "Number of events weighted with PS dn:"   << _sumEventWeightsPSdn << std::endl;
   std::cout << "Number of events weighted with genEvtInfo->weight():"           << _sumEventWeightsGenEvtInfoCent << std::endl;
   std::cout << "Number of events weighted with LHE_handle->originalXWGTUP():"   << _sumEventWeightsOriginalXWGTUP << std::endl;
+
 
   std::cout<<"number of dimuon candidates: "
            <<_outTree->GetEntries()<<std::endl;
